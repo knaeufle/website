@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daniel Wieczorek — Senior Art Director & UI/UX Designer</title>
+    <meta name="description" content="Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================
+           CSS Custom Properties
+           ============================ */
+        :root {
+            --bg:            #0A0A0A;
+            --bg-alt:        #0F0F0F;
+            --surface:       #F5F3EE;
+            --surface-alt:   #EDEAE3;
+            --accent:        #D4177A;
+            --accent-dim:    rgba(212,23,122,0.15);
+            --text-light:    #FAFAF8;
+            --text-muted:    rgba(250,250,248,0.45);
+            --text-dark:     #1A1918;
+            --text-dark-mid: rgba(26,25,24,0.65);
+
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-ui:      'Outfit', system-ui, sans-serif;
+            --font-body:    'Source Sans 3', system-ui, sans-serif;
+
+            --nav-h:    72px;
+            --wrap:     min(92vw, 1340px);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* ============================
+           Reset
+           ============================ */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; font-size: 16px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration:       0.01ms !important;
+                animation-iteration-count: 1    !important;
+                transition-duration:      0.01ms !important;
+            }
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        ul { list-style: none; }
+        img { display: block; max-width: 100%; }
+
+        /* ============================
+           Custom Cursor
+           ============================ */
+        .cursor {
+            position: fixed;
+            width: 10px; height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: transform 0.08s, opacity 0.3s;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 36px; height: 36px;
+            border: 1px solid rgba(212,23,122,0.35);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%,-50%);
+            transition: width 0.35s var(--ease-out),
+                        height 0.35s var(--ease-out),
+                        border-color 0.35s,
+                        opacity 0.3s;
+        }
+        .cursor-ring.hover { width: 72px; height: 72px; border-color: rgba(212,23,122,0.2); }
+        @media (hover: none) { .cursor, .cursor-ring { display: none; } body { cursor: auto; } }
+
+        /* ============================
+           Navigation
+           ============================ */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0;
+            z-index: 100;
+            height: var(--nav-h);
+            display: flex; align-items: center;
+            padding: 0 clamp(20px, 5vw, 60px);
+            transition: background 0.5s var(--ease-out), backdrop-filter 0.5s;
+        }
+        .nav.solid {
+            background: rgba(10,10,10,0.82);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-inner {
+            width: 100%;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .nav-logo {
+            font-family: var(--font-ui);
+            font-size: 1rem; font-weight: 800;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+        }
+        .nav-logo em { font-style: normal; color: var(--accent); }
+        .nav-links { display: flex; gap: 44px; }
+        .nav-links a {
+            font-family: var(--font-ui);
+            font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .nav-links a:hover { color: var(--text-light); }
+
+        /* Hamburger */
+        .nav-ham {
+            display: none; flex-direction: column; gap: 5px;
+            background: none; border: none; cursor: pointer; padding: 4px;
+        }
+        .nav-ham span {
+            display: block; width: 22px; height: 1.5px;
+            background: var(--text-light);
+            transition: transform 0.3s var(--ease-out), opacity 0.3s;
+        }
+        .nav-ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .nav-ham.open span:nth-child(2) { opacity: 0; }
+        .nav-ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-ham   { display: flex; }
+        }
+
+        /* Mobile overlay */
+        .mob-nav {
+            position: fixed; inset: 0; z-index: 99;
+            background: var(--bg);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 48px;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.4s var(--ease-out);
+        }
+        .mob-nav.open { opacity: 1; pointer-events: all; }
+        .mob-nav a {
+            font-family: var(--font-display);
+            font-size: clamp(2.2rem, 9vw, 4.5rem);
+            font-weight: 300;
+            color: var(--text-light);
+            transition: color 0.2s, letter-spacing 0.3s var(--ease-out);
+        }
+        .mob-nav a:hover { color: var(--accent); letter-spacing: 0.05em; }
+
+        /* ============================
+           Hero
+           ============================ */
+        .hero {
+            min-height: 100svh;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: calc(var(--nav-h) + 48px) clamp(20px,5vw,60px) clamp(48px,8vw,96px);
+            position: relative; overflow: hidden;
+        }
+
+        /* Grain overlay */
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            pointer-events: none; z-index: 1;
+        }
+
+        /* Ambient glow follows cursor */
+        .hero-glow {
+            position: absolute;
+            width: 700px; height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212,23,122,0.07) 0%, transparent 68%);
+            pointer-events: none; z-index: 0;
+            transform: translate(-50%,-50%);
+            transition: left 1s var(--ease-out), top 1s var(--ease-out);
+            left: 50%; top: 50%;
+        }
+
+        /* Decorative line elements */
+        .hero-lines {
+            position: absolute; inset: 0; z-index: 0;
+            pointer-events: none; overflow: hidden;
+        }
+        .hero-lines::before {
+            content: '';
+            position: absolute;
+            top: -20%; right: -5%;
+            width: 55vw; height: 55vw;
+            border: 1px solid rgba(212,23,122,0.05);
+            border-radius: 50%;
+        }
+        .hero-lines::after {
+            content: '';
+            position: absolute;
+            top: 5%; right: 8%;
+            width: 30vw; height: 30vw;
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 50%;
+        }
+
+        .hero-inner {
+            position: relative; z-index: 2;
+            max-width: var(--wrap); margin: 0 auto; width: 100%;
+        }
+
+        .hero-eyebrow {
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 28px;
+            opacity: 0;
+            animation: fadeUp 0.9s var(--ease-out) 0.15s forwards;
+        }
+
+        .hero-name {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 11vw, 13rem);
+            font-weight: 700;
+            line-height: 0.9;
+            letter-spacing: -0.025em;
+            color: var(--text-light);
+            margin-bottom: 40px;
+        }
+        .hero-name .line { display: block; overflow: hidden; }
+        .hero-name .line span {
+            display: block;
+            opacity: 0;
+            transform: translateY(115%);
+        }
+        .hero-name .line:nth-child(1) span { animation: slideUp 1.1s var(--ease-out) 0.25s forwards; }
+        .hero-name .line:nth-child(2) span { animation: slideUp 1.1s var(--ease-out) 0.42s forwards; }
+
+        .hero-foot {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: end;
+            opacity: 0;
+            animation: fadeUp 0.9s var(--ease-out) 0.85s forwards;
+        }
+        @media (max-width: 640px) { .hero-foot { grid-template-columns: 1fr; } }
+
+        .hero-role {
+            font-family: var(--font-ui);
+            font-size: clamp(0.78rem, 1.5vw, 0.9rem);
+            font-weight: 500; letter-spacing: 0.08em;
+            text-transform: uppercase; color: var(--text-muted);
+            line-height: 2;
+        }
+
+        .hero-tagline {
+            font-size: clamp(0.9rem, 1.5vw, 1rem);
+            color: var(--text-muted);
+            line-height: 1.75;
+        }
+
+        .scroll-cue {
+            display: flex; align-items: center; gap: 14px;
+            font-family: var(--font-ui);
+            font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: clamp(44px, 8vw, 80px);
+            opacity: 0;
+            animation: fadeUp 0.9s var(--ease-out) 1.3s forwards;
+        }
+        .scroll-line {
+            width: 44px; height: 1px;
+            background: var(--accent);
+            transform-origin: left;
+            animation: scaleX 1.4s var(--ease-out) 1.6s both;
+        }
+        @keyframes scaleX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(115%); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================
+           Shared Section Styles
+           ============================ */
+        .section {
+            padding: clamp(72px, 11vw, 140px) clamp(20px,5vw,60px);
+        }
+        .wrap { max-width: var(--wrap); margin: 0 auto; }
+
+        .s-label {
+            font-family: var(--font-ui);
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.28em; text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 14px;
+            display: block;
+        }
+        .s-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 4.2rem);
+            font-weight: 700; line-height: 1.05;
+            margin-bottom: clamp(40px, 7vw, 88px);
+        }
+
+        /* Scroll reveal */
+        .rv {
+            opacity: 0; transform: translateY(36px);
+            transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+        }
+        .rv.in { opacity: 1; transform: none; }
+        .rv.d1 { transition-delay: 0.10s; }
+        .rv.d2 { transition-delay: 0.20s; }
+        .rv.d3 { transition-delay: 0.30s; }
+        .rv.d4 { transition-delay: 0.40s; }
+        .rv.d5 { transition-delay: 0.50s; }
+
+        /* ============================
+           Projects
+           ============================ */
+        .projects-section { background: var(--surface); color: var(--text-dark); }
+        .projects-section .s-title { color: var(--text-dark); }
+
+        .proj-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3px;
+        }
+        @media (max-width: 700px) { .proj-grid { grid-template-columns: 1fr; } }
+
+        .proj-card {
+            position: relative; overflow: hidden;
+            aspect-ratio: 4 / 3;
+        }
+        /* Wide cards */
+        .proj-card.wide { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+        @media (max-width: 700px) { .proj-card.wide { aspect-ratio: 4 / 3; } }
+
+        .proj-bg {
+            position: absolute; inset: 0;
+            transition: transform 0.65s var(--ease-out);
+        }
+        .proj-card:hover .proj-bg { transform: scale(1.05); }
+
+        /* Real project images */
+        .p1 .proj-bg { background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg'); background-size: cover; background-position: center; }
+        .p2 .proj-bg { background-image: url('https://www.freund-hase.com/images/uiq_website_1920x1080.jpg');          background-size: cover; background-position: center; }
+        .p3 .proj-bg { background-image: url('https://www.freund-hase.com/images/website_abinsb_1920x1080.jpg');        background-size: cover; background-position: center; }
+        .p4 .proj-bg { background-image: url('https://www.freund-hase.com/images/Roll_Up_LAG_1920x1080.jpg');           background-size: cover; background-position: center; }
+        .p5 .proj-bg { background-image: url('https://www.freund-hase.com/images/Brandbook_Mierendorff.jpg');           background-size: cover; background-position: center; }
+
+        .proj-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.15) 55%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: clamp(18px,3vw,36px);
+            transition: background 0.4s var(--ease-out);
+        }
+        .proj-card:hover .proj-overlay {
+            background: linear-gradient(to top, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.08) 100%);
+        }
+
+        .proj-num {
+            font-family: var(--font-ui);
+            font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 0.22em; color: var(--accent);
+            margin-bottom: 6px;
+            opacity: 0; transform: translateY(8px);
+            transition: opacity 0.3s var(--ease-out) 0.05s, transform 0.3s var(--ease-out) 0.05s;
+        }
+        .proj-card:hover .proj-num { opacity: 1; transform: none; }
+
+        .proj-name {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 3vw, 2.4rem);
+            font-weight: 400; color: #fff;
+            line-height: 1.1; margin-bottom: 6px;
+        }
+        .proj-cat {
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            transform: translateY(6px);
+            transition: transform 0.3s var(--ease-out), color 0.3s;
+        }
+        .proj-card:hover .proj-cat { transform: none; color: var(--accent); }
+
+        .proj-arrow {
+            position: absolute; top: 20px; right: 20px;
+            width: 38px; height: 38px;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: translate(10px,-10px);
+            transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out),
+                        border-color 0.25s, background 0.25s;
+        }
+        .proj-arrow svg { width: 13px; height: 13px; stroke: #fff; fill: none; }
+        .proj-card:hover .proj-arrow {
+            opacity: 1; transform: none;
+            border-color: var(--accent); background: var(--accent);
+        }
+        .proj-card:hover .proj-arrow svg { stroke: #000; }
+
+        /* ============================
+           About
+           ============================ */
+        .about-section { background: var(--bg); }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(40px, 8vw, 110px);
+            align-items: center;
+        }
+        @media (max-width: 768px) { .about-grid { grid-template-columns: 1fr; } }
+
+        .about-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            font-weight: 700; line-height: 1.2;
+            color: var(--text-light);
+            margin-bottom: 28px;
+        }
+        .about-headline em { font-style: italic; color: var(--accent); }
+
+        .about-p {
+            font-size: clamp(0.9rem, 1.4vw, 1rem);
+            color: var(--text-muted);
+            line-height: 1.85;
+            margin-bottom: 20px;
+        }
+
+        .tags {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-top: 28px;
+        }
+        .tag {
+            font-family: var(--font-ui);
+            font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 6px 14px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 2px; color: var(--text-muted);
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* About visual */
+        .about-vis { position: relative; }
+        .about-vis-box {
+            position: relative;
+            aspect-ratio: 3/4; max-width: 400px; margin: 0 auto;
+        }
+        .about-portrait {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: top center;
+            border-radius: 2px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+        }
+        .av-frame {
+            position: absolute;
+            top: -18px; right: -18px;
+            width: 58%; height: 58%;
+            border: 1px solid var(--accent);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+        .av-badge {
+            position: absolute;
+            bottom: -22px; left: -22px;
+            background: var(--accent);
+            padding: 22px 26px;
+            display: flex; flex-direction: column; gap: 3px;
+        }
+        .av-num {
+            font-family: var(--font-display);
+            font-size: 2.6rem; font-weight: 700;
+            color: #000; line-height: 1;
+        }
+        .av-lbl {
+            font-family: var(--font-ui);
+            font-size: 0.65rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: rgba(0,0,0,0.55);
+        }
+
+        /* ============================
+           Clients Slider
+           ============================ */
+        .clients-section {
+            background: var(--surface);
+            padding: clamp(72px,10vw,110px) clamp(20px,5vw,60px);
+        }
+        .clients-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+            max-width: var(--wrap);
+            margin: 0 auto clamp(48px,7vw,72px);
+            flex-wrap: wrap;
+        }
+        .clients-hd-left {}
+        .clients-label {
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.28em; text-transform: uppercase;
+            color: var(--accent);
+            display: block; margin-bottom: 10px;
+        }
+        .clients-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+            font-weight: 700; line-height: 1.1;
+            color: var(--text-dark);
+        }
+        .clients-count {
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--text-dark-mid);
+            padding-bottom: 4px;
+        }
+
+        /* Slider wrapper */
+        .slider-wrap {
+            max-width: var(--wrap);
+            margin: 0 auto;
+            position: relative;
+        }
+        .slider-viewport {
+            overflow: hidden;
+            border-radius: 3px;
+        }
+        .slider-track {
+            display: flex;
+            transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+        .slider-slide {
+            flex: 0 0 25%;
+            padding: 0 16px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 160px;
+        }
+        @media (max-width: 1024px) { .slider-slide { flex: 0 0 33.333%; } }
+        @media (max-width: 700px)  { .slider-slide { flex: 0 0 50%; } }
+        @media (max-width: 420px)  { .slider-slide { flex: 0 0 100%; } }
+
+        .slider-logo-box {
+            width: 100%;
+            background: #fff;
+            border-radius: 4px;
+            padding: 32px 28px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 150px;
+            transition: box-shadow 0.3s, transform 0.3s;
+            cursor: default;
+        }
+        .slider-logo-box:hover {
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+        }
+        .slider-logo-img {
+            max-height: 100px;
+            max-width: 180px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        /* Controls */
+        .slider-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .slider-btn {
+            width: 52px; height: 52px;
+            border: 1.5px solid rgba(26,25,24,0.18);
+            border-radius: 50%;
+            background: transparent;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: border-color 0.25s, background 0.25s, transform 0.2s;
+            flex-shrink: 0;
+        }
+        .slider-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+        .slider-btn:hover svg { stroke: #fff; }
+        .slider-btn:active { transform: scale(0.93); }
+        .slider-btn svg { width: 18px; height: 18px; stroke: var(--text-dark); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.25s; }
+        .slider-btn:disabled { opacity: 0.3; pointer-events: none; }
+
+        /* Dots */
+        .slider-dots {
+            display: flex; gap: 8px; align-items: center;
+        }
+        .slider-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(26,25,24,0.2);
+            border: none; cursor: pointer; padding: 0;
+            transition: background 0.25s, transform 0.25s;
+        }
+        .slider-dot.active {
+            background: var(--accent);
+            transform: scale(1.5);
+        }
+
+        /* ============================
+           Contact
+           ============================ */
+        .contact-section {
+            background: var(--bg);
+            text-align: center;
+            padding: clamp(88px,14vw,172px) clamp(20px,5vw,60px);
+        }
+        .ct-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 9vw, 8rem);
+            font-weight: 700; line-height: 0.95;
+            letter-spacing: -0.02em;
+            color: var(--text-light);
+            margin-bottom: 52px;
+        }
+        .ct-headline em { font-style: italic; color: var(--accent); }
+
+        .ct-email {
+            display: inline-flex; align-items: center; gap: 14px;
+            font-family: var(--font-ui);
+            font-size: clamp(0.85rem, 2vw, 1.1rem); font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-light);
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 3px;
+            transition: color 0.2s, gap 0.35s var(--ease-out);
+            margin-bottom: 52px;
+        }
+        .ct-email:hover { color: var(--accent); gap: 24px; }
+        .ct-email svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
+
+        .ct-social {
+            display: flex; justify-content: center; gap: 36px;
+        }
+        .ct-social a {
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .ct-social a:hover { color: var(--text-light); }
+
+        /* ============================
+           Footer
+           ============================ */
+        footer {
+            background: var(--bg-alt);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding: 22px clamp(20px,5vw,60px);
+        }
+        .foot-inner {
+            max-width: var(--wrap); margin: 0 auto;
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 16px;
+            flex-wrap: wrap;
+        }
+        .foot-copy {
+            font-family: var(--font-ui);
+            font-size: 0.68rem; letter-spacing: 0.06em;
+            color: var(--text-muted);
+        }
+        .foot-top {
+            font-family: var(--font-ui);
+            font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text-muted);
+            display: flex; align-items: center; gap: 8px;
+            transition: color 0.2s;
+        }
+        .foot-top:hover { color: var(--accent); }
+        .foot-top svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+    </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor"     id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Mobile nav -->
+<div class="mob-nav" id="mobNav">
+    <a href="#projekte"   onclick="closeMob()">Projekte</a>
+    <a href="#ueber-mich" onclick="closeMob()">Über mich</a>
+    <a href="#kontakt"    onclick="closeMob()">Kontakt</a>
+</div>
+
+<!-- Nav -->
+<nav class="nav" id="nav" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+        <a href="#" class="nav-logo" aria-label="Startseite">FH<em>.</em></a>
+        <ul class="nav-links" role="list">
+            <li><a href="#projekte">Projekte</a></li>
+            <li><a href="#ueber-mich">Über mich</a></li>
+            <li><a href="#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="nav-ham" id="navHam" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="hero" id="hero" aria-label="Willkommen">
+    <div class="hero-glow"  id="heroGlow"  aria-hidden="true"></div>
+    <div class="hero-lines" aria-hidden="true"></div>
+    <div class="hero-inner">
+        <p class="hero-eyebrow">Senior Art Director &amp; UI/UX Designer — Berlin</p>
+
+        <h1 class="hero-name" aria-label="Daniel Wieczorek">
+            <span class="line"><span>Daniel</span></span>
+            <span class="line"><span>Wieczorek</span></span>
+        </h1>
+
+        <div class="hero-foot">
+            <p class="hero-role">
+                Branding · UI/UX · Art Direction<br>
+                Healthcare · Nachhaltigkeit · E-Commerce
+            </p>
+            <p class="hero-tagline">
+                Digitale und analoge Gestaltungslösungen mit Fokus auf
+                Usability, Barrierefreiheit und funktionales Design.
+            </p>
+        </div>
+
+        <div class="scroll-cue" aria-hidden="true">
+            <span class="scroll-line"></span>
+            Projekte entdecken
+        </div>
+    </div>
+</section>
+
+<!-- ─── Projects ─── -->
+<section class="section projects-section" id="projekte">
+    <div class="wrap">
+        <span class="s-label rv">Ausgewählte Arbeiten</span>
+        <h2 class="s-title rv d1">Projekte</h2>
+    </div>
+
+    <div class="proj-grid" role="list">
+
+        <article class="proj-card p1 rv" role="listitem" tabindex="0" aria-label="Projekt: TD Academy">
+            <div class="proj-bg" aria-hidden="true"></div>
+            <div class="proj-overlay">
+                <span class="proj-num" aria-hidden="true">01</span>
+                <h3 class="proj-name">TD Academy</h3>
+                <p class="proj-cat">E-Learning · Bildung</p>
+            </div>
+            <div class="proj-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </div>
+        </article>
+
+        <article class="proj-card p2 rv d1" role="listitem" tabindex="0" aria-label="Projekt: Umwelt im Quartier">
+            <div class="proj-bg" aria-hidden="true"></div>
+            <div class="proj-overlay">
+                <span class="proj-num" aria-hidden="true">02</span>
+                <h3 class="proj-name">Umwelt im Quartier</h3>
+                <p class="proj-cat">Nachhaltigkeit · Kampagne</p>
+            </div>
+            <div class="proj-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </div>
+        </article>
+
+        <article class="proj-card p3 rv d2" role="listitem" tabindex="0" aria-label="Projekt: AbinsB!">
+            <div class="proj-bg" aria-hidden="true"></div>
+            <div class="proj-overlay">
+                <span class="proj-num" aria-hidden="true">03</span>
+                <h3 class="proj-name">AbinsB!</h3>
+                <p class="proj-cat">Tourismus · Branding</p>
+            </div>
+            <div class="proj-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </div>
+        </article>
+
+        <article class="proj-card p4 rv d3" role="listitem" tabindex="0" aria-label="Projekt: LAG Märkische Seen">
+            <div class="proj-bg" aria-hidden="true"></div>
+            <div class="proj-overlay">
+                <span class="proj-num" aria-hidden="true">04</span>
+                <h3 class="proj-name">LAG Märkische Seen</h3>
+                <p class="proj-cat">Regionalentwicklung · UI/UX</p>
+            </div>
+            <div class="proj-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </div>
+        </article>
+
+        <article class="proj-card p5 wide rv d4" role="listitem" tabindex="0" aria-label="Projekt: Green Mierendorff">
+            <div class="proj-bg" aria-hidden="true"></div>
+            <div class="proj-overlay">
+                <span class="proj-num" aria-hidden="true">05</span>
+                <h3 class="proj-name">Green Mierendorff</h3>
+                <p class="proj-cat">Umwelt · Corporate Identity</p>
+            </div>
+            <div class="proj-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </div>
+        </article>
+
+    </div>
+</section>
+
+<!-- ─── About ─── -->
+<section class="section about-section" id="ueber-mich">
+    <div class="wrap">
+        <div class="about-grid">
+
+            <div>
+                <span class="s-label rv">Über mich</span>
+                <h2 class="about-headline rv d1">
+                    Gestaltung, die<br>
+                    <em>bewegt</em> und<br>
+                    verbindet.
+                </h2>
+                <p class="about-p rv d2">
+                    Als Senior Art Director verbinde ich strategisches Denken mit ästhetischem Gespür. Meine Arbeit entsteht an der Schnittstelle von Funktion und Form — mit dem Ziel, Erlebnisse zu schaffen, die zugänglich, wirkungsvoll und nachhaltig sind.
+                </p>
+                <p class="about-p rv d3">
+                    Über die Jahre habe ich für Kunden aus Healthcare, Tourismus, Nachhaltigkeit, E-Commerce und Wissenschaft gearbeitet — immer mit dem Fokus auf nutzerzentriertes, barrierefreies Design.
+                </p>
+                <div class="tags rv d4">
+                    <span class="tag">UI/UX Design</span>
+                    <span class="tag">Art Direction</span>
+                    <span class="tag">Branding</span>
+                    <span class="tag">Barrierefreiheit</span>
+                    <span class="tag">Neos CMS</span>
+                    <span class="tag">Editorial Design</span>
+                </div>
+            </div>
+
+            <div class="about-vis rv d2">
+                <div class="about-vis-box">
+                    <img src="https://www.freund-hase.com/images/freund-hase.png"
+                         alt="Daniel Wieczorek — Senior Art Director"
+                         class="about-portrait" loading="lazy">
+                    <div class="av-frame" aria-hidden="true"></div>
+                    <div class="av-badge" aria-hidden="true">
+                        <span class="av-num">10+</span>
+                        <span class="av-lbl">Jahre Erfahrung</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ─── Clients Slider ─── -->
+<section class="clients-section" id="kunden" role="region" aria-label="Kunden und Branchen">
+    <div class="clients-header rv">
+        <div class="clients-hd-left">
+            <span class="clients-label">Kunden &amp; Branchen</span>
+            <h2 class="clients-title">Vertrauen seit<br><em style="font-style:italic;color:var(--accent)">über 10 Jahren</em></h2>
+        </div>
+        <span class="clients-count">11 Referenzkunden</span>
+    </div>
+
+    <div class="slider-wrap rv d1">
+        <div class="slider-viewport" id="sliderViewport">
+            <div class="slider-track" id="sliderTrack" role="list">
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/td_167x150h.png" alt="TD Academy" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/aqua_consult1_167x150h.png" alt="Aqua Consult" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Aqua_Ventus_167x150h.png" alt="Aqua Ventus" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/CK_167x150h.png" alt="CK" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/db1_167x150h.png" alt="Deutsche Bahn" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/hsw_167x150h.png" alt="HSW" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Pronol_167x150h.png" alt="Pronol" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/spandau_167x150h.png" alt="Bezirk Spandau" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Synverz_167x150h.png" alt="Synverz" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/tub_167x150h.png" alt="TU Berlin" loading="lazy">
+                    </div>
+                </div>
+                <div class="slider-slide" role="listitem">
+                    <div class="slider-logo-box">
+                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/vb1_167x150h.png" alt="VB" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-controls">
+            <button class="slider-btn" id="sliderPrev" aria-label="Vorherige Kunden">
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Slider Navigation"></div>
+            <button class="slider-btn" id="sliderNext" aria-label="Nächste Kunden">
+                <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Contact ─── -->
+<section class="section contact-section" id="kontakt">
+    <div class="wrap">
+        <span class="s-label rv">Kontakt</span>
+        <h2 class="ct-headline rv d1">
+            Bereit für<br>
+            dein <em>nächstes</em><br>
+            Projekt?
+        </h2>
+        <div class="rv d2">
+            <a href="mailto:hallo@freund-hase.com" class="ct-email" aria-label="E-Mail senden">
+                hallo@freund-hase.com
+                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
+                </svg>
+            </a>
+        </div>
+        <nav class="ct-social rv d3" aria-label="Social Media Links">
+            <a href="#" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
+            <a href="#" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+            <a href="#" rel="noopener noreferrer" aria-label="XING">XING</a>
+        </nav>
+    </div>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer role="contentinfo">
+    <div class="foot-inner">
+        <p class="foot-copy">© 2025 Daniel Wieczorek · freund-hase.com · <a href="#" style="color:inherit;">Impressum</a></p>
+        <a href="#" class="foot-top" aria-label="Zurück nach oben">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 19V5M5 12l7-7 7 7"/>
+            </svg>
+            Nach oben
+        </a>
+    </div>
+</footer>
+
+<script>
+    /* ── Custom cursor ── */
+    const cur  = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = window.innerWidth/2, my = window.innerHeight/2;
+    let rx = mx, ry = my;
+
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = mx + 'px';
+        cur.style.top  = my + 'px';
+
+        // Hero ambient glow
+        const hero    = document.getElementById('hero');
+        const heroRect = hero.getBoundingClientRect();
+        if (my >= heroRect.top && my <= heroRect.bottom) {
+            const glow = document.getElementById('heroGlow');
+            glow.style.left = mx + 'px';
+            glow.style.top  = (my - heroRect.top) + 'px';
+        }
+    });
+
+    (function animRing() {
+        rx += (mx - rx) * 0.11;
+        ry += (my - ry) * 0.11;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button, .proj-card, .tag').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    /* ── Nav scroll ── */
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('solid', scrollY > 60);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* ── Mobile nav ── */
+    const ham    = document.getElementById('navHam');
+    const mobNav = document.getElementById('mobNav');
+
+    ham.addEventListener('click', () => {
+        const open = mobNav.classList.toggle('open');
+        ham.classList.toggle('open');
+        ham.setAttribute('aria-expanded', open);
+        ham.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+        document.body.style.overflow = open ? 'hidden' : '';
+    });
+
+    function closeMob() {
+        mobNav.classList.remove('open');
+        ham.classList.remove('open');
+        ham.setAttribute('aria-expanded', 'false');
+        ham.setAttribute('aria-label', 'Menü öffnen');
+        document.body.style.overflow = '';
+    }
+
+    /* ── Scroll reveal ── */
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('in');
+                observer.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -50px 0px' });
+
+    document.querySelectorAll('.rv').forEach(el => observer.observe(el));
+
+    /* ── Logo Slider ── */
+    (function() {
+        const track    = document.getElementById('sliderTrack');
+        const viewport = document.getElementById('sliderViewport');
+        const prevBtn  = document.getElementById('sliderPrev');
+        const nextBtn  = document.getElementById('sliderNext');
+        const dotsWrap = document.getElementById('sliderDots');
+        if (!track) return;
+
+        const slides = track.querySelectorAll('.slider-slide');
+        let current  = 0;
+        let perView  = 4;
+
+        function getPerView() {
+            const w = window.innerWidth;
+            if (w <= 420)  return 1;
+            if (w <= 700)  return 2;
+            if (w <= 1024) return 3;
+            return 4;
+        }
+
+        function totalPages() { return Math.ceil(slides.length / perView); }
+
+        function buildDots() {
+            dotsWrap.innerHTML = '';
+            for (let i = 0; i < totalPages(); i++) {
+                const btn = document.createElement('button');
+                btn.className = 'slider-dot' + (i === 0 ? ' active' : '');
+                btn.setAttribute('role', 'tab');
+                btn.setAttribute('aria-label', 'Seite ' + (i + 1));
+                btn.addEventListener('click', () => goTo(i));
+                dotsWrap.appendChild(btn);
+            }
+        }
+
+        function updateDots() {
+            dotsWrap.querySelectorAll('.slider-dot').forEach((d, i) =>
+                d.classList.toggle('active', i === current));
+        }
+
+        function goTo(page) {
+            current = Math.max(0, Math.min(page, totalPages() - 1));
+            const offset = current * perView * (100 / slides.length);
+            track.style.transform = 'translateX(-' + offset + '%)';
+            updateDots();
+            prevBtn.disabled = current === 0;
+            nextBtn.disabled = current === totalPages() - 1;
+        }
+
+        function init() {
+            perView = getPerView();
+            /* each slide occupies 1/total width so the track slides exactly */
+            slides.forEach(s => s.style.flex = '0 0 ' + (100 / slides.length) + '%');
+            track.style.width = slides.length * (100 / perView) + '%';
+            current = 0;
+            buildDots();
+            goTo(0);
+        }
+
+        prevBtn.addEventListener('click', () => goTo(current - 1));
+        nextBtn.addEventListener('click', () => goTo(current + 1));
+
+        /* Touch / swipe */
+        let touchX = 0;
+        viewport.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+        viewport.addEventListener('touchend',   e => {
+            const dx = e.changedTouches[0].clientX - touchX;
+            if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+        });
+
+        /* Keyboard */
+        viewport.setAttribute('tabindex', '0');
+        viewport.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft')  goTo(current - 1);
+            if (e.key === 'ArrowRight') goTo(current + 1);
+        });
+
+        /* Auto-advance, pauses on hover */
+        let autoTimer = setInterval(() => {
+            if (current < totalPages() - 1) goTo(current + 1);
+            else goTo(0);
+        }, 7000);
+        viewport.addEventListener('mouseenter', () => clearInterval(autoTimer));
+        viewport.addEventListener('mouseleave', () => {
+            autoTimer = setInterval(() => {
+                if (current < totalPages() - 1) goTo(current + 1);
+                else goTo(0);
+            }, 7000);
+        });
+
+        window.addEventListener('resize', init);
+        init();
+    })();
+
+    /* ── Keyboard nav for project cards ── */
+    document.querySelectorAll('.proj-card').forEach(card => {
+        card.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                card.click();
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
