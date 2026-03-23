@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TD Academy — Daniel Wieczorek · freund-hase.com</title>
+    <meta name="description" content="Branding, UI/UX und Corporate Identity für TD Academy — eine Plattform für transdisziplinäre Forschung und wissenschaftliche Vernetzung.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* ============================
+           Project Hero
+           ============================ */
+        .proj-hero {
+            position: relative; height: 90vh; min-height: 520px;
+            display: flex; align-items: flex-end;
+            overflow: hidden;
+            padding-top: var(--nav-h);
+        }
+        .proj-hero-bg {
+            position: absolute; inset: 0;
+            background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg');
+            background-size: cover; background-position: center;
+            transform: scale(1.04);
+            transition: transform 8s ease-out;
+        }
+        .proj-hero-bg.loaded { transform: scale(1); }
+        .proj-hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top,
+                rgba(10,10,10,0.92) 0%,
+                rgba(10,10,10,0.4)  50%,
+                rgba(10,10,10,0.1)  100%);
+        }
+        .proj-hero-content {
+            position: relative; z-index: 2;
+            width: 100%; max-width: var(--wrap);
+            margin: 0 auto;
+            padding: 0 clamp(20px,5vw,60px) clamp(48px,8vw,80px);
+        }
+        .proj-breadcrumb {
+            display: flex; align-items: center; gap: 10px;
+            font-family: var(--font-ui); font-size: 0.72rem;
+            font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 20px;
+        }
+        .proj-breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
+        .proj-breadcrumb a:hover { color: var(--accent); }
+        .proj-breadcrumb svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; flex-shrink: 0; }
+        .proj-hero-cat {
+            display: inline-block;
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 16px;
+        }
+        .proj-hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 7vw, 6.5rem);
+            font-weight: 900; line-height: 0.95;
+            color: var(--text-light);
+            margin-bottom: 24px;
+        }
+        .proj-hero-tags {
+            display: flex; flex-wrap: wrap; gap: 10px;
+        }
+        .proj-hero-tag {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 6px 14px; border-radius: 2px;
+        }
+
+        /* ============================
+           Intro Section
+           ============================ */
+        .intro-section {
+            background: var(--bg);
+            padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px);
+        }
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(40px, 8vw, 120px);
+            max-width: var(--wrap); margin: 0 auto;
+            align-items: start;
+        }
+        @media (max-width: 768px) { .intro-grid { grid-template-columns: 1fr; } }
+
+        .intro-label {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 20px; display: block;
+        }
+        .intro-headline {
+            font-family: var(--font-display);
+            font-size: clamp(1.9rem, 3.5vw, 3rem);
+            font-weight: 700; line-height: 1.15;
+            color: var(--text-light); margin-bottom: 28px;
+        }
+        .intro-headline em { font-style: italic; color: var(--accent); }
+        .intro-text {
+            font-size: clamp(1rem, 1.2vw, 1.1rem); line-height: 1.75;
+            color: rgba(250,250,248,0.75); margin-bottom: 20px;
+        }
+
+        .services-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            padding: 36px; border-radius: 2px;
+        }
+        .services-title {
+            font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 24px;
+        }
+        .services-list { display: flex; flex-direction: column; gap: 14px; }
+        .services-item {
+            display: flex; align-items: center; gap: 14px;
+            font-family: var(--font-ui); font-size: 0.95rem; font-weight: 500;
+            color: var(--text-light);
+        }
+        .services-item::before {
+            content: ''; display: block; width: 20px; height: 1px;
+            background: var(--accent); flex-shrink: 0;
+        }
+
+        .deliverables-title {
+            font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text-muted); margin-top: 32px; margin-bottom: 16px;
+        }
+        .deliverables-tags {
+            display: flex; flex-wrap: wrap; gap: 8px;
+        }
+        .deliverable-tag {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 5px 12px; border-radius: 1px;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .deliverable-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ============================
+           Image Gallery
+           ============================ */
+        .gallery-section {
+            background: var(--bg-alt);
+            padding: clamp(48px,8vw,100px) 0;
+        }
+        .gallery-wrap {
+            max-width: var(--wrap); margin: 0 auto;
+            padding: 0 clamp(20px,5vw,60px);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 4px;
+        }
+        @media (max-width: 640px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+        .gallery-item {
+            position: relative; overflow: hidden;
+        }
+        .gallery-item.full { grid-column: 1 / -1; }
+        .gallery-item img {
+            width: 100%; height: 100%; object-fit: cover; display: block;
+            transition: transform 3s ease-in-out;
+        }
+        .gallery-item:hover img { transform: scale(1.04); }
+        .gallery-item.full img { aspect-ratio: 16/7; }
+        .gallery-item:not(.full) img { aspect-ratio: 4/3; }
+
+        /* ============================
+           Challenge + Approach
+           ============================ */
+        .challenge-section {
+            background: var(--bg);
+            padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px);
+        }
+        .challenge-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(32px,6vw,80px);
+            max-width: var(--wrap); margin: 0 auto;
+        }
+        @media (max-width: 768px) { .challenge-grid { grid-template-columns: 1fr; } }
+
+        .challenge-block { padding: 40px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .challenge-num {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 5vw, 5rem);
+            font-weight: 900; color: var(--accent-dim);
+            line-height: 1; margin-bottom: 20px;
+        }
+        .challenge-label {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 16px; display: block;
+        }
+        .challenge-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+            font-weight: 700; color: var(--text-light);
+            margin-bottom: 16px; line-height: 1.2;
+        }
+        .challenge-text {
+            font-size: 0.98rem; line-height: 1.75;
+            color: rgba(250,250,248,0.65);
+        }
+
+        /* ============================
+           Stats
+           ============================ */
+        .stats-section {
+            background: var(--surface);
+            padding: clamp(64px,9vw,110px) clamp(20px,5vw,60px);
+        }
+        .stats-wrap {
+            max-width: var(--wrap); margin: 0 auto;
+        }
+        .stats-eyebrow {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 56px; display: block;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: clamp(24px,4vw,48px);
+            border-top: 1px solid rgba(26,25,24,0.1);
+            padding-top: 48px;
+        }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 400px) { .stats-grid { grid-template-columns: 1fr; } }
+
+        .stat-item { padding-right: 24px; }
+        .stat-num {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 5vw, 4.5rem);
+            font-weight: 900; color: var(--text-dark);
+            line-height: 1; margin-bottom: 10px;
+        }
+        .stat-num em { font-style: normal; color: var(--accent); }
+        .stat-label {
+            font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500;
+            color: var(--text-dark-mid); line-height: 1.4;
+        }
+
+        /* ============================
+           Third Image (full width)
+           ============================ */
+        .fullimg-section {
+            position: relative; overflow: hidden;
+            height: clamp(300px, 50vw, 640px);
+        }
+        .fullimg-section img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 3s ease-in-out;
+        }
+        .fullimg-section:hover img { transform: scale(1.04); }
+
+        /* ============================
+           Next Projects
+           ============================ */
+        .next-section {
+            background: var(--bg);
+            padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px);
+        }
+        .next-wrap { max-width: var(--wrap); margin: 0 auto; }
+        .next-label {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--text-muted); margin-bottom: 40px; display: block;
+        }
+        .next-link {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.07);
+            transition: border-color 0.3s;
+        }
+        .next-link:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .next-link:hover { border-color: var(--accent); }
+        .next-link-inner { display: flex; flex-direction: column; gap: 6px; }
+        .next-link-cat {
+            font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent);
+        }
+        .next-link-name {
+            font-family: var(--font-display);
+            font-size: clamp(1.4rem, 2.5vw, 2.2rem);
+            font-weight: 700; color: var(--text-light);
+            transition: color 0.2s;
+        }
+        .next-link:hover .next-link-name { color: var(--accent); }
+        .next-arrow {
+            width: 48px; height: 48px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out);
+            flex-shrink: 0;
+        }
+        .next-link:hover .next-arrow {
+            background: var(--accent); border-color: var(--accent);
+            transform: translate(4px, -4px);
+        }
+        .next-arrow svg {
+            width: 18px; height: 18px; stroke: currentColor; fill: none;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
+        /* ============================
+           Contact CTA (Unterseite — helles Theme)
+           ============================ */
+        .contact-section {
+            background: var(--surface);
+            padding: clamp(80px,12vw,160px) clamp(20px,5vw,60px);
+            text-align: center;
+        }
+        .ct-label {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 28px; display: block;
+        }
+        .ct-headline {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 6vw, 6rem);
+            font-weight: 900; line-height: 1.02;
+            color: var(--text-dark); margin-bottom: 56px;
+        }
+        .ct-headline em { font-style: italic; color: var(--accent); }
+        .ct-email {
+            display: inline-flex; align-items: center; gap: 14px;
+            font-family: var(--font-display);
+            font-size: clamp(1.2rem, 2.5vw, 2rem);
+            font-weight: 700; color: var(--text-dark);
+            border-bottom: 2px solid var(--accent); padding-bottom: 4px;
+            transition: color 0.2s, gap 0.3s var(--ease-out);
+        }
+        .ct-email:hover { color: var(--accent); gap: 22px; }
+        .ct-email svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .ct-social { display: flex; justify-content: center; gap: 32px; margin-top: 48px; }
+        .ct-social a {
+            font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.18em; text-transform: uppercase;
+            color: var(--text-dark-mid); transition: color 0.2s;
+        }
+        .ct-social a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ─── Navigation ─── -->
+<nav class="nav solid" role="navigation" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="Zurück zur Startseite">
+            freund<em>·</em>hase
+        </a>
+        <ul class="nav-links" role="list">
+            <li><a href="index.html#projekte">Projekte</a></li>
+            <li><a href="index.html#ueber-mich">Über mich</a></li>
+            <li><a href="index.html#kunden">Kunden</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="nav-ham" id="navHam" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<!-- Mobile Nav -->
+<nav class="mob-nav" id="mobNav" aria-label="Mobile Navigation">
+    <a href="index.html#projekte" class="mob-nav-link">Projekte</a>
+    <a href="index.html#ueber-mich" class="mob-nav-link">Über mich</a>
+    <a href="index.html#kunden" class="mob-nav-link">Kunden</a>
+    <a href="index.html#kontakt" class="mob-nav-link">Kontakt</a>
+</nav>
+
+<!-- ─── Project Hero ─── -->
+<section class="proj-hero" aria-label="TD Academy">
+    <div class="proj-hero-bg" id="projHeroBg"></div>
+    <div class="proj-hero-overlay"></div>
+    <div class="proj-hero-content">
+        <div class="proj-breadcrumb rv">
+            <a href="index.html">Startseite</a>
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            <a href="index.html#projekte">Projekte</a>
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            <span>TD Academy</span>
+        </div>
+        <span class="proj-hero-cat rv d1">E-Learning · Bildung</span>
+        <h1 class="proj-hero-title rv d2">TD<br>Academy</h1>
+        <div class="proj-hero-tags rv d3">
+            <span class="proj-hero-tag">Branding</span>
+            <span class="proj-hero-tag">UI/UX Design</span>
+            <span class="proj-hero-tag">Art Direction</span>
+            <span class="proj-hero-tag">Corporate Identity</span>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Intro ─── -->
+<section class="intro-section" aria-label="Projektbeschreibung">
+    <div class="intro-grid">
+
+        <div>
+            <span class="intro-label rv">Das Projekt</span>
+            <h2 class="intro-headline rv d1">
+                Komplexität in<br><em>Klarheit</em> verwandeln
+            </h2>
+            <p class="intro-text rv d2">
+                TD Academy ist eine digitale Plattform, die Forschende aus unterschiedlichsten Disziplinen zusammenführt. Ziel war es, ein ganzheitliches visuelles System zu entwickeln, das komplexe wissenschaftliche Inhalte strukturiert — und gleichzeitig Zusammenarbeit und Vernetzung über Fachgrenzen hinweg ermöglicht.
+            </p>
+            <p class="intro-text rv d3">
+                Die besondere Herausforderung: wissenschaftliche Glaubwürdigkeit und inhaltliche Tiefe mit intuitiver Bedienbarkeit und klarer visueller Kommunikation für ein interdisziplinäres Publikum in Einklang zu bringen.
+            </p>
+        </div>
+
+        <div class="rv d2">
+            <div class="services-box">
+                <p class="services-title">Leistungsumfang</p>
+                <ul class="services-list">
+                    <li class="services-item">Strategie &amp; Konzeption</li>
+                    <li class="services-item">Art Direction</li>
+                    <li class="services-item">UI/UX Design</li>
+                    <li class="services-item">Corporate Identity</li>
+                    <li class="services-item">Print &amp; Digital</li>
+                </ul>
+
+                <p class="deliverables-title">Deliverables</p>
+                <div class="deliverables-tags">
+                    <span class="deliverable-tag">Logo</span>
+                    <span class="deliverable-tag">Typographie</span>
+                    <span class="deliverable-tag">Farbsystem</span>
+                    <span class="deliverable-tag">Design System</span>
+                    <span class="deliverable-tag">UI-Konzept</span>
+                    <span class="deliverable-tag">Print</span>
+                    <span class="deliverable-tag">Digital</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ─── Gallery ─── -->
+<section class="gallery-section" aria-label="Projektbilder">
+    <div class="gallery-wrap">
+        <div class="gallery-grid">
+            <div class="gallery-item full rv">
+                <img src="https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg"
+                     alt="TD Academy — Website Design Übersicht"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item rv d1">
+                <img src="https://www.freund-hase.com/images/td_academy_logo_1920x1080.jpg"
+                     alt="TD Academy — Logo &amp; Corporate Identity"
+                     loading="lazy">
+            </div>
+            <div class="gallery-item rv d2">
+                <img src="https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg"
+                     alt="TD Academy — Website Einzelkomponenten"
+                     loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Challenge & Approach ─── -->
+<section class="challenge-section" aria-label="Herausforderung und Vorgehen">
+    <div class="challenge-grid">
+
+        <div class="challenge-block rv">
+            <div class="challenge-num" aria-hidden="true">01</div>
+            <span class="challenge-label">Herausforderung</span>
+            <h3 class="challenge-title">Wissenschaft trifft Design</h3>
+            <p class="challenge-text">
+                Interdisziplinäre Forschungsplattformen stehen vor einem grundlegenden Widerspruch: Wissenschaftlichkeit erfordert Tiefe und Präzision, gute UX fordert Einfachheit und Intuitivität. Das Design musste beide Welten überzeugend vereinen — ohne die Integrität der Inhalte zu kompromittieren.
+            </p>
+        </div>
+
+        <div class="challenge-block rv d2">
+            <div class="challenge-num" aria-hidden="true">02</div>
+            <span class="challenge-label">Ansatz</span>
+            <h3 class="challenge-title">Modularität als Prinzip</h3>
+            <p class="challenge-text">
+                Komplexität durch Struktur auflösen: Ein flexibles, modulares Designsystem schafft Orientierung und Wiedererkennung. Klare Hierarchien, konsistente Typographie und ein durchdachtes Farbsystem ermöglichen inhaltliche Vielfalt — ohne das Gesamtbild zu fragmentieren.
+            </p>
+        </div>
+
+        <div class="challenge-block rv d1">
+            <div class="challenge-num" aria-hidden="true">03</div>
+            <span class="challenge-label">Barrierefreiheit</span>
+            <h3 class="challenge-title">Zugänglich für alle</h3>
+            <p class="challenge-text">
+                Wissenschaftliche Inhalte sind oft komplex — das Design darf es nicht sein. Alle Komponenten wurden nach WCAG-Richtlinien entwickelt: ausreichende Kontraste, klare Leseflüsse, skalierbare Typographie und tastaturzugängliche Interaktionselemente.
+            </p>
+        </div>
+
+        <div class="challenge-block rv d3">
+            <div class="challenge-num" aria-hidden="true">04</div>
+            <span class="challenge-label">Ergebnis</span>
+            <h3 class="challenge-title">Messbar stärker</h3>
+            <p class="challenge-text">
+                Das neue Design stärkte die Sichtbarkeit und Akzeptanz der Plattform in der wissenschaftlichen Community spürbar. Eine einheitliche visuelle Identität über alle Kanäle — Print, Digital, Präsentation — sorgt für konsistente Markenwirkung.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ─── Stats ─── -->
+<section class="stats-section" aria-label="Projektergebnisse">
+    <div class="stats-wrap">
+        <span class="stats-eyebrow rv">Ergebnisse</span>
+        <div class="stats-grid">
+            <div class="stat-item rv">
+                <div class="stat-num"><em>650</em>+</div>
+                <div class="stat-label">Aktive Nutzer<br>auf der Plattform</div>
+            </div>
+            <div class="stat-item rv d1">
+                <div class="stat-num"><em>5</em></div>
+                <div class="stat-label">Fachbereiche<br>vernetzt</div>
+            </div>
+            <div class="stat-item rv d2">
+                <div class="stat-num"><em>1</em></div>
+                <div class="stat-label">Einheitliche<br>visuelle Identität</div>
+            </div>
+            <div class="stat-item rv d3">
+                <div class="stat-num"><em>∞</em></div>
+                <div class="stat-label">Modulare<br>Erweiterbarkeit</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Full-width Image ─── -->
+<div class="fullimg-section" role="img" aria-label="TD Academy — Detailansicht Design System">
+    <img src="https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg"
+         alt="TD Academy Design System Detailansicht" loading="lazy">
+</div>
+
+<!-- ─── Next Projects ─── -->
+<section class="next-section" aria-label="Weitere Projekte">
+    <div class="next-wrap">
+        <span class="next-label rv">Weitere Arbeiten</span>
+        <a href="index.html#projekte" class="next-link rv d1">
+            <div class="next-link-inner">
+                <span class="next-link-cat">Nachhaltigkeit · Kampagne</span>
+                <span class="next-link-name">Umwelt im Quartier</span>
+            </div>
+            <div class="next-arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </div>
+        </a>
+        <a href="index.html#projekte" class="next-link rv d2">
+            <div class="next-link-inner">
+                <span class="next-link-cat">Tourismus · Branding</span>
+                <span class="next-link-name">AbinsB!</span>
+            </div>
+            <div class="next-arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </div>
+        </a>
+        <a href="index.html#projekte" class="next-link rv d3">
+            <div class="next-link-inner">
+                <span class="next-link-cat">Alle Projekte ansehen</span>
+                <span class="next-link-name">Portfolio →</span>
+            </div>
+            <div class="next-arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ─── Contact CTA ─── -->
+<section class="contact-section" aria-label="Kontakt">
+    <span class="ct-label rv">Kontakt</span>
+    <h2 class="ct-headline rv d1">
+        Bereit für<br>dein <em>nächstes</em><br>Projekt?
+    </h2>
+    <div class="rv d2">
+        <a href="mailto:hallo@freund-hase.com" class="ct-email" aria-label="E-Mail senden">
+            hallo@freund-hase.com
+            <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+        </a>
+    </div>
+    <nav class="ct-social rv d3" aria-label="Social Media">
+        <a href="#" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
+        <a href="#" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+        <a href="#" rel="noopener noreferrer" aria-label="XING">XING</a>
+    </nav>
+</section>
+
+<!-- ─── Footer ─── -->
+<footer role="contentinfo">
+    <div class="foot-inner">
+        <p class="foot-copy">© 2025 Daniel Wieczorek · freund-hase.com · <a href="#">Impressum</a></p>
+        <a href="#" class="foot-top" aria-label="Zurück nach oben">
+            <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            Nach oben
+        </a>
+    </div>
+</footer>
+
+<script>
+    /* ── Custom cursor ── */
+    const cur  = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    let rx = mx, ry = my;
+
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.style.left = mx + 'px';
+        cur.style.top  = my + 'px';
+    });
+
+    (function animRing() {
+        rx += (mx - rx) * 0.11;
+        ry += (my - ry) * 0.11;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button, .gallery-item, .deliverable-tag').forEach(el => {
+        el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+        el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+    });
+
+    /* ── Hero image parallax on load ── */
+    const heroBg = document.getElementById('projHeroBg');
+    window.addEventListener('load', () => {
+        setTimeout(() => heroBg.classList.add('loaded'), 100);
+    });
+
+    /* ── Mobile nav ── */
+    const ham    = document.getElementById('navHam');
+    const mobNav = document.getElementById('mobNav');
+    ham.addEventListener('click', () => {
+        const open = ham.classList.toggle('open');
+        mobNav.classList.toggle('open', open);
+        ham.setAttribute('aria-expanded', open);
+        document.body.style.overflow = open ? 'hidden' : '';
+    });
+    mobNav.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => {
+            ham.classList.remove('open');
+            mobNav.classList.remove('open');
+            ham.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        });
+    });
+
+    /* ── Scroll Reveal ── */
+    const rvObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); rvObs.unobserve(e.target); }
+        });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+</script>
+
+</body>
+</html>

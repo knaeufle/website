@@ -8,165 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* ============================
-           CSS Custom Properties
-           ============================ */
-        :root {
-            --bg:            #0A0A0A;
-            --bg-alt:        #0F0F0F;
-            --surface:       #F5F3EE;
-            --surface-alt:   #EDEAE3;
-            --accent:        #D4177A;
-            --accent-dim:    rgba(212,23,122,0.15);
-            --text-light:    #FAFAF8;
-            --text-muted:    rgba(250,250,248,0.45);
-            --text-dark:     #1A1918;
-            --text-dark-mid: rgba(26,25,24,0.65);
-
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-ui:      'Outfit', system-ui, sans-serif;
-            --font-body:    'Source Sans 3', system-ui, sans-serif;
-
-            --nav-h:    72px;
-            --wrap:     min(92vw, 1340px);
-            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* ============================
-           Reset
-           ============================ */
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        html { scroll-behavior: smooth; font-size: 16px; }
-
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            *, *::before, *::after {
-                animation-duration:       0.01ms !important;
-                animation-iteration-count: 1    !important;
-                transition-duration:      0.01ms !important;
-            }
-        }
-
-        body {
-            font-family: var(--font-body);
-            background: var(--bg);
-            color: var(--text-light);
-            line-height: 1.6;
-            overflow-x: hidden;
-            cursor: none;
-        }
-
-        a { color: inherit; text-decoration: none; }
-        ul { list-style: none; }
-        img { display: block; max-width: 100%; }
-
-        /* ============================
-           Custom Cursor
-           ============================ */
-        .cursor {
-            position: fixed;
-            width: 10px; height: 10px;
-            background: var(--accent);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            transform: translate(-50%,-50%);
-            transition: transform 0.08s, opacity 0.3s;
-        }
-        .cursor-ring {
-            position: fixed;
-            width: 36px; height: 36px;
-            border: 1px solid rgba(212,23,122,0.35);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9998;
-            transform: translate(-50%,-50%);
-            transition: width 0.35s var(--ease-out),
-                        height 0.35s var(--ease-out),
-                        border-color 0.35s,
-                        opacity 0.3s;
-        }
-        .cursor-ring.hover { width: 72px; height: 72px; border-color: rgba(212,23,122,0.2); }
-        @media (hover: none) { .cursor, .cursor-ring { display: none; } body { cursor: auto; } }
-
-        /* ============================
-           Navigation
-           ============================ */
-        .nav {
-            position: fixed; top: 0; left: 0; right: 0;
-            z-index: 100;
-            height: var(--nav-h);
-            display: flex; align-items: center;
-            padding: 0 clamp(20px, 5vw, 60px);
-            transition: background 0.5s var(--ease-out), backdrop-filter 0.5s;
-        }
-        .nav.solid {
-            background: rgba(10,10,10,0.82);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .nav-inner {
-            width: 100%;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .nav-logo {
-            font-family: var(--font-ui);
-            font-size: 1rem; font-weight: 800;
-            letter-spacing: 0.1em;
-            color: var(--text-light);
-        }
-        .nav-logo em { font-style: normal; color: var(--accent); }
-        .nav-links { display: flex; gap: 44px; }
-        .nav-links a {
-            font-family: var(--font-ui);
-            font-size: 0.72rem; font-weight: 600;
-            letter-spacing: 0.18em; text-transform: uppercase;
-            color: var(--text-muted);
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--text-light); }
-
-        /* Hamburger */
-        .nav-ham {
-            display: none; flex-direction: column; gap: 5px;
-            background: none; border: none; cursor: pointer; padding: 4px;
-        }
-        .nav-ham span {
-            display: block; width: 22px; height: 1.5px;
-            background: var(--text-light);
-            transition: transform 0.3s var(--ease-out), opacity 0.3s;
-        }
-        .nav-ham.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-        .nav-ham.open span:nth-child(2) { opacity: 0; }
-        .nav-ham.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .nav-ham   { display: flex; }
-        }
-
-        /* Mobile overlay */
-        .mob-nav {
-            position: fixed; inset: 0; z-index: 99;
-            background: var(--bg);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 48px;
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.4s var(--ease-out);
-        }
-        .mob-nav.open { opacity: 1; pointer-events: all; }
-        .mob-nav a {
-            font-family: var(--font-display);
-            font-size: clamp(2.2rem, 9vw, 4.5rem);
-            font-weight: 300;
-            color: var(--text-light);
-            transition: color 0.2s, letter-spacing 0.3s var(--ease-out);
-        }
-        .mob-nav a:hover { color: var(--accent); letter-spacing: 0.05em; }
-
         /* ============================
            Hero
            ============================ */
@@ -188,13 +31,26 @@
         /* Ambient glow follows cursor */
         .hero-glow {
             position: absolute;
-            width: 700px; height: 700px;
+            width: 820px; height: 820px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(212,23,122,0.07) 0%, transparent 68%);
+            background: radial-gradient(circle,
+                rgba(212,23,122,0.18) 0%,
+                rgba(212,23,122,0.07) 38%,
+                transparent 68%);
             pointer-events: none; z-index: 0;
             transform: translate(-50%,-50%);
-            transition: left 1s var(--ease-out), top 1s var(--ease-out);
+            transition: left 0.9s var(--ease-out), top 0.9s var(--ease-out);
             left: 50%; top: 50%;
+            mix-blend-mode: screen;
+        }
+
+        /* Streak + particle canvas */
+        #heroCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 3;
         }
 
         /* Decorative line elements */
@@ -291,61 +147,34 @@
             transform-origin: left;
             animation: scaleX 1.4s var(--ease-out) 1.6s both;
         }
-        @keyframes scaleX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(22px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(115%); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ============================
-           Shared Section Styles
-           ============================ */
-        .section {
-            padding: clamp(72px, 11vw, 140px) clamp(20px,5vw,60px);
-        }
-        .wrap { max-width: var(--wrap); margin: 0 auto; }
-
-        .s-label {
-            font-family: var(--font-ui);
-            font-size: 0.65rem; font-weight: 700;
-            letter-spacing: 0.28em; text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 14px;
-            display: block;
-        }
-        .s-title {
-            font-family: var(--font-display);
-            font-size: clamp(2rem, 5vw, 4.2rem);
-            font-weight: 700; line-height: 1.05;
-            margin-bottom: clamp(40px, 7vw, 88px);
-        }
-
-        /* Scroll reveal */
-        .rv {
-            opacity: 0; transform: translateY(36px);
-            transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
-        }
-        .rv.in { opacity: 1; transform: none; }
-        .rv.d1 { transition-delay: 0.10s; }
-        .rv.d2 { transition-delay: 0.20s; }
-        .rv.d3 { transition-delay: 0.30s; }
-        .rv.d4 { transition-delay: 0.40s; }
-        .rv.d5 { transition-delay: 0.50s; }
 
         /* ============================
            Projects
            ============================ */
-        .projects-section { background: var(--surface); color: var(--text-dark); }
-        .projects-section .s-title { color: var(--text-dark); }
+        .projects-section {
+            background: var(--bg);
+            padding: clamp(72px,11vw,140px) clamp(20px,5vw,60px);
+        }
+        .projects-section .s-label { color: var(--accent); }
+        .projects-section .s-title { color: var(--text-light); }
+
+        .proj-header {
+            max-width: var(--wrap);
+            margin: 0 auto clamp(32px, 5vw, 56px);
+        }
+        .proj-header-desc {
+            margin-top: 12px;
+            color: var(--text-muted);
+            font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+            max-width: 56ch;
+        }
 
         .proj-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 3px;
+            gap: 4px;
+            max-width: var(--wrap);
+            margin: 0 auto;
         }
         @media (max-width: 700px) { .proj-grid { grid-template-columns: 1fr; } }
 
@@ -353,76 +182,90 @@
             position: relative; overflow: hidden;
             aspect-ratio: 4 / 3;
         }
-        /* Wide cards */
         .proj-card.wide { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
         @media (max-width: 700px) { .proj-card.wide { aspect-ratio: 4 / 3; } }
 
         .proj-bg {
             position: absolute; inset: 0;
-            transition: transform 0.65s var(--ease-out);
+            background-size: cover; background-position: center;
+            transform: scale(1);
+            transition: transform 3s ease-in-out;
+            will-change: transform;
         }
-        .proj-card:hover .proj-bg { transform: scale(1.05); }
+        .proj-card:hover .proj-bg { transform: scale(1.14); }
 
-        /* Real project images */
-        .p1 .proj-bg { background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg'); background-size: cover; background-position: center; }
-        .p2 .proj-bg { background-image: url('https://www.freund-hase.com/images/uiq_website_1920x1080.jpg');          background-size: cover; background-position: center; }
-        .p3 .proj-bg { background-image: url('https://www.freund-hase.com/images/website_abinsb_1920x1080.jpg');        background-size: cover; background-position: center; }
-        .p4 .proj-bg { background-image: url('https://www.freund-hase.com/images/Roll_Up_LAG_1920x1080.jpg');           background-size: cover; background-position: center; }
-        .p5 .proj-bg { background-image: url('https://www.freund-hase.com/images/Brandbook_Mierendorff.jpg');           background-size: cover; background-position: center; }
+        /* Images */
+        .p1 .proj-bg { background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg'); }
+        .p2 .proj-bg { background-image: url('https://www.freund-hase.com/images/uiq_website_1920x1080.jpg'); }
+        .p3 .proj-bg { background-image: url('https://www.freund-hase.com/images/website_abinsb_1920x1080.jpg'); }
+        .p4 .proj-bg { background-image: url('https://www.freund-hase.com/images/Roll_Up_LAG_1920x1080.jpg'); }
+        .p5 .proj-bg { background-image: url('https://www.freund-hase.com/images/Brandbook_Mierendorff.jpg'); }
+        .p6 .proj-bg { background-image: url('https://freund-hase.com/images/logo_spandau_1920x1080.jpg'); }
+        .p7 .proj-bg { background-image: url('https://freund-hase.com/images/poster.jpg'); }
 
         .proj-overlay {
             position: absolute; inset: 0;
-            background: linear-gradient(to top, rgba(8,8,8,0.92) 0%, rgba(8,8,8,0.15) 55%, transparent 100%);
+            background: linear-gradient(to top,
+                rgba(0,0,0,0.90) 0%,
+                rgba(0,0,0,0.30) 48%,
+                transparent 72%);
             display: flex; flex-direction: column; justify-content: flex-end;
-            padding: clamp(18px,3vw,36px);
-            transition: background 0.4s var(--ease-out);
+            padding: 28px 28px 30px;
+            transition: background 0.4s;
         }
         .proj-card:hover .proj-overlay {
-            background: linear-gradient(to top, rgba(8,8,8,0.96) 0%, rgba(8,8,8,0.55) 55%, rgba(8,8,8,0.08) 100%);
+            background: linear-gradient(to top,
+                rgba(0,0,0,0.95) 0%,
+                rgba(0,0,0,0.55) 52%,
+                rgba(0,0,0,0.04) 72%);
         }
 
         .proj-num {
             font-family: var(--font-ui);
-            font-size: 0.6rem; font-weight: 700;
-            letter-spacing: 0.22em; color: var(--accent);
-            margin-bottom: 6px;
-            opacity: 0; transform: translateY(8px);
-            transition: opacity 0.3s var(--ease-out) 0.05s, transform 0.3s var(--ease-out) 0.05s;
+            font-size: 0.58rem; font-weight: 700;
+            letter-spacing: 0.24em; color: var(--accent);
+            margin-bottom: 8px;
         }
-        .proj-card:hover .proj-num { opacity: 1; transform: none; }
-
         .proj-name {
             font-family: var(--font-display);
-            font-size: clamp(1.4rem, 3vw, 2.4rem);
-            font-weight: 400; color: #fff;
-            line-height: 1.1; margin-bottom: 6px;
+            font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+            font-weight: 700; color: #fff;
+            line-height: 1.15; margin-bottom: 5px;
         }
         .proj-cat {
             font-family: var(--font-ui);
-            font-size: 0.7rem; font-weight: 600;
-            letter-spacing: 0.12em; text-transform: uppercase;
+            font-size: 0.66rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
             color: rgba(255,255,255,0.45);
-            transform: translateY(6px);
-            transition: transform 0.3s var(--ease-out), color 0.3s;
+            margin-bottom: 14px;
+            transition: color 0.3s;
         }
-        .proj-card:hover .proj-cat { transform: none; color: var(--accent); }
+        .proj-card:hover .proj-cat { color: var(--accent); }
 
-        .proj-arrow {
-            position: absolute; top: 20px; right: 20px;
-            width: 38px; height: 38px;
-            border: 1px solid rgba(255,255,255,0.18);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; transform: translate(10px,-10px);
-            transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out),
-                        border-color 0.25s, background 0.25s;
+        .proj-desc {
+            font-size: 0.83rem;
+            color: rgba(255,255,255,0.55);
+            line-height: 1.62;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-height: 0; opacity: 0;
+            margin-bottom: 0;
+            transition: max-height 0.38s var(--ease-out), opacity 0.3s, margin-bottom 0.3s;
         }
-        .proj-arrow svg { width: 13px; height: 13px; stroke: #fff; fill: none; }
-        .proj-card:hover .proj-arrow {
-            opacity: 1; transform: none;
-            border-color: var(--accent); background: var(--accent);
+        .proj-card:hover .proj-desc { max-height: 72px; opacity: 1; margin-bottom: 16px; }
+
+        .proj-readmore {
+            display: flex; align-items: center; gap: 7px;
+            font-family: var(--font-ui);
+            font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            transition: color 0.25s, gap 0.3s var(--ease-out);
         }
-        .proj-card:hover .proj-arrow svg { stroke: #000; }
+        .proj-card:hover .proj-readmore { color: #fff; gap: 13px; }
+        .proj-readmore svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; transition: stroke 0.25s; }
 
         /* ============================
            About
@@ -480,6 +323,8 @@
             object-fit: cover; object-position: top center;
             border-radius: 2px;
             box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+            transition: transform 0.12s ease-out;
+            will-change: transform;
         }
         .av-frame {
             position: absolute;
@@ -636,7 +481,7 @@
         }
 
         /* ============================
-           Contact
+           Contact (index — dark theme)
            ============================ */
         .contact-section {
             background: var(--bg);
@@ -652,7 +497,6 @@
             margin-bottom: 52px;
         }
         .ct-headline em { font-style: italic; color: var(--accent); }
-
         .ct-email {
             display: inline-flex; align-items: center; gap: 14px;
             font-family: var(--font-ui);
@@ -666,48 +510,13 @@
         }
         .ct-email:hover { color: var(--accent); gap: 24px; }
         .ct-email svg { width: 14px; height: 14px; stroke: currentColor; fill: none; }
-
-        .ct-social {
-            display: flex; justify-content: center; gap: 36px;
-        }
+        .ct-social { display: flex; justify-content: center; gap: 36px; }
         .ct-social a {
-            font-family: var(--font-ui);
-            font-size: 0.7rem; font-weight: 700;
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
             letter-spacing: 0.18em; text-transform: uppercase;
-            color: var(--text-muted);
-            transition: color 0.2s;
+            color: var(--text-muted); transition: color 0.2s;
         }
         .ct-social a:hover { color: var(--text-light); }
-
-        /* ============================
-           Footer
-           ============================ */
-        footer {
-            background: var(--bg-alt);
-            border-top: 1px solid rgba(255,255,255,0.05);
-            padding: 22px clamp(20px,5vw,60px);
-        }
-        .foot-inner {
-            max-width: var(--wrap); margin: 0 auto;
-            display: flex; align-items: center;
-            justify-content: space-between; gap: 16px;
-            flex-wrap: wrap;
-        }
-        .foot-copy {
-            font-family: var(--font-ui);
-            font-size: 0.68rem; letter-spacing: 0.06em;
-            color: var(--text-muted);
-        }
-        .foot-top {
-            font-family: var(--font-ui);
-            font-size: 0.68rem; font-weight: 700;
-            letter-spacing: 0.14em; text-transform: uppercase;
-            color: var(--text-muted);
-            display: flex; align-items: center; gap: 8px;
-            transition: color 0.2s;
-        }
-        .foot-top:hover { color: var(--accent); }
-        .foot-top svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
     </style>
 </head>
 <body>
@@ -742,6 +551,8 @@
 <section class="hero" id="hero" aria-label="Willkommen">
     <div class="hero-glow"  id="heroGlow"  aria-hidden="true"></div>
     <div class="hero-lines" aria-hidden="true"></div>
+    <canvas id="heroCanvas" aria-hidden="true"></canvas>
+
     <div class="hero-inner">
         <p class="hero-eyebrow">Senior Art Director &amp; UI/UX Designer — Berlin</p>
 
@@ -769,85 +580,96 @@
 </section>
 
 <!-- ─── Projects ─── -->
-<section class="section projects-section" id="projekte">
-    <div class="wrap">
-        <span class="s-label rv">Ausgewählte Arbeiten</span>
-        <h2 class="s-title rv d1">Projekte</h2>
+<section class="projects-section" id="projekte" aria-label="Projekte">
+
+    <div class="proj-header rv">
+        <span class="s-label">Ausgewählte Arbeiten</span>
+        <h2 class="s-title">Projekte</h2>
+        <p class="proj-header-desc">Digitale und analoge Gestaltungslösungen für Kunden aus Healthcare, Tourismus, Nachhaltigkeit, E-Commerce und Wissenschaft.</p>
     </div>
 
     <div class="proj-grid" role="list">
 
-        <article class="proj-card p1 rv" role="listitem" tabindex="0" aria-label="Projekt: TD Academy">
-            <div class="proj-bg" aria-hidden="true"></div>
+        <article class="proj-card p1" role="listitem" tabindex="0" aria-label="TD Academy">
+            <a href="tdacademy.html" class="proj-card-link" aria-label="TD Academy — Projekt ansehen"></a>
+            <div class="proj-bg"></div>
             <div class="proj-overlay">
-                <span class="proj-num" aria-hidden="true">01</span>
+                <span class="proj-num">01</span>
                 <h3 class="proj-name">TD Academy</h3>
                 <p class="proj-cat">E-Learning · Bildung</p>
-            </div>
-            <div class="proj-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
+                <p class="proj-desc">Webdesign und Corporate Identity für eine digitale Lernplattform im Bereich Tanz und Bewegung.</p>
+                <a href="tdacademy.html" class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
             </div>
         </article>
 
-        <article class="proj-card p2 rv d1" role="listitem" tabindex="0" aria-label="Projekt: Umwelt im Quartier">
-            <div class="proj-bg" aria-hidden="true"></div>
+        <article class="proj-card p2" role="listitem" tabindex="0" aria-label="Umwelt im Quartier">
+            <div class="proj-bg"></div>
             <div class="proj-overlay">
-                <span class="proj-num" aria-hidden="true">02</span>
+                <span class="proj-num">02</span>
                 <h3 class="proj-name">Umwelt im Quartier</h3>
                 <p class="proj-cat">Nachhaltigkeit · Kampagne</p>
-            </div>
-            <div class="proj-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
+                <p class="proj-desc">Integrierte Kommunikationskampagne mit Plakaten, Flyern und Website für ein bundesweites Nachhaltigkeitsprojekt.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </article>
 
-        <article class="proj-card p3 rv d2" role="listitem" tabindex="0" aria-label="Projekt: AbinsB!">
-            <div class="proj-bg" aria-hidden="true"></div>
+        <article class="proj-card p3" role="listitem" tabindex="0" aria-label="AbinsB!">
+            <div class="proj-bg"></div>
             <div class="proj-overlay">
-                <span class="proj-num" aria-hidden="true">03</span>
+                <span class="proj-num">03</span>
                 <h3 class="proj-name">AbinsB!</h3>
                 <p class="proj-cat">Tourismus · Branding</p>
-            </div>
-            <div class="proj-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
+                <p class="proj-desc">Markenentwicklung und digitale Kommunikation für ein Berliner Tourismusportal — vom Logo bis zur Instagram-Strategie.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </article>
 
-        <article class="proj-card p4 rv d3" role="listitem" tabindex="0" aria-label="Projekt: LAG Märkische Seen">
-            <div class="proj-bg" aria-hidden="true"></div>
+        <article class="proj-card p4" role="listitem" tabindex="0" aria-label="LAG Märkische Seen">
+            <div class="proj-bg"></div>
             <div class="proj-overlay">
-                <span class="proj-num" aria-hidden="true">04</span>
+                <span class="proj-num">04</span>
                 <h3 class="proj-name">LAG Märkische Seen</h3>
                 <p class="proj-cat">Regionalentwicklung · UI/UX</p>
-            </div>
-            <div class="proj-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
+                <p class="proj-desc">Corporate Design und Messeauftritt für eine LEADER-Aktionsgruppe zur regionalen Entwicklung in Brandenburg.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </article>
 
-        <article class="proj-card p5 wide rv d4" role="listitem" tabindex="0" aria-label="Projekt: Green Mierendorff">
-            <div class="proj-bg" aria-hidden="true"></div>
+        <article class="proj-card p6" role="listitem" tabindex="0" aria-label="Visit Spandau">
+            <div class="proj-bg"></div>
             <div class="proj-overlay">
-                <span class="proj-num" aria-hidden="true">05</span>
+                <span class="proj-num">05</span>
+                <h3 class="proj-name">Visit Spandau</h3>
+                <p class="proj-cat">Tourismus · Stadtmarketing</p>
+                <p class="proj-desc">Stadtmarketing und visuelle Identität für den Berliner Bezirk Spandau — Logoentwicklung und Kommunikationsmittel.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+        </article>
+
+        <article class="proj-card p7" role="listitem" tabindex="0" aria-label="Synverz">
+            <div class="proj-bg"></div>
+            <div class="proj-overlay">
+                <span class="proj-num">06</span>
+                <h3 class="proj-name">Synverz</h3>
+                <p class="proj-cat">Wissenschaft · Corporate Design</p>
+                <p class="proj-desc">Corporate Design und Postergestaltung für ein wissenschaftliches Forschungsprojekt im Bereich Ingenieurwesen.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+            </div>
+        </article>
+
+        <article class="proj-card p5 wide" role="listitem" tabindex="0" aria-label="Green Mierendorff">
+            <div class="proj-bg"></div>
+            <div class="proj-overlay">
+                <span class="proj-num">07</span>
                 <h3 class="proj-name">Green Mierendorff</h3>
                 <p class="proj-cat">Umwelt · Corporate Identity</p>
-            </div>
-            <div class="proj-arrow" aria-hidden="true">
-                <svg viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M7 17L17 7M17 7H7M17 7v10"/>
-                </svg>
+                <p class="proj-desc">Vollständige Corporate Identity für ein nachhaltiges Quartiersentwicklungsprojekt in Berlin — Brandbook, Flyer, Visitenkarten.</p>
+                <span class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
             </div>
         </article>
 
     </div>
+
 </section>
 
 <!-- ─── About ─── -->
@@ -1051,6 +873,128 @@
         el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     });
 
+    /* ── Hero streak + particles ── */
+    (function () {
+        const canvas  = document.getElementById('heroCanvas');
+        const heroEl  = document.getElementById('hero');
+        if (!canvas || !heroEl) return;
+        const ctx = canvas.getContext('2d');
+
+        let cw, ch;
+        function resize() {
+            const r = heroEl.getBoundingClientRect();
+            cw = canvas.width  = r.width;
+            ch = canvas.height = r.height;
+        }
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
+
+        const trail     = [];   // {x,y}
+        const particles = [];   // {x,y,vx,vy,life,decay,size,hue}
+        const TRAIL_MAX = 48;
+        let inHero = false, lx = -999, ly = -999, hueBase = 320;
+
+        document.addEventListener('mousemove', e => {
+            const r = heroEl.getBoundingClientRect();
+            if (e.clientY >= r.top && e.clientY <= r.bottom) {
+                inHero = true;
+                lx = e.clientX - r.left;
+                ly = e.clientY - r.top;
+                trail.push({ x: lx, y: ly });
+                if (trail.length > TRAIL_MAX) trail.shift();
+
+                /* spawn 1-2 particles per move */
+                if (Math.random() < 0.65) {
+                    particles.push({
+                        x:     lx + (Math.random() - 0.5) * 5,
+                        y:     ly + (Math.random() - 0.5) * 5,
+                        vx:    (Math.random() - 0.5) * 0.9,
+                        vy:    -(0.2 + Math.random() * 0.7),
+                        life:  1,
+                        decay: 0.006 + Math.random() * 0.006,
+                        size:  0.8 + Math.random() * 1.8,
+                        hue:   hueBase + (Math.random() - 0.5) * 18
+                    });
+                }
+            } else {
+                inHero = false;
+            }
+        });
+
+        function draw() {
+            /* slowly shift hue each frame */
+            hueBase = (hueBase + 0.18) % 360;
+
+            /* sync hero-glow color with current hue */
+            const glowEl = document.getElementById('heroGlow');
+            if (glowEl) {
+                glowEl.style.background =
+                    `radial-gradient(circle,
+                        hsla(${hueBase},100%,48%,0.18) 0%,
+                        hsla(${hueBase},100%,48%,0.07) 38%,
+                        transparent 68%)`;
+            }
+
+            ctx.clearRect(0, 0, cw, ch);
+
+            /* streak trail */
+            if (trail.length > 1) {
+                for (let i = 1; i < trail.length; i++) {
+                    const t  = i / trail.length;
+                    const a  = t * t * 0.82;
+                    const lw = t * 2.8;
+                    /* hue shifts slightly along the trail length */
+                    const trailHue = (hueBase - (1 - t) * 30 + 360) % 360;
+                    ctx.beginPath();
+                    ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+                    ctx.lineTo(trail[i].x, trail[i].y);
+                    ctx.strokeStyle = `hsla(${trailHue},100%,55%,${a})`;
+                    ctx.lineWidth   = lw;
+                    ctx.lineCap     = 'round';
+                    ctx.stroke();
+                }
+
+                /* bright glowing head */
+                const h   = trail[trail.length - 1];
+                const g   = ctx.createRadialGradient(h.x, h.y, 0, h.x, h.y, 10);
+                g.addColorStop(0,   `hsla(${(hueBase + 20) % 360},100%,82%,0.95)`);
+                g.addColorStop(0.4, `hsla(${hueBase},100%,55%,0.55)`);
+                g.addColorStop(1,   `hsla(${hueBase},100%,40%,0)`);
+                ctx.beginPath();
+                ctx.arc(h.x, h.y, 10, 0, Math.PI * 2);
+                ctx.fillStyle = g;
+                ctx.fill();
+            }
+
+            /* fade trail when cursor left hero */
+            if (!inHero && trail.length) trail.shift();
+
+            /* particles */
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x  += p.vx;
+                p.y  += p.vy;
+                p.vy += 0.018;          /* gentle gravity */
+                p.life -= p.decay;
+                if (p.life <= 0) { particles.splice(i, 1); continue; }
+
+                const a   = p.life * 0.85;
+                const r   = p.size * (0.8 + p.life * 1.2);
+                const pg  = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r * 2);
+                pg.addColorStop(0,   `hsla(${p.hue},100%,75%,${a})`);
+                pg.addColorStop(0.5, `hsla(${p.hue},100%,55%,${a * 0.5})`);
+                pg.addColorStop(1,   `hsla(${p.hue},100%,40%,0)`);
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, r * 2, 0, Math.PI * 2);
+                ctx.fillStyle = pg;
+                ctx.fill();
+            }
+
+            requestAnimationFrame(draw);
+        }
+        draw();
+    })();
+
     /* ── Nav scroll ── */
     const nav = document.getElementById('nav');
     const onScroll = () => nav.classList.toggle('solid', scrollY > 60);
@@ -1081,7 +1025,7 @@
     const observer = new IntersectionObserver(entries => {
         entries.forEach(e => {
             if (e.isIntersecting) {
-                e.target.classList.add('in');
+                e.target.classList.add('visible');
                 observer.unobserve(e.target);
             }
         });
@@ -1183,15 +1127,43 @@
         init();
     })();
 
-    /* ── Keyboard nav for project cards ── */
-    document.querySelectorAll('.proj-card').forEach(card => {
-        card.addEventListener('keydown', e => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                card.click();
-            }
+    /* ── About Portrait Parallax ── */
+    (function () {
+        const section  = document.getElementById('ueber-mich');
+        const portrait = section && section.querySelector('.about-portrait');
+        if (!portrait) return;
+
+        let targetX = 0, targetY = 0, curX = 0, curY = 0, rafId = null;
+        const strength = 10; // max px shift
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function tick() {
+            curX = lerp(curX, targetX, 0.06);
+            curY = lerp(curY, targetY, 0.06);
+            portrait.style.transform = `translate(${curX}px, ${curY}px) scale(1.04)`;
+            rafId = requestAnimationFrame(tick);
+        }
+
+        section.addEventListener('mouseenter', () => {
+            rafId = requestAnimationFrame(tick);
         });
-    });
+
+        section.addEventListener('mousemove', e => {
+            const r = section.getBoundingClientRect();
+            const nx = (e.clientX - r.left) / r.width  - 0.5; // -0.5 … 0.5
+            const ny = (e.clientY - r.top)  / r.height - 0.5;
+            targetX = nx * strength;
+            targetY = ny * strength;
+        });
+
+        section.addEventListener('mouseleave', () => {
+            targetX = 0; targetY = 0;
+            // let lerp settle back to center, then stop
+            setTimeout(() => { cancelAnimationFrame(rafId); portrait.style.transform = ''; }, 700);
+        });
+    })();
+
 </script>
 
 </body>
