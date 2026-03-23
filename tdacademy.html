@@ -21,12 +21,15 @@
         }
         .proj-hero-bg {
             position: absolute; inset: 0;
-            background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg');
-            background-size: cover; background-position: center;
             transform: scale(1.04);
             transition: transform 8s ease-out;
         }
         .proj-hero-bg.loaded { transform: scale(1); }
+        .proj-hero-bg video {
+            width: 100%; height: 100%;
+            object-fit: cover; object-position: center;
+            display: block;
+        }
         .proj-hero-overlay {
             position: absolute; inset: 0;
             background: linear-gradient(to top,
@@ -63,7 +66,7 @@
             margin-bottom: 24px;
         }
         .proj-hero-tags {
-            display: flex; flex-wrap: wrap; gap: 10px;
+            display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
         }
         .proj-hero-tag {
             font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500;
@@ -72,6 +75,21 @@
             border: 1px solid rgba(255,255,255,0.12);
             padding: 6px 14px; border-radius: 2px;
         }
+        .sound-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text-light);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            padding: 6px 16px; border-radius: 2px;
+            cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            margin-left: 6px;
+        }
+        .sound-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.35); }
+        .sound-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
+        .sound-btn.muted svg.icon-sound { display: none; }
+        .sound-btn:not(.muted) svg.icon-muted { display: none; }
 
         /* ============================
            Intro Section
@@ -386,7 +404,13 @@
 
 <!-- ─── Project Hero ─── -->
 <section class="proj-hero" aria-label="TD Academy">
-    <div class="proj-hero-bg" id="projHeroBg"></div>
+    <div class="proj-hero-bg" id="projHeroBg">
+        <video autoplay muted loop playsinline
+               poster="https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg"
+               aria-hidden="true">
+            <source src="https://freund-hase.com/downloads/td_academy_intro.mp4" type="video/mp4">
+        </video>
+    </div>
     <div class="proj-hero-overlay"></div>
     <div class="proj-hero-content">
         <div class="proj-breadcrumb rv">
@@ -403,6 +427,17 @@
             <span class="proj-hero-tag">UI/UX Design</span>
             <span class="proj-hero-tag">Art Direction</span>
             <span class="proj-hero-tag">Corporate Identity</span>
+            <button class="sound-btn muted" id="soundBtn" aria-label="Ton einschalten">
+                <!-- sound on -->
+                <svg class="icon-sound" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                </svg>
+                <!-- muted -->
+                <svg class="icon-muted" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6"/>
+                </svg>
+                <span id="soundLabel">Ton an</span>
+            </button>
         </div>
     </div>
 </section>
@@ -638,10 +673,29 @@
         el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
     });
 
-    /* ── Hero image parallax on load ── */
-    const heroBg = document.getElementById('projHeroBg');
+    /* ── Hero video load + sound toggle ── */
+    const heroBg   = document.getElementById('projHeroBg');
+    const heroVideo = heroBg.querySelector('video');
+    const soundBtn  = document.getElementById('soundBtn');
+    const soundLabel = document.getElementById('soundLabel');
+
     window.addEventListener('load', () => {
         setTimeout(() => heroBg.classList.add('loaded'), 100);
+    });
+
+    soundBtn.addEventListener('click', () => {
+        if (heroVideo.muted) {
+            heroVideo.muted = false;
+            heroVideo.play();
+            soundBtn.classList.remove('muted');
+            soundLabel.textContent = 'Ton aus';
+            soundBtn.setAttribute('aria-label', 'Ton ausschalten');
+        } else {
+            heroVideo.muted = true;
+            soundBtn.classList.add('muted');
+            soundLabel.textContent = 'Ton an';
+            soundBtn.setAttribute('aria-label', 'Ton einschalten');
+        }
     });
 
     /* ── Mobile nav ── */
