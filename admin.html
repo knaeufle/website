@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS — freund-hase.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #0A0A0A;
+            --bg-alt:  #111111;
+            --bg-card: #171717;
+            --border:  rgba(255,255,255,0.07);
+            --accent:  #D4177A;
+            --accent-dim: rgba(212,23,122,0.12);
+            --text:    #FAFAF8;
+            --muted:   rgba(250,250,248,0.45);
+            --success: #22c55e;
+            --font-ui: 'Outfit', system-ui, sans-serif;
+            --font-d:  'Playfair Display', Georgia, serif;
+            --sidebar: 220px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 16px; }
+        body { font-family: var(--font-ui); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        a { color: inherit; text-decoration: none; }
+        input, textarea, select { font-family: var(--font-ui); }
+
+        /* ── Login Screen ── */
+        .login-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .login-screen.hidden { display: none; }
+        .login-box {
+            width: 100%; max-width: 380px;
+            padding: 48px 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        .login-logo {
+            font-family: var(--font-d); font-size: 1.4rem; font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .login-logo em { font-style: normal; color: var(--accent); }
+        .login-sub {
+            font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 36px;
+        }
+        .login-field { margin-bottom: 20px; }
+        .login-field label {
+            display: block; font-size: 0.7rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 8px;
+        }
+        .login-field input {
+            width: 100%; padding: 11px 14px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 2px;
+            color: var(--text); font-size: 0.9rem;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        .login-field input:focus { border-color: var(--accent); }
+        .login-error {
+            font-size: 0.75rem; color: #f87171;
+            margin-bottom: 16px; min-height: 18px;
+        }
+        .login-btn {
+            width: 100%; padding: 12px;
+            background: var(--accent); color: #fff;
+            border: none; border-radius: 2px; cursor: pointer;
+            font-family: var(--font-ui); font-size: 0.78rem; font-weight: 700;
+            letter-spacing: 0.12em; text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+        .login-btn:hover { opacity: 0.85; }
+        .login-btn-ghost {
+            width: 100%; padding: 11px; background: transparent;
+            color: var(--muted); border: 1px solid var(--border); border-radius: 2px;
+            cursor: pointer; font-family: var(--font-ui); font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; margin-top: 10px;
+        }
+        .login-btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+        .login-forgot {
+            text-align: right; font-size: 0.7rem; color: var(--muted);
+            cursor: pointer; transition: color 0.2s; margin-top: -12px; margin-bottom: 16px; display: block;
+        }
+        .login-forgot:hover { color: var(--accent); }
+        .login-divider {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--muted); margin: 20px 0;
+        }
+        .login-divider::before, .login-divider::after { content:''; flex:1; height:1px; background: var(--border); }
+        .login-reset { display: none; }
+        .login-reset.show { display: block; }
+        .login-success { font-size: 0.75rem; color: var(--success); margin-bottom: 16px; min-height: 18px; }
+
+        /* ── Top Bar ── */
+        .topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: 56px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .topbar-logo {
+            font-family: var(--font-d); font-size: 1.1rem; font-weight: 700;
+            color: var(--text); display: flex; align-items: center; gap: 10px;
+        }
+        .topbar-logo em { font-style: normal; color: var(--accent); }
+        .topbar-badge {
+            font-family: var(--font-ui); font-size: 0.6rem; font-weight: 700;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            background: var(--accent-dim); color: var(--accent);
+            padding: 3px 8px; border-radius: 2px; border: 1px solid rgba(212,23,122,0.25);
+        }
+        .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+        .btn {
+            font-family: var(--font-ui); font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 8px 18px; border-radius: 2px; border: none; cursor: pointer;
+            transition: all 0.2s; display: inline-flex; align-items: center; gap: 7px;
+        }
+        .btn-ghost {
+            background: transparent; color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+        .btn-accent { background: var(--accent); color: #fff; }
+        .btn-accent:hover { background: #b8146a; }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── Layout ── */
+        .layout {
+            display: flex;
+            padding-top: 56px;
+            min-height: 100vh;
+        }
+
+        /* ── Sidebar ── */
+        .sidebar {
+            width: var(--sidebar); flex-shrink: 0;
+            position: fixed; top: 56px; left: 0; bottom: 0;
+            background: var(--bg-alt);
+            border-right: 1px solid var(--border);
+            display: flex; flex-direction: column;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        .sidebar-section {
+            font-size: 0.6rem; font-weight: 700; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--muted);
+            padding: 0 20px 8px;
+        }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 20px; cursor: pointer;
+            font-size: 0.85rem; font-weight: 500; color: var(--muted);
+            transition: color 0.15s, background 0.15s;
+            border-left: 2px solid transparent;
+        }
+        .sidebar-item:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .sidebar-item.active { color: var(--accent); border-left-color: var(--accent); background: var(--accent-dim); }
+        .sidebar-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+        .sidebar-divider { height: 1px; background: var(--border); margin: 12px 0; }
+        .sidebar-footer {
+            margin-top: auto; padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+        .sidebar-footer a {
+            font-size: 0.75rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--muted); display: flex; align-items: center; gap: 8px;
+            transition: color 0.2s;
+        }
+        .sidebar-footer a:hover { color: var(--accent); }
+        .sidebar-footer svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── Main ── */
+        .main {
+            flex: 1;
+            margin-left: var(--sidebar);
+            padding: 36px 40px;
+            max-width: 900px;
+        }
+
+        /* ── Panel ── */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        .panel-title {
+            font-family: var(--font-d); font-size: 1.8rem; font-weight: 700;
+            color: var(--text); margin-bottom: 6px;
+        }
+        .panel-sub {
+            font-size: 0.83rem; color: var(--muted); margin-bottom: 32px;
+        }
+
+        /* ── Form Card ── */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .card-title {
+            font-size: 0.68rem; font-weight: 700; letter-spacing: 0.18em;
+            text-transform: uppercase; color: var(--accent);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+        }
+        .card-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .field { margin-bottom: 18px; }
+        .field:last-child { margin-bottom: 0; }
+        .field-label {
+            font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+            color: var(--muted); margin-bottom: 7px; display: block;
+        }
+        .field-hint { font-size: 0.68rem; color: rgba(250,250,248,0.3); margin-top: 5px; }
+
+        input[type="text"], input[type="email"], input[type="url"], textarea {
+            width: 100%; background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border); border-radius: 2px;
+            color: var(--text); padding: 10px 14px;
+            font-size: 0.88rem; font-family: var(--font-ui);
+            transition: border-color 0.2s;
+            outline: none;
+        }
+        input[type="text"]:focus, input[type="email"]:focus,
+        input[type="url"]:focus, textarea:focus {
+            border-color: var(--accent);
+        }
+        textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+        /* ── Image field with preview ── */
+        .img-field { display: flex; gap: 12px; align-items: flex-start; }
+        .img-field input { flex: 1; }
+        .img-preview {
+            width: 72px; height: 52px; border-radius: 2px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            object-fit: cover; flex-shrink: 0;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+        }
+        .img-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .img-preview-placeholder { font-size: 0.6rem; color: var(--muted); text-align: center; padding: 4px; }
+
+        /* ── Project cards in CMS ── */
+        .proj-list { display: flex; flex-direction: column; gap: 12px; }
+        .proj-item {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .proj-item-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px; cursor: pointer;
+            transition: background 0.15s;
+        }
+        .proj-item-header:hover { background: rgba(255,255,255,0.03); }
+        .proj-item-meta { display: flex; align-items: center; gap: 12px; }
+        .proj-item-num {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
+            color: var(--accent); width: 24px;
+        }
+        .proj-item-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+        .proj-item-cat { font-size: 0.72rem; color: var(--muted); }
+        .proj-item-toggle {
+            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+        }
+        .proj-item-toggle svg { width: 14px; height: 14px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
+        .proj-item.open .proj-item-toggle svg { transform: rotate(180deg); }
+        .proj-item-body { display: none; padding: 0 18px 20px; border-top: 1px solid var(--border); }
+        .proj-item.open .proj-item-body { display: block; padding-top: 20px; }
+
+        /* ── Toast ── */
+        .toast {
+            position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+            background: #1a1a1a; border: 1px solid var(--border);
+            border-radius: 3px; padding: 14px 20px;
+            font-size: 0.82rem; font-weight: 500;
+            display: flex; align-items: center; gap: 10px;
+            transform: translateY(80px); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s;
+            pointer-events: none;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+        .toast-dot.error { background: #ef4444; }
+
+        /* ── Status bar ── */
+        .statusbar {
+            position: fixed; bottom: 0; left: var(--sidebar); right: 0;
+            height: 36px; background: var(--bg-alt);
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 40px;
+            font-size: 0.68rem; color: var(--muted);
+        }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; margin-right: 6px; }
+        .status-dot.dirty { background: var(--accent); }
+    </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+    <div class="login-box">
+        <div class="login-logo">freund·<em>hase</em></div>
+        <p class="login-sub">CMS — Anmelden</p>
+        <!-- Normal login -->
+        <form id="loginForm" autocomplete="off">
+            <div class="login-field">
+                <label for="loginPw">Passwort</label>
+                <input type="password" id="loginPw" placeholder="••••••••" autofocus>
+            </div>
+            <span class="login-forgot" id="btnForgot">Passwort vergessen?</span>
+            <p class="login-error" id="loginError"></p>
+            <button type="submit" class="login-btn">Anmelden</button>
+        </form>
+
+        <!-- Reset code entry (shown after "Passwort vergessen") -->
+        <div class="login-reset" id="resetSection">
+            <div class="login-divider">Code per E-Mail erhalten</div>
+            <form id="resetCodeForm" autocomplete="off">
+                <div class="login-field">
+                    <label for="resetCode">Reset-Code</label>
+                    <input type="text" id="resetCode" placeholder="z.B. A3K9QX" maxlength="8" style="letter-spacing:0.2em;text-transform:uppercase;">
+                </div>
+                <p class="login-error" id="resetCodeError"></p>
+                <p class="login-success" id="resetCodeSuccess"></p>
+                <button type="submit" class="login-btn">Code bestätigen</button>
+                <button type="button" class="login-btn-ghost" id="btnCancelReset">Zurück zum Login</button>
+            </form>
+        </div>
+
+        <!-- New password form (shown after valid code) -->
+        <div class="login-reset" id="newPwSection">
+            <div class="login-divider">Neues Passwort setzen</div>
+            <form id="newPwForm" autocomplete="off">
+                <div class="login-field">
+                    <label for="newPw1">Neues Passwort</label>
+                    <input type="password" id="newPw1" placeholder="Mindestens 6 Zeichen">
+                </div>
+                <div class="login-field">
+                    <label for="newPw2">Passwort bestätigen</label>
+                    <input type="password" id="newPw2" placeholder="Passwort wiederholen">
+                </div>
+                <p class="login-error" id="newPwError"></p>
+                <button type="submit" class="login-btn">Passwort speichern</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Top Bar -->
+<header class="topbar">
+    <div class="topbar-logo">
+        freund<em>·</em>hase
+        <span class="topbar-badge">CMS</span>
+    </div>
+    <div class="topbar-actions">
+        <button class="btn btn-ghost" id="btnReset" title="Alle Inhalte auf Standardwerte zurücksetzen">
+            <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-4"/></svg>
+            Zurücksetzen
+        </button>
+        <button class="btn btn-ghost" id="btnExport">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export JSON
+        </button>
+        <button class="btn btn-accent" id="btnSave">
+            <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Speichern
+        </button>
+        <button class="btn btn-ghost" id="btnLogout" title="Abmelden" style="padding:8px 12px;">
+            <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+    </div>
+</header>
+
+<div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-section">Inhalt</div>
+        <div class="sidebar-item active" data-panel="hero">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            Hero
+        </div>
+        <div class="sidebar-item" data-panel="projekte">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            Projekte
+        </div>
+        <div class="sidebar-item" data-panel="about">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Über mich
+        </div>
+        <div class="sidebar-item" data-panel="kontakt">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Kontakt
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Unterseiten</div>
+        <div class="sidebar-item" data-panel="tda">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            TD Academy
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Tools</div>
+        <div class="sidebar-item" data-panel="import">
+            <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Import JSON
+        </div>
+        <div class="sidebar-item" data-panel="einstellungen">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Einstellungen
+        </div>
+
+        <div class="sidebar-footer">
+            <a href="index.html" target="_blank">
+                <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Website ansehen
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- ── Hero Panel ── -->
+        <section class="panel active" id="panel-hero">
+            <h1 class="panel-title">Hero-Bereich</h1>
+            <p class="panel-sub">Der erste Eindruck — Name, Rolle und Tagline des Portfolios.</p>
+
+            <div class="card">
+                <div class="card-title">Name</div>
+                <div class="field">
+                    <label class="field-label">Vorname</label>
+                    <input type="text" id="h-firstName" placeholder="Daniel">
+                </div>
+                <div class="field">
+                    <label class="field-label">Nachname</label>
+                    <input type="text" id="h-lastName" placeholder="Wieczorek">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Texte</div>
+                <div class="field">
+                    <label class="field-label">Eyebrow (Zeile über dem Namen)</label>
+                    <input type="text" id="h-eyebrow" placeholder="Senior Art Director & UI/UX Designer — Berlin">
+                </div>
+                <div class="field">
+                    <label class="field-label">Rolle / Services</label>
+                    <textarea id="h-role" rows="2" placeholder="Branding · UI/UX · Art Direction"></textarea>
+                    <span class="field-hint">Zeilenumbruch mit Enter für neue Zeile</span>
+                </div>
+                <div class="field">
+                    <label class="field-label">Tagline</label>
+                    <textarea id="h-tagline" rows="2" placeholder="Digitale und analoge Gestaltungslösungen..."></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Projekte Panel ── -->
+        <section class="panel" id="panel-projekte">
+            <h1 class="panel-title">Projekte</h1>
+            <p class="panel-sub">Alle Portfolio-Projekte — Titel, Kategorie, Beschreibung und Vorschaubild.</p>
+
+            <div class="proj-list" id="projList"></div>
+        </section>
+
+        <!-- ── About Panel ── -->
+        <section class="panel" id="panel-about">
+            <h1 class="panel-title">Über mich</h1>
+            <p class="panel-sub">Persönlicher Bereich mit Portrait und Biografie.</p>
+
+            <div class="card">
+                <div class="card-title">Portrait</div>
+                <div class="field">
+                    <label class="field-label">Bild-URL</label>
+                    <div class="img-field">
+                        <input type="url" id="a-portrait" placeholder="https://...">
+                        <div class="img-preview" id="a-portrait-preview">
+                            <span class="img-preview-placeholder">Kein Bild</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Jahre Erfahrung (Badge)</label>
+                    <input type="text" id="a-years" placeholder="10+">
+                </div>
+                <div class="field">
+                    <label class="field-label">Badge Beschriftung</label>
+                    <input type="text" id="a-yearsLabel" placeholder="Jahre Erfahrung">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Texte</div>
+                <div class="field">
+                    <label class="field-label">Überschrift</label>
+                    <input type="text" id="a-headline" placeholder="Gestaltung, die bewegt und verbindet.">
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 1</label>
+                    <textarea id="a-bio1" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 2</label>
+                    <textarea id="a-bio2" rows="4"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Kontakt Panel ── -->
+        <section class="panel" id="panel-kontakt">
+            <h1 class="panel-title">Kontakt</h1>
+            <p class="panel-sub">E-Mail-Adresse und Social Links.</p>
+
+            <div class="card">
+                <div class="card-title">E-Mail</div>
+                <div class="field">
+                    <label class="field-label">E-Mail-Adresse</label>
+                    <input type="email" id="c-email" placeholder="hallo@freund-hase.com">
+                </div>
+            </div>
+        </section>
+
+        <!-- ── TD Academy Panel ── -->
+        <section class="panel" id="panel-tda">
+            <h1 class="panel-title">TD Academy</h1>
+            <p class="panel-sub">Inhalte der Unterseite tdacademy.html bearbeiten.</p>
+
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field">
+                    <label class="field-label">Hintergrundbild (URL)</label>
+                    <div class="img-field">
+                        <input type="url" id="tda-heroImg" placeholder="https://...">
+                        <div class="img-preview" id="tda-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" id="tda-heroCat" placeholder="E-Learning · Bildung">
+                </div>
+                <div class="field">
+                    <label class="field-label">Projekttitel</label>
+                    <input type="text" id="tda-heroTitle" placeholder="TD Academy">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field">
+                    <label class="field-label">Überschrift</label>
+                    <input type="text" id="tda-introHeadline" placeholder="Komplexität in Klarheit verwandeln">
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 1</label>
+                    <textarea id="tda-introText1" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 2</label>
+                    <textarea id="tda-introText2" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label>
+                    <textarea id="tda-services" rows="6" placeholder="Strategie & Konzeption&#10;Art Direction&#10;UI/UX Design"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field">
+                    <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
+                    <div class="img-field">
+                        <input type="url" id="tda-gal1" placeholder="https://...">
+                        <div class="img-preview" id="tda-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 2</label>
+                    <div class="img-field">
+                        <input type="url" id="tda-gal2" placeholder="https://...">
+                        <div class="img-preview" id="tda-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 3</label>
+                    <div class="img-field">
+                        <input type="url" id="tda-gal3" placeholder="https://...">
+                        <div class="img-preview" id="tda-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
+                    <div class="img-field">
+                        <input type="url" id="tda-galFull" placeholder="https://...">
+                        <div class="img-preview" id="tda-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div>
+                <div id="tdaChallengeList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Statistiken (4 Werte)</div>
+                <div id="tdaStatList"></div>
+            </div>
+        </section>
+
+        <!-- ── Einstellungen Panel ── -->
+        <section class="panel" id="panel-einstellungen">
+            <h1 class="panel-title">Einstellungen</h1>
+            <p class="panel-sub">Passwort und Kontowiederherstellung.</p>
+
+            <div class="card">
+                <div class="card-title">Passwort ändern</div>
+                <div class="field">
+                    <label class="field-label">Aktuelles Passwort</label>
+                    <input type="password" id="s-pwCurrent" placeholder="Aktuelles Passwort">
+                </div>
+                <div class="field">
+                    <label class="field-label">Neues Passwort</label>
+                    <input type="password" id="s-pwNew" placeholder="Mindestens 6 Zeichen">
+                </div>
+                <div class="field">
+                    <label class="field-label">Neues Passwort bestätigen</label>
+                    <input type="password" id="s-pwConfirm" placeholder="Passwort wiederholen">
+                </div>
+                <button class="btn btn-accent" id="btnChangePw" style="margin-top:4px;">Passwort ändern</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Passwort zurücksetzen per E-Mail</div>
+                <p style="font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+                    Bei vergessenem Passwort wird ein Reset-Code an diese E-Mail-Adresse gesendet. Die E-Mail-Adresse wird nur lokal gespeichert und niemals übertragen.
+                </p>
+                <div class="field">
+                    <label class="field-label">Recovery E-Mail</label>
+                    <input type="email" id="s-recoveryEmail" placeholder="deine@email.de">
+                </div>
+                <button class="btn btn-ghost" id="btnSaveRecovery" style="margin-top:4px;">E-Mail speichern</button>
+            </div>
+        </section>
+
+        <!-- ── Import Panel ── -->
+        <section class="panel" id="panel-import">
+            <h1 class="panel-title">JSON importieren</h1>
+            <p class="panel-sub">Füge einen zuvor exportierten JSON-Inhalt ein um ihn wiederherzustellen.</p>
+
+            <div class="card">
+                <div class="card-title">JSON einfügen</div>
+                <div class="field">
+                    <label class="field-label">Inhalt</label>
+                    <textarea id="importJson" rows="16" placeholder='{"hero":{...},"projects":[...]}'
+                        style="font-family:monospace;font-size:0.78rem;"></textarea>
+                </div>
+                <button class="btn btn-accent" id="btnImport" style="margin-top:4px;">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    Importieren &amp; Speichern
+                </button>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- Status Bar -->
+<div class="statusbar">
+    <div><span class="status-dot" id="statusDot"></span><span id="statusText">Gespeichert</span></div>
+    <div id="statusTime"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+    <div class="toast-dot" id="toastDot"></div>
+    <span id="toastMsg"></span>
+</div>
+
+<script>
+const LS_KEY = 'freundhase_cms';
+
+/* ── Defaults ── */
+const DEFAULTS = {
+    hero: {
+        eyebrow:   'Senior Art Director & UI/UX Designer — Berlin',
+        firstName: 'Daniel',
+        lastName:  'Wieczorek',
+        role:      'Branding · UI/UX · Art Direction\nHealthcare · Nachhaltigkeit · E-Commerce',
+        tagline:   'Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.'
+    },
+    projects: [
+        { id:'p1', num:'01', name:'TD Academy',          cat:'E-Learning · Bildung',          desc:'Webdesign und Corporate Identity für eine digitale Lernplattform im Bereich Tanz und Bewegung.',                                                                  image:'https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg',  link:'tdacademy.html' },
+        { id:'p2', num:'02', name:'Umwelt im Quartier',  cat:'Nachhaltigkeit · Kampagne',      desc:'Integrierte Kommunikationskampagne mit Plakaten, Flyern und Website für ein bundesweites Nachhaltigkeitsprojekt.',                                             image:'https://www.freund-hase.com/images/uiq_website_1920x1080.jpg',         link:'' },
+        { id:'p3', num:'03', name:'AbinsB!',             cat:'Tourismus · Branding',           desc:'Markenentwicklung und digitale Kommunikation für ein Berliner Tourismusportal — vom Logo bis zur Instagram-Strategie.',                                         image:'https://www.freund-hase.com/images/website_abinsb_1920x1080.jpg',      link:'' },
+        { id:'p4', num:'04', name:'LAG Märkische Seen',  cat:'Regionalentwicklung · UI/UX',    desc:'Corporate Design und Messeauftritt für eine LEADER-Aktionsgruppe zur regionalen Entwicklung in Brandenburg.',                                                  image:'https://www.freund-hase.com/images/Roll_Up_LAG_1920x1080.jpg',         link:'' },
+        { id:'p6', num:'05', name:'Visit Spandau',       cat:'Tourismus · Stadtmarketing',     desc:'Stadtmarketing und visuelle Identität für den Berliner Bezirk Spandau — Logoentwicklung und Kommunikationsmittel.',                                            image:'https://freund-hase.com/images/logo_spandau_1920x1080.jpg',            link:'' },
+        { id:'p7', num:'06', name:'Synverz',             cat:'Wissenschaft · Corporate Design',desc:'Corporate Design und Postergestaltung für ein wissenschaftliches Forschungsprojekt im Bereich Ingenieurwesen.',                                                 image:'https://freund-hase.com/images/poster.jpg',                            link:'' },
+        { id:'p5', num:'07', name:'Green Mierendorff',   cat:'Umwelt · Corporate Identity',    desc:'Vollständige Corporate Identity für ein nachhaltiges Quartiersentwicklungsprojekt in Berlin — Brandbook, Flyer, Visitenkarten.',                               image:'https://www.freund-hase.com/images/Brandbook_Mierendorff.jpg',         link:'' }
+    ],
+    about: {
+        headline:   'Gestaltung, die bewegt und verbindet.',
+        bio1:       'Als Senior Art Director verbinde ich strategisches Denken mit ästhetischem Gespür. Meine Arbeit entsteht an der Schnittstelle von Funktion und Form — mit dem Ziel, Erlebnisse zu schaffen, die zugänglich, wirkungsvoll und nachhaltig sind.',
+        bio2:       'Über die Jahre habe ich für Kunden aus Healthcare, Tourismus, Nachhaltigkeit, E-Commerce und Wissenschaft gearbeitet — immer mit dem Fokus auf nutzerzentriertes, barrierefreies Design.',
+        portrait:   'https://www.freund-hase.com/images/freund-hase.png',
+        years:      '10+',
+        yearsLabel: 'Jahre Erfahrung'
+    },
+    contact: { email: 'hallo@freund-hase.com' }
+};
+
+let data = {};
+let dirty = false;
+
+/* ── Load ── */
+function load() {
+    try {
+        const raw = localStorage.getItem(LS_KEY);
+        data = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS));
+    } catch(e) {
+        data = JSON.parse(JSON.stringify(DEFAULTS));
+    }
+    populateForms();
+}
+
+/* ── Save ── */
+function save() {
+    collectForms();
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    saveTDA();
+    dirty = false;
+    updateStatus('Gespeichert', false);
+    showToast('Änderungen gespeichert', false);
+}
+
+/* ── Populate forms from data ── */
+function populateForms() {
+    const h = data.hero || {};
+    set('h-firstName', h.firstName);
+    set('h-lastName',  h.lastName);
+    set('h-eyebrow',   h.eyebrow);
+    set('h-role',      h.role);
+    set('h-tagline',   h.tagline);
+
+    const a = data.about || {};
+    set('a-headline',   a.headline);
+    set('a-bio1',       a.bio1);
+    set('a-bio2',       a.bio2);
+    set('a-portrait',   a.portrait);
+    set('a-years',      a.years);
+    set('a-yearsLabel', a.yearsLabel);
+    updateImgPreview('a-portrait', 'a-portrait-preview');
+
+    const c = data.contact || {};
+    set('c-email', c.email);
+
+    buildProjectList();
+}
+
+function set(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined) el.value = val;
+}
+
+/* ── Collect forms into data ── */
+function collectForms() {
+    data.hero = {
+        eyebrow:   get('h-eyebrow'),
+        firstName: get('h-firstName'),
+        lastName:  get('h-lastName'),
+        role:      get('h-role'),
+        tagline:   get('h-tagline')
+    };
+    data.about = {
+        headline:   get('a-headline'),
+        bio1:       get('a-bio1'),
+        bio2:       get('a-bio2'),
+        portrait:   get('a-portrait'),
+        years:      get('a-years'),
+        yearsLabel: get('a-yearsLabel')
+    };
+    data.contact = { email: get('c-email') };
+
+    // Collect projects from rendered list
+    const items = document.querySelectorAll('.proj-item');
+    data.projects = Array.from(items).map(item => {
+        const id = item.dataset.id;
+        return {
+            id,
+            num:   item.querySelector('[data-f="num"]').value,
+            name:  item.querySelector('[data-f="name"]').value,
+            cat:   item.querySelector('[data-f="cat"]').value,
+            desc:  item.querySelector('[data-f="desc"]').value,
+            image: item.querySelector('[data-f="image"]').value,
+            link:  item.querySelector('[data-f="link"]').value
+        };
+    });
+}
+
+function get(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+}
+
+/* ── Build project list ── */
+function buildProjectList() {
+    const list = document.getElementById('projList');
+    const projects = data.projects || DEFAULTS.projects;
+    list.innerHTML = '';
+    projects.forEach((p, i) => {
+        const item = document.createElement('div');
+        item.className = 'proj-item';
+        item.dataset.id = p.id;
+        item.innerHTML = `
+            <div class="proj-item-header">
+                <div class="proj-item-meta">
+                    <span class="proj-item-num">${p.num}</span>
+                    <div>
+                        <div class="proj-item-name">${p.name}</div>
+                        <div class="proj-item-cat">${p.cat}</div>
+                    </div>
+                </div>
+                <div class="proj-item-toggle">
+                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+            </div>
+            <div class="proj-item-body">
+                <div class="field" style="display:grid;grid-template-columns:1fr 3fr;gap:12px;">
+                    <div>
+                        <label class="field-label">Nr.</label>
+                        <input type="text" data-f="num" value="${e(p.num)}">
+                    </div>
+                    <div>
+                        <label class="field-label">Projektname</label>
+                        <input type="text" data-f="name" value="${e(p.name)}">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" data-f="cat" value="${e(p.cat)}">
+                </div>
+                <div class="field">
+                    <label class="field-label">Beschreibung</label>
+                    <textarea data-f="desc" rows="3">${e(p.desc)}</textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Vorschaubild URL</label>
+                    <div class="img-field">
+                        <input type="url" data-f="image" value="${e(p.image)}"
+                            oninput="updateImgPreviewInline(this)">
+                        <div class="img-preview">
+                            ${p.image ? `<img src="${e(p.image)}" alt="">` : '<span class="img-preview-placeholder">Kein Bild</span>'}
+                        </div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Link zur Unterseite (optional)</label>
+                    <input type="text" data-f="link" value="${e(p.link)}" placeholder="z.B. tdacademy.html">
+                </div>
+            </div>`;
+
+        // Toggle accordion
+        item.querySelector('.proj-item-header').addEventListener('click', () => {
+            item.classList.toggle('open');
+        });
+
+        // Track changes for dirty state
+        item.querySelectorAll('input, textarea').forEach(el => {
+            el.addEventListener('input', markDirty);
+        });
+
+        // Also update header name/cat live
+        item.querySelector('[data-f="name"]').addEventListener('input', function() {
+            item.querySelector('.proj-item-name').textContent = this.value;
+        });
+        item.querySelector('[data-f="cat"]').addEventListener('input', function() {
+            item.querySelector('.proj-item-cat').textContent = this.value;
+        });
+        item.querySelector('[data-f="num"]').addEventListener('input', function() {
+            item.querySelector('.proj-item-num').textContent = this.value;
+        });
+
+        list.appendChild(item);
+    });
+}
+
+function e(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── Image preview ── */
+function updateImgPreview(inputId, previewId) {
+    const url = document.getElementById(inputId)?.value;
+    const box = document.getElementById(previewId);
+    if (!box) return;
+    if (url) {
+        box.innerHTML = `<img src="${url}" alt="" onerror="this.parentElement.innerHTML='<span class=\\'img-preview-placeholder\\'>Fehler</span>'">`;
+    } else {
+        box.innerHTML = '<span class="img-preview-placeholder">Kein Bild</span>';
+    }
+}
+
+function updateImgPreviewInline(input) {
+    const box = input.closest('.img-field').querySelector('.img-preview');
+    const url = input.value;
+    if (url) {
+        box.innerHTML = `<img src="${url}" alt="" onerror="this.parentElement.innerHTML='<span class=\\'img-preview-placeholder\\'>Fehler</span>'">`;
+    } else {
+        box.innerHTML = '<span class="img-preview-placeholder">Kein Bild</span>';
+    }
+    markDirty();
+}
+
+/* ── Toast ── */
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    const dot   = document.getElementById('toastDot');
+    document.getElementById('toastMsg').textContent = msg;
+    dot.className = 'toast-dot' + (isError ? ' error' : '');
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+/* ── Status ── */
+function updateStatus(txt, isDirty) {
+    document.getElementById('statusText').textContent = txt;
+    document.getElementById('statusDot').className = 'status-dot' + (isDirty ? ' dirty' : '');
+    const now = new Date();
+    document.getElementById('statusTime').textContent =
+        isDirty ? 'Nicht gespeichert' :
+        `Zuletzt gespeichert: ${now.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'})}`;
+}
+
+function markDirty() {
+    dirty = true;
+    updateStatus('Nicht gespeichert', true);
+}
+
+/* ── Navigation ── */
+document.querySelectorAll('.sidebar-item[data-panel]').forEach(item => {
+    item.addEventListener('click', () => {
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        item.classList.add('active');
+        document.getElementById('panel-' + item.dataset.panel)?.classList.add('active');
+    });
+});
+
+/* ── Track changes ── */
+document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', markDirty);
+});
+document.getElementById('a-portrait').addEventListener('input', function() {
+    updateImgPreview('a-portrait', 'a-portrait-preview');
+    markDirty();
+});
+
+/* ── Save button ── */
+document.getElementById('btnSave').addEventListener('click', save);
+
+/* ── Keyboard shortcut Ctrl+S ── */
+document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        save();
+    }
+});
+
+/* ── Reset ── */
+document.getElementById('btnReset').addEventListener('click', () => {
+    if (!confirm('Alle Inhalte auf die Standardwerte zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+    data = JSON.parse(JSON.stringify(DEFAULTS));
+    save();
+    populateForms();
+    showToast('Auf Standardwerte zurückgesetzt');
+});
+
+/* ── Export JSON ── */
+document.getElementById('btnExport').addEventListener('click', () => {
+    collectForms();
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = 'freundhase-content.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('JSON exportiert');
+});
+
+/* ── Import JSON ── */
+document.getElementById('btnImport').addEventListener('click', () => {
+    const raw = document.getElementById('importJson').value.trim();
+    if (!raw) return showToast('Kein JSON eingefügt', true);
+    try {
+        const imported = JSON.parse(raw);
+        data = imported;
+        localStorage.setItem(LS_KEY, JSON.stringify(data));
+        populateForms();
+        dirty = false;
+        updateStatus('Importiert & gespeichert', false);
+        showToast('Import erfolgreich');
+        document.getElementById('importJson').value = '';
+    } catch(err) {
+        showToast('Ungültiges JSON: ' + err.message, true);
+    }
+});
+
+/* ── Warn on unsaved changes ── */
+window.addEventListener('beforeunload', e => {
+    if (dirty) e.preventDefault();
+});
+
+/* ── Auth ── */
+const AUTH_KEY      = 'freundhase_auth';
+const PW_HASH_KEY   = 'freundhase_pw_hash';
+const RESET_KEY     = 'freundhase_reset';
+const SETTINGS_KEY  = 'freundhase_settings';
+// Default hash for "nase123!" — once the user changes the password, this is no longer used
+const DEFAULT_HASH  = '01e258efce84646f4876ad22a326fa5c8e34c73be26a37d75776b75a9d2d6ad1';
+
+function getStoredHash() { return localStorage.getItem(PW_HASH_KEY) || DEFAULT_HASH; }
+function getSettings()   { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(e) { return {}; } }
+function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+
+async function hashPassword(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+
+function isAuthenticated() { return sessionStorage.getItem(AUTH_KEY) === '1'; }
+
+function showApp() { document.getElementById('loginScreen').classList.add('hidden'); }
+
+function showLoginScreen() {
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginPw').value = '';
+    document.getElementById('loginPw').focus();
+    // hide reset sections
+    document.getElementById('resetSection').classList.remove('show');
+    document.getElementById('newPwSection').classList.remove('show');
+    document.getElementById('loginForm').style.display = '';
+}
+
+/* Normal login */
+document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const pw   = document.getElementById('loginPw').value;
+    const hash = await hashPassword(pw);
+    if (hash === getStoredHash()) {
+        sessionStorage.setItem(AUTH_KEY, '1');
+        showApp();
+    } else {
+        document.getElementById('loginError').textContent = 'Falsches Passwort.';
+        document.getElementById('loginPw').value = '';
+        document.getElementById('loginPw').focus();
+    }
+});
+
+/* Forgot password */
+document.getElementById('btnForgot').addEventListener('click', () => {
+    const settings = getSettings();
+    const email    = settings.recoveryEmail;
+    if (!email) {
+        document.getElementById('loginError').textContent =
+            'Keine Recovery-E-Mail gespeichert. Bitte wende dich direkt an den Administrator.';
+        return;
+    }
+    // Generate 6-char alphanumeric code
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const code  = Array.from(crypto.getRandomValues(new Uint8Array(6)))
+                       .map(b => chars[b % chars.length]).join('');
+    const expiry = Date.now() + 15 * 60 * 1000; // 15 minutes
+    localStorage.setItem(RESET_KEY, JSON.stringify({ code, expiry }));
+
+    const subject = encodeURIComponent('CMS Passwort zurücksetzen — freund-hase.com');
+    const body    = encodeURIComponent(
+        'Dein Reset-Code für das CMS:\n\n' + code +
+        '\n\nDieser Code ist 15 Minuten gültig.\n\nGib den Code auf der Login-Seite unter "Passwort vergessen" ein.'
+    );
+    window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('loginError').textContent = '';
+    document.getElementById('resetSection').classList.add('show');
+    document.getElementById('resetCodeSuccess').textContent =
+        'Reset-Code wurde an ' + email + ' gesendet (E-Mail-App öffnet sich).';
+});
+
+document.getElementById('btnCancelReset').addEventListener('click', () => {
+    document.getElementById('resetSection').classList.remove('show');
+    document.getElementById('newPwSection').classList.remove('show');
+    document.getElementById('loginForm').style.display = '';
+});
+
+/* Code verification */
+document.getElementById('resetCodeForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const input = document.getElementById('resetCode').value.trim().toUpperCase();
+    let stored;
+    try { stored = JSON.parse(localStorage.getItem(RESET_KEY)); } catch(err) {}
+    if (!stored || Date.now() > stored.expiry) {
+        document.getElementById('resetCodeError').textContent = 'Code abgelaufen. Bitte neu anfordern.';
+        return;
+    }
+    if (input !== stored.code) {
+        document.getElementById('resetCodeError').textContent = 'Falscher Code.';
+        return;
+    }
+    document.getElementById('resetSection').classList.remove('show');
+    document.getElementById('newPwSection').classList.add('show');
+});
+
+/* Set new password after reset */
+document.getElementById('newPwForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const p1 = document.getElementById('newPw1').value;
+    const p2 = document.getElementById('newPw2').value;
+    if (p1.length < 6)   { document.getElementById('newPwError').textContent = 'Mindestens 6 Zeichen.'; return; }
+    if (p1 !== p2)        { document.getElementById('newPwError').textContent = 'Passwörter stimmen nicht überein.'; return; }
+    const hash = await hashPassword(p1);
+    localStorage.setItem(PW_HASH_KEY, hash);
+    localStorage.removeItem(RESET_KEY);
+    showLoginScreen();
+    document.getElementById('loginError').textContent = '';
+    // Show brief success via toast
+    showToast('Passwort erfolgreich geändert');
+    sessionStorage.setItem(AUTH_KEY, '1');
+    showApp();
+});
+
+document.getElementById('btnLogout').addEventListener('click', () => {
+    sessionStorage.removeItem(AUTH_KEY);
+    showLoginScreen();
+});
+
+/* ── Settings Panel ── */
+function populateSettings() {
+    const s = getSettings();
+    document.getElementById('s-recoveryEmail').value = s.recoveryEmail || '';
+}
+
+document.getElementById('btnSaveRecovery').addEventListener('click', () => {
+    const email = document.getElementById('s-recoveryEmail').value.trim();
+    const s = getSettings();
+    s.recoveryEmail = email;
+    saveSettings(s);
+    showToast('Recovery-E-Mail gespeichert');
+});
+
+document.getElementById('btnChangePw').addEventListener('click', async () => {
+    const cur  = document.getElementById('s-pwCurrent').value;
+    const nw   = document.getElementById('s-pwNew').value;
+    const conf = document.getElementById('s-pwConfirm').value;
+    const curHash = await hashPassword(cur);
+    if (curHash !== getStoredHash()) { showToast('Aktuelles Passwort ist falsch.', true); return; }
+    if (nw.length < 6)               { showToast('Neues Passwort: mindestens 6 Zeichen.', true); return; }
+    if (nw !== conf)                  { showToast('Passwörter stimmen nicht überein.', true); return; }
+    const newHash = await hashPassword(nw);
+    localStorage.setItem(PW_HASH_KEY, newHash);
+    document.getElementById('s-pwCurrent').value = '';
+    document.getElementById('s-pwNew').value     = '';
+    document.getElementById('s-pwConfirm').value = '';
+    showToast('Passwort erfolgreich geändert');
+});
+
+/* ── TD Academy Data ── */
+const LS_TDA = 'freundhase_cms_tda';
+
+const DEFAULTS_TDA = {
+    hero: {
+        image: 'https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg',
+        cat:   'E-Learning · Bildung',
+        title: 'TD Academy'
+    },
+    intro: {
+        headline: 'Komplexität in Klarheit verwandeln',
+        text1: 'TD Academy ist eine digitale Plattform, die Forschende aus unterschiedlichsten Disziplinen zusammenführt. Ziel war es, ein ganzheitliches visuelles System zu entwickeln, das komplexe wissenschaftliche Inhalte strukturiert — und gleichzeitig Zusammenarbeit und Vernetzung über Fachgrenzen hinweg ermöglicht.',
+        text2: 'Die besondere Herausforderung: wissenschaftliche Glaubwürdigkeit und inhaltliche Tiefe mit intuitiver Bedienbarkeit und klarer visueller Kommunikation für ein interdisziplinäres Publikum in Einklang zu bringen.',
+        services: 'Strategie & Konzeption\nArt Direction\nUI/UX Design\nCorporate Identity\nPrint & Digital'
+    },
+    gallery: {
+        img1:    'https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg',
+        img2:    'https://www.freund-hase.com/images/td_academy_logo_1920x1080.jpg',
+        img3:    'https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg',
+        imgFull: 'https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Wissenschaft trifft Design',   text:'Interdisziplinäre Forschungsplattformen stehen vor einem grundlegenden Widerspruch: Wissenschaftlichkeit erfordert Tiefe und Präzision, gute UX fordert Einfachheit und Intuitivität. Das Design musste beide Welten überzeugend vereinen — ohne die Integrität der Inhalte zu kompromittieren.' },
+        { num:'02', label:'Ansatz',          title:'Modularität als Prinzip',       text:'Komplexität durch Struktur auflösen: Ein flexibles, modulares Designsystem schafft Orientierung und Wiedererkennung. Klare Hierarchien, konsistente Typographie und ein durchdachtes Farbsystem ermöglichen inhaltliche Vielfalt — ohne das Gesamtbild zu fragmentieren.' },
+        { num:'03', label:'Barrierefreiheit',title:'Zugänglich für alle',           text:'Wissenschaftliche Inhalte sind oft komplex — das Design darf es nicht sein. Alle Komponenten wurden nach WCAG-Richtlinien entwickelt: ausreichende Kontraste, klare Leseflüsse, skalierbare Typographie und tastaturzugängliche Interaktionselemente.' },
+        { num:'04', label:'Ergebnis',        title:'Messbar stärker',               text:'Das neue Design stärkte die Sichtbarkeit und Akzeptanz der Plattform in der wissenschaftlichen Community spürbar. Eine einheitliche visuelle Identität über alle Kanäle — Print, Digital, Präsentation — sorgt für konsistente Markenwirkung.' }
+    ],
+    stats: [
+        { num:'650+', label:'Aktive Nutzer\nauf der Plattform' },
+        { num:'5',    label:'Fachbereiche\nvernetzt' },
+        { num:'1',    label:'Einheitliche\nvisuelle Identität' },
+        { num:'∞',    label:'Modulare\nErweiterbarkeit' }
+    ]
+};
+
+let dataTDA = {};
+
+function loadTDA() {
+    try {
+        const raw = localStorage.getItem(LS_TDA);
+        dataTDA = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS_TDA));
+    } catch(e) { dataTDA = JSON.parse(JSON.stringify(DEFAULTS_TDA)); }
+    populateTDAForms();
+}
+
+function saveTDA() {
+    collectTDAForms();
+    localStorage.setItem(LS_TDA, JSON.stringify(dataTDA));
+}
+
+function populateTDAForms() {
+    const h = dataTDA.hero || {};
+    setVal('tda-heroImg',      h.image  || '');
+    setVal('tda-heroCat',      h.cat    || '');
+    setVal('tda-heroTitle',    h.title  || '');
+    updateImgPreview('tda-heroImg', 'tda-heroImg-preview');
+
+    const intro = dataTDA.intro || {};
+    setVal('tda-introHeadline', intro.headline || '');
+    setVal('tda-introText1',    intro.text1    || '');
+    setVal('tda-introText2',    intro.text2    || '');
+    setVal('tda-services',      intro.services || '');
+
+    const g = dataTDA.gallery || {};
+    setVal('tda-gal1',    g.img1    || ''); updateImgPreview('tda-gal1',    'tda-gal1-preview');
+    setVal('tda-gal2',    g.img2    || ''); updateImgPreview('tda-gal2',    'tda-gal2-preview');
+    setVal('tda-gal3',    g.img3    || ''); updateImgPreview('tda-gal3',    'tda-gal3-preview');
+    setVal('tda-galFull', g.imgFull || ''); updateImgPreview('tda-galFull', 'tda-galFull-preview');
+
+    buildChallengeList();
+    buildStatList();
+}
+
+function setVal(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+}
+
+function buildChallengeList() {
+    const container = document.getElementById('tdaChallengeList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataTDA.challenges || []).forEach((c, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;">
+                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${c.num} — ${c.label}</div>
+                <div class="field">
+                    <label class="field-label">Titel</label>
+                    <input type="text" id="tda-ch${i}-title" value="${escHtml(c.title)}">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Text</label>
+                    <textarea id="tda-ch${i}-text" rows="4">${escHtml(c.text)}</textarea>
+                </div>
+            </div>`);
+    });
+}
+
+function buildStatList() {
+    const container = document.getElementById('tdaStatList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataTDA.stats || []).forEach((s, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;">
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Wert ${i+1}</label>
+                    <input type="text" id="tda-st${i}-num" value="${escHtml(s.num)}">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Beschriftung</label>
+                    <input type="text" id="tda-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}">
+                </div>
+            </div>`);
+    });
+}
+
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function collectTDAForms() {
+    dataTDA.hero = {
+        image: document.getElementById('tda-heroImg')?.value    || '',
+        cat:   document.getElementById('tda-heroCat')?.value    || '',
+        title: document.getElementById('tda-heroTitle')?.value  || ''
+    };
+    dataTDA.intro = {
+        headline: document.getElementById('tda-introHeadline')?.value || '',
+        text1:    document.getElementById('tda-introText1')?.value    || '',
+        text2:    document.getElementById('tda-introText2')?.value    || '',
+        services: document.getElementById('tda-services')?.value      || ''
+    };
+    dataTDA.gallery = {
+        img1:    document.getElementById('tda-gal1')?.value    || '',
+        img2:    document.getElementById('tda-gal2')?.value    || '',
+        img3:    document.getElementById('tda-gal3')?.value    || '',
+        imgFull: document.getElementById('tda-galFull')?.value || ''
+    };
+    (dataTDA.challenges || []).forEach((c, i) => {
+        c.title = document.getElementById(`tda-ch${i}-title`)?.value || c.title;
+        c.text  = document.getElementById(`tda-ch${i}-text`)?.value  || c.text;
+    });
+    (dataTDA.stats || []).forEach((s, i) => {
+        s.num   = document.getElementById(`tda-st${i}-num`)?.value || s.num;
+        s.label = document.getElementById(`tda-st${i}-lbl`)?.value || s.label;
+    });
+}
+
+// Hook TDA image previews
+['tda-heroImg','tda-gal1','tda-gal2','tda-gal3','tda-galFull'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', function() {
+        updateImgPreview(id, id + '-preview');
+        markDirty();
+    });
+});
+
+/* ── Init ── */
+load();
+loadTDA();
+populateSettings();
+updateStatus('Gespeichert', false);
+if (isAuthenticated()) { showApp(); }
+</script>
+</body>
+</html>

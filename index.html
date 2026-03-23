@@ -1164,6 +1164,105 @@
         });
     })();
 
+    /* ── CMS Content Loader ── */
+    (function () {
+        const LS_KEY = 'freundhase_cms';
+        let cms;
+        try { cms = JSON.parse(localStorage.getItem(LS_KEY)); } catch(e) {}
+        if (!cms) return;
+
+        /* Hero */
+        const h = cms.hero;
+        if (h) {
+            const eyebrow = document.querySelector('.hero-eyebrow');
+            if (eyebrow && h.eyebrow) eyebrow.textContent = h.eyebrow;
+
+            const lines = document.querySelectorAll('.hero-name .line span');
+            if (lines[0] && h.firstName) lines[0].textContent = h.firstName;
+            if (lines[1] && h.lastName)  lines[1].textContent = h.lastName;
+
+            const heroName = document.querySelector('.hero-name');
+            if (heroName && h.firstName && h.lastName) {
+                heroName.setAttribute('aria-label', h.firstName + ' ' + h.lastName);
+            }
+
+            const role = document.querySelector('.hero-role');
+            if (role && h.role) role.innerHTML = h.role.replace(/\n/g, '<br>');
+
+            const tagline = document.querySelector('.hero-tagline');
+            if (tagline && h.tagline) tagline.textContent = h.tagline;
+        }
+
+        /* Projects */
+        if (Array.isArray(cms.projects)) {
+            cms.projects.forEach(p => {
+                const card = document.querySelector('.proj-card.' + p.id);
+                if (!card) return;
+
+                const nameEl = card.querySelector('.proj-name');
+                const catEl  = card.querySelector('.proj-cat');
+                const descEl = card.querySelector('.proj-desc');
+                const numEl  = card.querySelector('.proj-num');
+                const bg     = card.querySelector('.proj-bg');
+
+                if (nameEl && p.name) nameEl.textContent = p.name;
+                if (catEl  && p.cat)  catEl.textContent  = p.cat;
+                if (descEl && p.desc) descEl.textContent = p.desc;
+                if (numEl  && p.num)  numEl.textContent  = p.num;
+                if (bg     && p.image) bg.style.backgroundImage = 'url(' + p.image + ')';
+
+                /* Update aria-label on card */
+                if (p.name) card.setAttribute('aria-label', p.name);
+
+                /* Update links if present */
+                if (p.link) {
+                    const cardLink = card.querySelector('.proj-card-link');
+                    const readmore = card.querySelector('a.proj-readmore');
+                    if (cardLink) cardLink.href = p.link;
+                    if (readmore) readmore.href = p.link;
+                }
+            });
+        }
+
+        /* About */
+        const a = cms.about;
+        if (a) {
+            const headlineEl = document.querySelector('.about-headline');
+            if (headlineEl && a.headline) {
+                /* Preserve <em> wrapping on the italic word if present */
+                headlineEl.innerHTML = a.headline;
+            }
+
+            const bios = document.querySelectorAll('.about-p');
+            if (bios[0] && a.bio1) bios[0].textContent = a.bio1;
+            if (bios[1] && a.bio2) bios[1].textContent = a.bio2;
+
+            const portrait = document.querySelector('.about-portrait');
+            if (portrait && a.portrait) portrait.src = a.portrait;
+
+            const avNum = document.querySelector('.av-num');
+            const avLbl = document.querySelector('.av-lbl');
+            if (avNum && a.years)      avNum.textContent = a.years;
+            if (avLbl && a.yearsLabel) avLbl.textContent = a.yearsLabel;
+        }
+
+        /* Contact */
+        const c = cms.contact;
+        if (c && c.email) {
+            const ctEmail = document.querySelector('.ct-email');
+            if (ctEmail) {
+                ctEmail.href = 'mailto:' + c.email;
+                /* Replace text node (first child) keeping the SVG arrow */
+                const textNode = ctEmail.firstChild;
+                if (textNode && textNode.nodeType === 3) {
+                    textNode.textContent = c.email + ' ';
+                } else {
+                    ctEmail.prepend(document.createTextNode(c.email + ' '));
+                }
+            }
+        }
+    })();
+
 </script>
 
 </body>

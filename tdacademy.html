@@ -669,6 +669,78 @@
         });
     }, { threshold: 0.12 });
     document.querySelectorAll('.rv').forEach(el => rvObs.observe(el));
+
+    /* ── CMS Content Loader (TDA) ── */
+    (function () {
+        let cms;
+        try { cms = JSON.parse(localStorage.getItem('freundhase_cms_tda')); } catch(e) {}
+        if (!cms) return;
+
+        /* Hero */
+        const h = cms.hero;
+        if (h) {
+            const bg = document.getElementById('projHeroBg');
+            if (bg && h.image) bg.style.backgroundImage = 'url(' + h.image + ')';
+            const cat = document.querySelector('.proj-hero-cat');
+            if (cat && h.cat) cat.textContent = h.cat;
+            const title = document.querySelector('.proj-hero-title');
+            if (title && h.title) title.innerHTML = h.title.replace(/\n/g, '<br>');
+        }
+
+        /* Intro */
+        const intro = cms.intro;
+        if (intro) {
+            const headline = document.querySelector('.intro-headline');
+            if (headline && intro.headline) headline.innerHTML = intro.headline;
+            const texts = document.querySelectorAll('.intro-text');
+            if (texts[0] && intro.text1) texts[0].textContent = intro.text1;
+            if (texts[1] && intro.text2) texts[1].textContent = intro.text2;
+            if (intro.services) {
+                const list = document.querySelector('.services-list');
+                if (list) {
+                    list.innerHTML = intro.services.split('\n')
+                        .filter(s => s.trim())
+                        .map(s => `<li class="services-item">${s.trim()}</li>`)
+                        .join('');
+                }
+            }
+        }
+
+        /* Gallery */
+        const g = cms.gallery;
+        if (g) {
+            const imgs = document.querySelectorAll('.gallery-item img');
+            if (imgs[0] && g.img1)    imgs[0].src = g.img1;
+            if (imgs[1] && g.img2)    imgs[1].src = g.img2;
+            if (imgs[2] && g.img3)    imgs[2].src = g.img3;
+            const fullImg = document.querySelector('.fullimg-section img');
+            if (fullImg && g.imgFull) fullImg.src = g.imgFull;
+        }
+
+        /* Challenges */
+        if (Array.isArray(cms.challenges)) {
+            const blocks = document.querySelectorAll('.challenge-block');
+            cms.challenges.forEach((c, i) => {
+                if (!blocks[i]) return;
+                const t = blocks[i].querySelector('.challenge-title');
+                const p = blocks[i].querySelector('.challenge-text');
+                if (t && c.title) t.textContent = c.title;
+                if (p && c.text)  p.textContent = c.text;
+            });
+        }
+
+        /* Stats */
+        if (Array.isArray(cms.stats)) {
+            const items = document.querySelectorAll('.stat-item');
+            cms.stats.forEach((s, i) => {
+                if (!items[i]) return;
+                const numEl = items[i].querySelector('.stat-num');
+                const lblEl = items[i].querySelector('.stat-label');
+                if (numEl && s.num)   numEl.innerHTML = '<em>' + s.num + '</em>';
+                if (lblEl && s.label) lblEl.innerHTML = s.label.replace(/\n/g, '<br>');
+            });
+        }
+    })();
 </script>
 
 </body>
