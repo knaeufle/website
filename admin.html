@@ -1515,6 +1515,8 @@ function buildProjectList() {
             const projs = data.projects || DEFAULTS.projects;
             const moved = projs.splice(fromIdx, 1)[0];
             projs.splice(toIdx, 0, moved);
+            // Renumber by new position
+            projs.forEach((p, idx) => { p.num = String(idx + 1).padStart(2, '0'); });
             data.projects = projs;
             buildProjectList();
             markDirty();

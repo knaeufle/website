@@ -183,6 +183,8 @@
         }
         .proj-card.wide { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
         @media (max-width: 700px) { .proj-card.wide { aspect-ratio: 4 / 3; } }
+        .proj-card.solo { grid-column: 1 / -1; aspect-ratio: 16 / 6; }
+        @media (max-width: 700px) { .proj-card.solo { aspect-ratio: 4 / 3; } }
 
         .proj-bg {
             position: absolute; inset: 0;
@@ -675,7 +677,7 @@
             </div>
         </article>
 
-        <article class="proj-card p5 wide" role="listitem" tabindex="0" aria-label="Green Mierendorff">
+        <article class="proj-card p5" role="listitem" tabindex="0" aria-label="Green Mierendorff">
             <a href="gm.html" class="proj-card-link" aria-label="Green Mierendorff — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
@@ -1246,6 +1248,7 @@
                 /* Reorder: move card to match saved position */
                 if (grid) grid.appendChild(card);
             });
+            adjustProjGrid();
         }
 
         /* About */
@@ -1293,6 +1296,16 @@
             }
         }
     })();
+
+    /* ── Project grid: auto full-width for last card when count is odd ── */
+    function adjustProjGrid() {
+        const cards = Array.from(document.querySelectorAll('.proj-grid .proj-card'));
+        cards.forEach(c => c.classList.remove('solo'));
+        if (cards.length % 2 !== 0) {
+            cards[cards.length - 1].classList.add('solo');
+        }
+    }
+    adjustProjGrid();
 
 </script>
 
