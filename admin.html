@@ -301,33 +301,50 @@
             overflow: hidden;
         }
         .proj-item-header {
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: center; gap: 0;
             padding: 14px 18px; cursor: pointer;
             transition: background 0.15s;
         }
         .proj-item-header:hover { background: rgba(255,255,255,0.03); }
-        .proj-item-meta { display: flex; align-items: center; gap: 12px; }
+        .proj-drag-handle {
+            cursor: grab; padding: 0; margin-right: 10px; color: rgba(255,255,255,0.25);
+            display: flex; align-items: center; flex-shrink: 0;
+        }
+        .proj-drag-handle:active { cursor: grabbing; }
+        .proj-drag-handle svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; pointer-events: none; }
         .proj-item-num {
             font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em;
-            color: var(--accent); width: 24px;
+            color: var(--accent); width: 28px; flex-shrink: 0; margin-right: 14px;
         }
-        .proj-item-name { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+        .proj-item-meta { flex: 1; min-width: 0; }
+        .proj-item-name { font-size: 0.9rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .proj-item-cat { font-size: 0.72rem; color: var(--muted); }
+        .proj-item-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; margin-left: 12px; }
+        .proj-item-del {
+            background: none; border: none; cursor: pointer; padding: 4px;
+            color: rgba(255,255,255,0.2); line-height: 1; transition: color 0.2s;
+        }
+        .proj-item-del:hover { color: #ef4444; }
+        .proj-item-del svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; pointer-events: none; }
         .proj-item-toggle {
-            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+            width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
         }
         .proj-item-toggle svg { width: 14px; height: 14px; stroke: var(--muted); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
         .proj-item.open .proj-item-toggle svg { transform: rotate(180deg); }
         .proj-item-body { display: none; padding: 0 18px 20px; border-top: 1px solid var(--border); }
         .proj-item.open .proj-item-body { display: block; padding-top: 20px; }
-        .proj-drag-handle {
-            cursor: grab; padding: 0 10px 0 0; color: var(--muted);
-            display: flex; align-items: center; flex-shrink: 0;
-        }
-        .proj-drag-handle:active { cursor: grabbing; }
-        .proj-drag-handle svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; pointer-events: none; }
         .proj-item.dragging { opacity: 0.4; }
         .proj-item.drag-over { border-color: var(--accent); background: var(--accent-dim); }
+        .proj-add-btn {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: 100%; padding: 14px; margin-top: 10px;
+            background: none; border: 1px dashed var(--border); border-radius: 3px;
+            color: var(--muted); font-family: var(--font-ui); font-size: 0.78rem;
+            font-weight: 600; letter-spacing: 0.06em; cursor: pointer;
+            transition: border-color 0.2s, color 0.2s;
+        }
+        .proj-add-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .proj-add-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; }
 
         /* ── Toast ── */
         .toast {
@@ -561,9 +578,13 @@
         <!-- ── Projekte Panel ── -->
         <section class="panel" id="panel-projekte">
             <h1 class="panel-title">Projekte</h1>
-            <p class="panel-sub">Alle Portfolio-Projekte — Titel, Kategorie, Beschreibung und Vorschaubild.</p>
+            <p class="panel-sub">Alle Portfolio-Projekte — Titel, Kategorie, Beschreibung und Vorschaubild. Reihenfolge per Drag & Drop ändern.</p>
 
             <div class="proj-list" id="projList"></div>
+            <button class="proj-add-btn" id="projAddBtn">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Neues Projekt hinzufügen
+            </button>
         </section>
 
         <!-- ── About Panel ── -->
@@ -1393,18 +1414,21 @@ function buildProjectList() {
         item.draggable = true;
         item.innerHTML = `
             <div class="proj-item-header">
-                <span class="proj-drag-handle" title="Reihenfolge ändern">
-                    <svg viewBox="0 0 24 24"><line x1="9" y1="6" x2="15" y2="6"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg>
+                <span class="proj-drag-handle" title="Ziehen zum Sortieren">
+                    <svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>
                 </span>
+                <span class="proj-item-num">${p.num}</span>
                 <div class="proj-item-meta">
-                    <span class="proj-item-num">${p.num}</span>
-                    <div>
-                        <div class="proj-item-name">${p.name}</div>
-                        <div class="proj-item-cat">${p.cat}</div>
-                    </div>
+                    <div class="proj-item-name">${p.name || 'Neues Projekt'}</div>
+                    <div class="proj-item-cat">${p.cat || '—'}</div>
                 </div>
-                <div class="proj-item-toggle">
-                    <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                <div class="proj-item-actions">
+                    <button class="proj-item-del" title="Projekt entfernen" type="button">
+                        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                    </button>
+                    <div class="proj-item-toggle">
+                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </div>
             </div>
             <div class="proj-item-body">
@@ -1442,9 +1466,20 @@ function buildProjectList() {
                 </div>
             </div>`;
 
-        // Toggle accordion (ignore clicks on drag handle)
+        // Delete button
+        item.querySelector('.proj-item-del').addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!confirm(`Projekt "${p.name || 'Neues Projekt'}" wirklich entfernen?`)) return;
+            const projs = data.projects || DEFAULTS.projects;
+            projs.splice(i, 1);
+            data.projects = projs;
+            buildProjectList();
+            markDirty();
+        });
+
+        // Toggle accordion (ignore clicks on drag handle / actions)
         item.querySelector('.proj-item-header').addEventListener('click', (e) => {
-            if (e.target.closest('.proj-drag-handle')) return;
+            if (e.target.closest('.proj-drag-handle') || e.target.closest('.proj-item-actions')) return;
             item.classList.toggle('open');
         });
 
@@ -1491,12 +1526,28 @@ function buildProjectList() {
         item.querySelector('[data-f="cat"]').addEventListener('input', function() {
             item.querySelector('.proj-item-cat').textContent = this.value;
         });
-        item.querySelector('[data-f="num"]').addEventListener('input', function() {
+        item.querySelector('[data-f="num"]')?.addEventListener('input', function() {
             item.querySelector('.proj-item-num').textContent = this.value;
         });
 
         list.appendChild(item);
     });
+
+    // "+ Neues Projekt" button listener (re-attach after rebuild)
+    document.getElementById('projAddBtn')?.addEventListener('click', addNewProject);
+}
+
+function addNewProject() {
+    const projs = data.projects || DEFAULTS.projects;
+    const nextNum = String(projs.length + 1).padStart(2, '0');
+    const newId   = 'p' + Date.now();
+    projs.push({ id: newId, num: nextNum, name: '', cat: '', desc: '', image: '', link: '' });
+    data.projects = projs;
+    buildProjectList();
+    // Open the new item immediately
+    const items = document.querySelectorAll('.proj-item');
+    if (items.length) items[items.length - 1].classList.add('open');
+    markDirty();
 }
 
 function e(str) {
