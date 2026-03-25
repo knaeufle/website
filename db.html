@@ -422,15 +422,22 @@
             const r = localStorage.getItem('freundhase_cms_db');
             if (!r) return;
             const d = JSON.parse(r);
-            const $ = id => document.getElementById(id);
-            if (d.heroImg) {
-                const bg = document.getElementById('projHeroBg');
-                if (bg) bg.style.backgroundImage = "url('" + d.heroImg + "')";
-            }
-            if (d.gal1) { const el = document.querySelector('.gallery-item.full img'); if(el) el.src = d.gal1; }
-            if (d.gal2) { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if(els[0]) els[0].src = d.gal2; }
-            if (d.gal3) { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if(els[1]) els[1].src = d.gal3; }
-            if (d.galFull) { const el = document.querySelector('.fullimg-section img'); if(el) el.src = d.galFull; }
+            const h = d.hero    || {};
+            const g = d.gallery || {};
+            if (h.image) { const bg = document.getElementById('projHeroBg'); if (bg) bg.style.backgroundImage = "url('" + h.image + "')"; }
+            if (h.cat)   { const el = document.querySelector('.proj-cat');   if (el) el.textContent = h.cat; }
+            if (h.title) { const el = document.querySelector('.proj-title'); if (el) el.textContent = h.title; }
+            const i = d.intro || {};
+            if (i.headline) { const el = document.querySelector('.intro-headline'); if (el) el.textContent = i.headline; }
+            if (i.text1)    { const els = document.querySelectorAll('.intro-text p'); if (els[0]) els[0].textContent = i.text1; }
+            if (i.text2)    { const els = document.querySelectorAll('.intro-text p'); if (els[1]) els[1].textContent = i.text2; }
+            if (i.services) { const ul = document.querySelector('.services-list'); if (ul) { ul.innerHTML = ''; i.services.split('\n').filter(Boolean).forEach(s => { const span = document.createElement('span'); span.className = 'services-item'; span.textContent = s.trim(); ul.appendChild(span); }); } }
+            if (g.img1)    { const el = document.querySelector('.gallery-item.full img');        if (el) el.src = g.img1; }
+            if (g.img2)    { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if (els[0]) els[0].src = g.img2; }
+            if (g.img3)    { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if (els[1]) els[1].src = g.img3; }
+            if (g.imgFull) { const el = document.querySelector('.fullimg-section img');          if (el) el.src = g.imgFull; }
+            if (d.challenges) { d.challenges.forEach((ch, idx) => { const t = document.querySelectorAll('.challenge-title')[idx]; const p = document.querySelectorAll('.challenge-text')[idx]; if (t) t.textContent = ch.title; if (p) p.textContent = ch.text; }); }
+            if (d.stats) { d.stats.forEach((s, idx) => { const n = document.querySelectorAll('.stat-num')[idx]; const l = document.querySelectorAll('.stat-label')[idx]; if (n) n.textContent = s.num; if (l) l.textContent = s.label; }); }
         } catch(e) {}
     })();
 
