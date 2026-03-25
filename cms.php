@@ -62,7 +62,11 @@ function requireAuth() {
 function writeCmsCache(array $cms) {
     global $CACHE_FILE;
     $json = json_encode($cms, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-    $js   = "/* freund-hase CMS Cache — auto-generated */\nwindow.__CMS__=" . $json . ";\n";
+    // Self-executing: writes all keys into localStorage so existing loaders pick them up
+    $js = "/* freund-hase CMS Cache — auto-generated, do not edit */\n"
+        . "(function(){var d=" . $json . ";"
+        . "Object.keys(d).forEach(function(k){try{localStorage.setItem(k,JSON.stringify(d[k]));}catch(e){}});"
+        . "window.__CMS__=d;})();\n";
     file_put_contents($CACHE_FILE, $js);
 }
 

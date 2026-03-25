@@ -373,6 +373,7 @@
         .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; margin-right: 6px; }
         .status-dot.dirty { background: var(--accent); }
     </style>
+    <script src="cms-cache.js" onerror="void 0"></script>
 </head>
 <body>
 
@@ -1259,7 +1260,7 @@ const DEFAULTS = {
         headline:   'Gestaltung, die bewegt und verbindet.',
         bio1:       'Als Senior Art Director verbinde ich strategisches Denken mit ästhetischem Gespür. Meine Arbeit entsteht an der Schnittstelle von Funktion und Form — mit dem Ziel, Erlebnisse zu schaffen, die zugänglich, wirkungsvoll und nachhaltig sind.',
         bio2:       'Über die Jahre habe ich für Kunden aus Healthcare, Tourismus, Nachhaltigkeit, E-Commerce und Wissenschaft gearbeitet — immer mit dem Fokus auf nutzerzentriertes, barrierefreies Design.',
-        portrait:   'https://www.freund-hase.com/images/freund-hase.png',
+        portrait:   'images/index/freund-hase.png',
         years:      '10+',
         yearsLabel: 'Jahre Erfahrung'
     },
@@ -2620,11 +2621,24 @@ function collectDBForms() {
         'freundhase_cms_db':      'db',
     };
     const oldPattern = /^https?:\/\/(www\.)?freund-hase\.com\/images\//;
+    // Stale filenames → correct local filenames
+    const nameMap = {
+        'db_hero.jpg':    'dbapp.jpg',
+        'db_screen1.jpg': 'dbapp.jpg',
+        'db_screen2.jpg': 'dbapp2.jpg',
+        'db_screen3.jpg': 'dbapp2.jpg',
+        'db_fullwidth.jpg':'dbapp2.jpg',
+        'uiq_banner_1920x1080.jpg': 'uiq_banner_1920x1080.png',
+    };
     function fixUrl(url, folder) {
-        if (!url || !oldPattern.test(url)) return url;
-        let filename = url.replace(oldPattern, '');
-        // UIQ banner: was downloaded as .png but referenced as .jpg
-        if (folder === 'uiq' && filename === 'uiq_banner_1920x1080.jpg') filename = 'uiq_banner_1920x1080.png';
+        if (!url) return url;
+        let filename = '';
+        if (oldPattern.test(url)) {
+            filename = url.replace(oldPattern, '');
+        } else if (/^images\/[^/]+\/(.+)$/.test(url)) {
+            filename = url.replace(/^images\/[^/]+\//, '');
+        } else { return url; }
+        filename = nameMap[filename] || filename;
         return 'images/' + folder + '/' + filename;
     }
     function fixObj(obj, folder) {
