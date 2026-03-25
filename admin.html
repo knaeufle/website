@@ -1252,7 +1252,7 @@ const DEFAULTS = {
         { id:'p4', num:'04', name:'LAG Märkische Seen',  cat:'Regionalentwicklung · UI/UX',     desc:'Corporate Design und Messeauftritt für eine LEADER-Aktionsgruppe zur regionalen Entwicklung in Brandenburg.',                                                 image:'images/lag/Roll_Up_LAG_1920x1080.jpg',              link:'lag.html' },
         { id:'p6', num:'05', name:'Visit Spandau',       cat:'Tourismus · Stadtmarketing',      desc:'Stadtmarketing und visuelle Identität für den Berliner Bezirk Spandau — Logoentwicklung und Kommunikationsmittel.',                                           image:'images/spandau/logo_spandau_1920x1080.jpg',         link:'spandau.html' },
         { id:'p7', num:'06', name:'Synverz',             cat:'Wissenschaft · Corporate Design', desc:'Corporate Design und Postergestaltung für ein wissenschaftliches Forschungsprojekt im Bereich Ingenieurwesen.',                                                image:'images/synverz/poster.jpg',                         link:'synverz.html' },
-        { id:'p8', num:'07', name:'DoctorBox',           cat:'UI/UX Design · Gesundheit',       desc:'Nutzerzentriertes UI/UX-Design für Web und App — kontinuierlich weiterentwickelt mit Figma und skalierbarem Designsystem.',                                   image:'images/db/db_hero.jpg',                             link:'db.html' },
+        { id:'p8', num:'07', name:'DoctorBox',           cat:'UI/UX Design · Gesundheit',       desc:'Nutzerzentriertes UI/UX-Design für Web und App — kontinuierlich weiterentwickelt mit Figma und skalierbarem Designsystem.',                                   image:'images/db/dbapp.jpg',                             link:'db.html' },
         { id:'p5', num:'08', name:'Green Mierendorff',   cat:'Umwelt · Corporate Identity',     desc:'Vollständige Corporate Identity für ein nachhaltiges Quartiersentwicklungsprojekt in Berlin — Brandbook, Flyer, Visitenkarten.',                              image:'images/gm/Brandbook_Mierendorff.jpg',               link:'gm.html' }
     ],
     about: {
@@ -1270,7 +1270,7 @@ const DEFAULTS = {
 let data = {};
 let dirty = false;
 
-/* ── Load ── */
+/* ── Load from server then populate ── */
 function load() {
     try {
         const raw = localStorage.getItem(LS_KEY);
@@ -1278,7 +1278,6 @@ function load() {
     } catch(e) {
         data = JSON.parse(JSON.stringify(DEFAULTS));
     }
-    // Merge any projects from DEFAULTS that are missing in stored data (e.g. newly added)
     if (!data.projects) data.projects = [];
     const storedIds = new Set(data.projects.map(p => p.id));
     DEFAULTS.projects.forEach(def => {
@@ -1287,23 +1286,38 @@ function load() {
     populateForms();
 }
 
-/* ── Save ── */
-function save() {
+async function loadAllFromServer() {
+    const res = await cmsGet('load');
+    if (!res.ok || !res.data) return;
+    const d = res.data;
+    // Sync server data → localStorage so individual loaders can pick it up
+    Object.keys(d).forEach(k => localStorage.setItem(k, JSON.stringify(d[k])));
+    // Reload main panel
+    load();
+    loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC();
+}
+
+/* ── Save: localStorage + Server ── */
+async function save() {
     collectForms();
-    localStorage.setItem(LS_KEY, JSON.stringify(data));
-    saveTDA();
-    saveUIQ();
-    saveAIB();
-    saveLAG();
-    saveGM();
-    saveSVZ();
-    saveSPA();
-    saveDB();
-    saveIMP();
-    saveDSC();
+    // Collect all CMS keys
+    const allData = {};
+    allData[LS_KEY] = data;
+    // Sub-panel save functions write to localStorage; collect afterwards
+    saveTDA(); saveUIQ(); saveAIB(); saveLAG(); saveGM(); saveSVZ(); saveSPA(); saveDB(); saveIMP(); saveDSC();
+    // Gather all freundhase_cms_* keys from localStorage
+    const keys = [LS_KEY,'freundhase_cms_tda','freundhase_cms_uiq','freundhase_cms_abinsb',
+                  'freundhase_cms_lag','freundhase_cms_gm','freundhase_cms_synverz',
+                  'freundhase_cms_spandau','freundhase_cms_db','freundhase_cms_impressum','freundhase_cms_datenschutz'];
+    keys.forEach(k => {
+        try { const v = localStorage.getItem(k); if (v) allData[k] = JSON.parse(v); } catch(e) {}
+    });
     dirty = false;
     updateStatus('Gespeichert', false);
     showToast('Änderungen gespeichert', false);
+    // Sync to server
+    const res = await cmsPost('save', { data: allData });
+    if (!res.ok) showToast('Server-Sync fehlgeschlagen: ' + (res.error || ''), true);
 }
 
 /* ── Populate forms from data ── */
@@ -1693,23 +1707,26 @@ window.addEventListener('beforeunload', e => {
 });
 
 /* ── Auth ── */
-const AUTH_KEY      = 'freundhase_auth';
-const PW_HASH_KEY   = 'freundhase_pw_hash';
-const RESET_KEY     = 'freundhase_reset';
-const SETTINGS_KEY  = 'freundhase_settings';
-// Default hash for "nase123!" — once the user changes the password, this is no longer used
-const DEFAULT_HASH  = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+const AUTH_KEY = 'freundhase_auth'; // legacy, kept for compatibility
+/* ── Server-Auth via cms.php ── */
 
-function getStoredHash() { return localStorage.getItem(PW_HASH_KEY) || DEFAULT_HASH; }
-function getSettings()   { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(e) { return {}; } }
-function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-
-async function hashPassword(pw) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-    return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+async function cmsPost(action, data = {}) {
+    try {
+        const r = await fetch('cms.php?action=' + action, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return await r.json();
+    } catch(e) { return { ok: false, error: 'Keine Serververbindung' }; }
 }
 
-function isAuthenticated() { return sessionStorage.getItem(AUTH_KEY) === '1'; }
+async function cmsGet(action) {
+    try {
+        const r = await fetch('cms.php?action=' + action);
+        return await r.json();
+    } catch(e) { return { ok: false }; }
+}
 
 function showApp() { document.getElementById('loginScreen').classList.add('hidden'); }
 
@@ -1718,7 +1735,6 @@ function showLoginScreen() {
     document.getElementById('loginError').textContent = '';
     document.getElementById('loginPw').value = '';
     document.getElementById('loginPw').focus();
-    // hide reset sections
     document.getElementById('resetSection').classList.remove('show');
     document.getElementById('newPwSection').classList.remove('show');
     document.getElementById('loginForm').style.display = '';
@@ -1727,11 +1743,14 @@ function showLoginScreen() {
 /* Normal login */
 document.getElementById('loginForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const pw   = document.getElementById('loginPw').value;
-    const hash = await hashPassword(pw);
-    if (hash === getStoredHash()) {
-        sessionStorage.setItem(AUTH_KEY, '1');
+    const btn = e.target.querySelector('button[type=submit]');
+    btn.textContent = '…'; btn.disabled = true;
+    const pw  = document.getElementById('loginPw').value;
+    const res = await cmsPost('login', { password: pw });
+    btn.textContent = 'Anmelden'; btn.disabled = false;
+    if (res.ok) {
         showApp();
+        await loadAllFromServer();
     } else {
         document.getElementById('loginError').textContent = 'Falsches Passwort.';
         document.getElementById('loginPw').value = '';
@@ -1739,42 +1758,18 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     }
 });
 
-/* Forgot password */
+/* Passwort vergessen — sendet Link an info@freund-hase.com */
 document.getElementById('btnForgot').addEventListener('click', async () => {
-    const chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    const code   = Array.from(crypto.getRandomValues(new Uint8Array(6)))
-                        .map(b => chars[b % chars.length]).join('');
-    const expiry = Date.now() + 15 * 60 * 1000; // 15 minutes
-    localStorage.setItem(RESET_KEY, JSON.stringify({ code, expiry }));
-
-    const settings = getSettings();
-    const email    = settings.recoveryEmail;
-
-    // Try to send via PHP (only works when hosted on server)
-    let emailSent = false;
-    if (email) {
-        try {
-            const res  = await fetch('send-reset.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ to: email, code })
-            });
-            const json = await res.json();
-            if (json.ok) emailSent = true;
-        } catch(e) { /* offline or not hosted */ }
-    }
-
+    const btn = document.getElementById('btnForgot');
+    btn.textContent = '…'; btn.disabled = true;
+    const res = await cmsPost('reset-req');
+    btn.textContent = 'Passwort vergessen?'; btn.disabled = false;
     document.getElementById('loginForm').style.display = 'none';
     document.getElementById('loginError').textContent  = '';
     document.getElementById('resetSection').classList.add('show');
-
-    if (emailSent) {
-        document.getElementById('resetCodeSuccess').textContent =
-            'Reset-Code wurde an ' + email + ' gesendet.';
-    } else {
-        document.getElementById('resetCodeSuccess').textContent =
-            'Kein Server verfügbar — dein Code: ' + code;
-    }
+    document.getElementById('resetCodeSuccess').textContent = res.ok
+        ? 'Reset-Link wurde an info@freund-hase.com gesendet.'
+        : 'Fehler: ' + (res.error || 'Server nicht erreichbar');
 });
 
 document.getElementById('btnCancelReset').addEventListener('click', () => {
@@ -1783,75 +1778,57 @@ document.getElementById('btnCancelReset').addEventListener('click', () => {
     document.getElementById('loginForm').style.display = '';
 });
 
-/* Code verification */
-document.getElementById('resetCodeForm').addEventListener('submit', e => {
-    e.preventDefault();
-    const input = document.getElementById('resetCode').value.trim().toUpperCase();
-    let stored;
-    try { stored = JSON.parse(localStorage.getItem(RESET_KEY)); } catch(err) {}
-    if (!stored || Date.now() > stored.expiry) {
-        document.getElementById('resetCodeError').textContent = 'Code abgelaufen. Bitte neu anfordern.';
-        return;
-    }
-    if (input !== stored.code) {
-        document.getElementById('resetCodeError').textContent = 'Falscher Code.';
-        return;
-    }
-    document.getElementById('resetSection').classList.remove('show');
+/* Reset via Token in URL (?reset=TOKEN) */
+(function checkResetToken() {
+    const token = new URLSearchParams(location.search).get('reset');
+    if (!token) return;
+    history.replaceState({}, '', location.pathname);
+    document.getElementById('loginForm').style.display = 'none';
     document.getElementById('newPwSection').classList.add('show');
-});
+    document.getElementById('newPwSection').dataset.token = token;
+})();
 
-/* Set new password after reset */
+/* Neues Passwort setzen (nach Reset) */
 document.getElementById('newPwForm').addEventListener('submit', async e => {
     e.preventDefault();
-    const p1 = document.getElementById('newPw1').value;
-    const p2 = document.getElementById('newPw2').value;
-    if (p1.length < 6)   { document.getElementById('newPwError').textContent = 'Mindestens 6 Zeichen.'; return; }
-    if (p1 !== p2)        { document.getElementById('newPwError').textContent = 'Passwörter stimmen nicht überein.'; return; }
-    const hash = await hashPassword(p1);
-    localStorage.setItem(PW_HASH_KEY, hash);
-    localStorage.removeItem(RESET_KEY);
-    showLoginScreen();
-    document.getElementById('loginError').textContent = '';
-    // Show brief success via toast
-    showToast('Passwort erfolgreich geändert');
-    sessionStorage.setItem(AUTH_KEY, '1');
-    showApp();
+    const p1    = document.getElementById('newPw1').value;
+    const p2    = document.getElementById('newPw2').value;
+    const token = document.getElementById('newPwSection').dataset.token || '';
+    if (p1.length < 6) { document.getElementById('newPwError').textContent = 'Mindestens 6 Zeichen.'; return; }
+    if (p1 !== p2)      { document.getElementById('newPwError').textContent = 'Passwörter stimmen nicht überein.'; return; }
+    const res = await cmsPost('reset-do', { token, newpw: p1 });
+    if (res.ok) {
+        showApp();
+        showToast('Passwort erfolgreich geändert');
+        await loadAllFromServer();
+    } else {
+        document.getElementById('newPwError').textContent = res.error || 'Fehler beim Zurücksetzen.';
+    }
 });
 
-document.getElementById('btnLogout').addEventListener('click', () => {
-    sessionStorage.removeItem(AUTH_KEY);
+document.getElementById('btnLogout').addEventListener('click', async () => {
+    await cmsPost('logout');
     showLoginScreen();
 });
 
 /* ── Settings Panel ── */
-function populateSettings() {
-    const s = getSettings();
-    document.getElementById('s-recoveryEmail').value = s.recoveryEmail || '';
-}
-
-document.getElementById('btnSaveRecovery').addEventListener('click', () => {
-    const email = document.getElementById('s-recoveryEmail').value.trim();
-    const s = getSettings();
-    s.recoveryEmail = email;
-    saveSettings(s);
-    showToast('Recovery-E-Mail gespeichert');
-});
+function populateSettings() { /* Recovery-E-Mail ist fest: info@freund-hase.com */ }
 
 document.getElementById('btnChangePw').addEventListener('click', async () => {
     const cur  = document.getElementById('s-pwCurrent').value;
     const nw   = document.getElementById('s-pwNew').value;
     const conf = document.getElementById('s-pwConfirm').value;
-    const curHash = await hashPassword(cur);
-    if (curHash !== getStoredHash()) { showToast('Aktuelles Passwort ist falsch.', true); return; }
-    if (nw.length < 6)               { showToast('Neues Passwort: mindestens 6 Zeichen.', true); return; }
-    if (nw !== conf)                  { showToast('Passwörter stimmen nicht überein.', true); return; }
-    const newHash = await hashPassword(nw);
-    localStorage.setItem(PW_HASH_KEY, newHash);
-    document.getElementById('s-pwCurrent').value = '';
-    document.getElementById('s-pwNew').value     = '';
-    document.getElementById('s-pwConfirm').value = '';
-    showToast('Passwort erfolgreich geändert');
+    if (nw.length < 6) { showToast('Mindestens 6 Zeichen.', true); return; }
+    if (nw !== conf)    { showToast('Passwörter stimmen nicht überein.', true); return; }
+    const res = await cmsPost('change-pw', { current: cur, newpw: nw });
+    if (res.ok) {
+        document.getElementById('s-pwCurrent').value = '';
+        document.getElementById('s-pwNew').value     = '';
+        document.getElementById('s-pwConfirm').value = '';
+        showToast('Passwort erfolgreich geändert');
+    } else {
+        showToast(res.error || 'Fehler', true);
+    }
 });
 
 /* ── TD Academy Data ── */
@@ -2583,7 +2560,7 @@ function collectDSCForms() {
 /* ── DoctorBox Data ── */
 const LS_DB = 'freundhase_cms_db';
 const DEFAULTS_DB = {
-    hero: { image: 'images/db/db_hero.jpg', cat: 'UI/UX Design · Gesundheit', title: 'DoctorBox' },
+    hero: { image: 'images/db/dbapp.jpg', cat: 'UI/UX Design · Gesundheit', title: 'DoctorBox' },
     intro: {
         headline: 'UX-Design für digitale Gesundheitsanwendungen',
         text1: 'Für die Web- und App-Plattform von DoctorBox wurde das UI/UX-Design kontinuierlich weiterentwickelt. Ziel war es, komplexe Gesundheitsinformationen intuitiv darzustellen und neue Funktionen nahtlos in bestehende Nutzerflüsse zu integrieren.',
@@ -2668,21 +2645,19 @@ function collectDBForms() {
     });
 })();
 
-/* ── Init ── */
-load();
-loadTDA();
-loadUIQ();
-loadAIB();
-loadLAG();
-loadGM();
-loadSVZ();
-loadSPA();
-loadDB();
-loadIMP();
-loadDSC();
+/* ── Init: Server-Session prüfen ── */
+load(); loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC();
 populateSettings();
 updateStatus('Gespeichert', false);
-if (isAuthenticated()) { showApp(); }
+
+(async function initAuth() {
+    const res = await cmsGet('check');
+    if (res.loggedIn) {
+        showApp();
+        await loadAllFromServer();
+    }
+    // else: Login-Screen bleibt sichtbar
+})();
 </script>
 <script src="cookie-consent.js"></script>
 </body>
