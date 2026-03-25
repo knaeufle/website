@@ -283,10 +283,10 @@
                 <img src="images/db/db_screen1.jpg" alt="DoctorBox — App Screens Übersicht" loading="lazy">
             </div>
             <div class="gallery-item rv d1">
-                <img src="images/db/db_screen2.jpg" alt="DoctorBox — UI Detail" loading="lazy">
+                <img src="images/db/db_screen2.jpg" alt="DoctorBox — UI Detail" loading="lazy" onerror="this.closest('.gallery-item').style.display='none';document.querySelector('.gallery-grid').style.gridTemplateColumns='1fr';">
             </div>
             <div class="gallery-item rv d2">
-                <img src="images/db/db_screen3.jpg" alt="DoctorBox — Design System" loading="lazy">
+                <img src="images/db/db_screen3.jpg" alt="DoctorBox — Design System" loading="lazy" onerror="this.closest('.gallery-item').style.display='none';const v=document.querySelectorAll('.gallery-item:not(.full,[style*=none])');if(v.length<2){document.querySelector('.gallery-grid').style.gridTemplateColumns='1fr';v.forEach(el=>{el.style.gridColumn='1/-1';el.querySelector('img').style.aspectRatio='16/7';});}">
             </div>
         </div>
     </div>
@@ -432,9 +432,26 @@
             if (i.text1)    { const els = document.querySelectorAll('.intro-text p'); if (els[0]) els[0].textContent = i.text1; }
             if (i.text2)    { const els = document.querySelectorAll('.intro-text p'); if (els[1]) els[1].textContent = i.text2; }
             if (i.services) { const ul = document.querySelector('.services-list'); if (ul) { ul.innerHTML = ''; i.services.split('\n').filter(Boolean).forEach(s => { const span = document.createElement('span'); span.className = 'services-item'; span.textContent = s.trim(); ul.appendChild(span); }); } }
-            if (g.img1)    { const el = document.querySelector('.gallery-item.full img');        if (el) el.src = g.img1; }
-            if (g.img2)    { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if (els[0]) els[0].src = g.img2; }
-            if (g.img3)    { const els = document.querySelectorAll('.gallery-item:not(.full) img'); if (els[1]) els[1].src = g.img3; }
+            if (g.img1) { const el = document.querySelector('.gallery-item.full img'); if (el) el.src = g.img1; }
+            const halfImgs = document.querySelectorAll('.gallery-item:not(.full) img');
+            if (halfImgs[0]) halfImgs[0].src = g.img2 || '';
+            if (halfImgs[1]) halfImgs[1].src = g.img3 || '';
+            // Hide empty half-items and expand remaining to full width
+            (function adjustGallery() {
+                const grid  = document.querySelector('.gallery-grid');
+                const items = document.querySelectorAll('.gallery-item:not(.full)');
+                items.forEach(item => {
+                    const src = item.querySelector('img')?.src || '';
+                    if (!src || src.endsWith('/') || src === window.location.href) {
+                        item.style.display = 'none';
+                    }
+                });
+                const visible = Array.from(items).filter(el => el.style.display !== 'none');
+                if (grid && visible.length < 2) {
+                    grid.style.gridTemplateColumns = '1fr';
+                    visible.forEach(el => { el.style.gridColumn = '1 / -1'; el.querySelector('img').style.aspectRatio = '16/7'; });
+                }
+            })();
             if (g.imgFull) { const el = document.querySelector('.fullimg-section img');          if (el) el.src = g.imgFull; }
             if (d.challenges) { d.challenges.forEach((ch, idx) => { const t = document.querySelectorAll('.challenge-title')[idx]; const p = document.querySelectorAll('.challenge-text')[idx]; if (t) t.textContent = ch.title; if (p) p.textContent = ch.text; }); }
             if (d.stats) { d.stats.forEach((s, idx) => { const n = document.querySelectorAll('.stat-num')[idx]; const l = document.querySelectorAll('.stat-label')[idx]; if (n) n.textContent = s.num; if (l) l.textContent = s.label; }); }
