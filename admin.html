@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="images/favicon-magenta.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMS — freund-hase.com</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -138,6 +139,44 @@
         .btn-accent:hover { background: #b8146a; }
         .btn-success { background: var(--success); color: #fff; }
         .btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── Chip Editor ── */
+        .chip-list {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;
+            min-height: 36px;
+        }
+        .chip-item {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: var(--bg-alt); border: 1px solid var(--border);
+            border-radius: 2px; padding: 0;
+            transition: border-color 0.2s;
+        }
+        .chip-item:focus-within { border-color: var(--accent); }
+        .chip-input {
+            background: transparent; border: none; outline: none;
+            font-family: var(--font-ui); font-size: 0.78rem; font-weight: 500;
+            color: var(--text); padding: 6px 10px 6px 10px;
+            min-width: 60px; width: auto;
+        }
+        .chip-del {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); padding: 6px 8px 6px 2px;
+            display: flex; align-items: center; transition: color 0.15s;
+            font-size: 0; line-height: 0;
+        }
+        .chip-del:hover { color: #ef4444; }
+        .chip-del svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+        .chip-add {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--accent); background: var(--accent-dim);
+            border: 1px dashed rgba(212,23,122,0.35);
+            border-radius: 2px; padding: 6px 12px;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .chip-add:hover { background: rgba(212,23,122,0.2); }
+        .chip-add svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; }
 
         /* ── Layout ── */
         .layout {
@@ -416,6 +455,45 @@
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             TD Academy
         </div>
+        <div class="sidebar-item" data-panel="uiq">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Umwelt im Quartier
+        </div>
+        <div class="sidebar-item" data-panel="abinsb">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Ab ins B!
+        </div>
+        <div class="sidebar-item" data-panel="lag">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            LAG Märkische Seen
+        </div>
+        <div class="sidebar-item" data-panel="gm">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Green Mierendorff
+        </div>
+        <div class="sidebar-item" data-panel="synverz">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            SynVer*Z
+        </div>
+        <div class="sidebar-item" data-panel="spandau">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Visit Spandau
+        </div>
+        <div class="sidebar-item" data-panel="db">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            DoctorBox
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Rechtliches</div>
+        <div class="sidebar-item" data-panel="impressum">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            Impressum
+        </div>
+        <div class="sidebar-item" data-panel="datenschutz">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Datenschutz
+        </div>
 
         <div class="sidebar-divider"></div>
         <div class="sidebar-section">Tools</div>
@@ -523,6 +601,18 @@
                     <textarea id="a-bio2" rows="4"></textarea>
                 </div>
             </div>
+
+            <div class="card">
+                <div class="card-title">Skills / Chips</div>
+                <div class="field">
+                    <label class="field-label">Skill-Tags bearbeiten, hinzufügen oder entfernen</label>
+                    <div class="chip-list" id="skillChips"></div>
+                    <button type="button" class="chip-add" id="addChipBtn">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Skill hinzufügen
+                    </button>
+                </div>
+            </div>
         </section>
 
         <!-- ── Kontakt Panel ── -->
@@ -533,8 +623,20 @@
             <div class="card">
                 <div class="card-title">E-Mail</div>
                 <div class="field">
-                    <label class="field-label">E-Mail-Adresse</label>
+                    <label class="field-label">E-Mail-Adresse (mailto-Ziel)</label>
                     <input type="email" id="c-email" placeholder="hallo@freund-hase.com">
+                </div>
+                <div class="field">
+                    <label class="field-label">Anzeigetext des Links</label>
+                    <input type="text" id="c-emailLabel" placeholder="hallo@freund-hase.com">
+                    <span class="field-hint">Wird als sichtbarer Text angezeigt — kann von der E-Mail-Adresse abweichen</span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Button</div>
+                <div class="field">
+                    <label class="field-label">Button-Beschriftung</label>
+                    <input type="text" id="c-ctaLabel" placeholder="Jetzt kennenlernen">
                 </div>
             </div>
         </section>
@@ -624,6 +726,415 @@
                 <div class="card-title">Statistiken (4 Werte)</div>
                 <div id="tdaStatList"></div>
             </div>
+        </section>
+
+        <!-- ── Umwelt im Quartier Panel ── -->
+        <section class="panel" id="panel-uiq">
+            <h1 class="panel-title">Umwelt im Quartier</h1>
+            <p class="panel-sub">Inhalte der Unterseite uiq.html bearbeiten.</p>
+
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field">
+                    <label class="field-label">Hintergrundbild (URL)</label>
+                    <div class="img-field">
+                        <input type="url" id="uiq-heroImg" placeholder="https://...">
+                        <div class="img-preview" id="uiq-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" id="uiq-heroCat" placeholder="Nachhaltigkeit · Kampagne">
+                </div>
+                <div class="field">
+                    <label class="field-label">Projekttitel</label>
+                    <input type="text" id="uiq-heroTitle" placeholder="Umwelt im Quartier">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field">
+                    <label class="field-label">Überschrift</label>
+                    <input type="text" id="uiq-introHeadline" placeholder="Nachhaltigkeit im Stadtquartier sichtbar machen">
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 1</label>
+                    <textarea id="uiq-introText1" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 2</label>
+                    <textarea id="uiq-introText2" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label>
+                    <textarea id="uiq-services" rows="6" placeholder="Website UI/UX Design&#10;Print-Materialien&#10;Motion Design"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field">
+                    <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
+                    <div class="img-field">
+                        <input type="url" id="uiq-gal1" placeholder="https://...">
+                        <div class="img-preview" id="uiq-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 2</label>
+                    <div class="img-field">
+                        <input type="url" id="uiq-gal2" placeholder="https://...">
+                        <div class="img-preview" id="uiq-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 3</label>
+                    <div class="img-field">
+                        <input type="url" id="uiq-gal3" placeholder="https://...">
+                        <div class="img-preview" id="uiq-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
+                    <div class="img-field">
+                        <input type="url" id="uiq-galFull" placeholder="https://...">
+                        <div class="img-preview" id="uiq-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div>
+                <div id="uiqChallengeList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Statistiken (4 Werte)</div>
+                <div id="uiqStatList"></div>
+            </div>
+        </section>
+
+        <!-- ── Ab ins B! Panel ── -->
+        <section class="panel" id="panel-abinsb">
+            <h1 class="panel-title">Ab ins B!</h1>
+            <p class="panel-sub">Inhalte der Unterseite abinsb.html bearbeiten.</p>
+
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field">
+                    <label class="field-label">Hintergrundbild (URL)</label>
+                    <div class="img-field">
+                        <input type="url" id="aib-heroImg" placeholder="https://...">
+                        <div class="img-preview" id="aib-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" id="aib-heroCat" placeholder="Tourismus · Branding">
+                </div>
+                <div class="field">
+                    <label class="field-label">Projekttitel</label>
+                    <input type="text" id="aib-heroTitle" placeholder="Ab ins B!">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field">
+                    <label class="field-label">Überschrift</label>
+                    <input type="text" id="aib-introHeadline" placeholder="Berlin neu entdecken lassen">
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 1</label>
+                    <textarea id="aib-introText1" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 2</label>
+                    <textarea id="aib-introText2" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label>
+                    <textarea id="aib-services" rows="6" placeholder="Branding & Keyvisual&#10;Art Direction&#10;Print-Werbemittel"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field">
+                    <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
+                    <div class="img-field">
+                        <input type="url" id="aib-gal1" placeholder="https://...">
+                        <div class="img-preview" id="aib-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 2</label>
+                    <div class="img-field">
+                        <input type="url" id="aib-gal2" placeholder="https://...">
+                        <div class="img-preview" id="aib-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 3</label>
+                    <div class="img-field">
+                        <input type="url" id="aib-gal3" placeholder="https://...">
+                        <div class="img-preview" id="aib-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
+                    <div class="img-field">
+                        <input type="url" id="aib-galFull" placeholder="https://...">
+                        <div class="img-preview" id="aib-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div>
+                <div id="aibChallengeList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Statistiken (4 Werte)</div>
+                <div id="aibStatList"></div>
+            </div>
+        </section>
+
+        <!-- ── LAG Märkische Seen Panel ── -->
+        <section class="panel" id="panel-lag">
+            <h1 class="panel-title">LAG Märkische Seen</h1>
+            <p class="panel-sub">Inhalte der Unterseite lag.html bearbeiten.</p>
+
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field">
+                    <label class="field-label">Hintergrundbild (URL)</label>
+                    <div class="img-field">
+                        <input type="url" id="lag-heroImg" placeholder="https://...">
+                        <div class="img-preview" id="lag-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" id="lag-heroCat" placeholder="Regionalentwicklung · Corporate Design">
+                </div>
+                <div class="field">
+                    <label class="field-label">Projekttitel</label>
+                    <input type="text" id="lag-heroTitle" placeholder="LAG Märkische Seen">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field">
+                    <label class="field-label">Überschrift</label>
+                    <input type="text" id="lag-introHeadline" placeholder="Regionale Identität sichtbar gestalten">
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 1</label>
+                    <textarea id="lag-introText1" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Absatz 2</label>
+                    <textarea id="lag-introText2" rows="4"></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label>
+                    <textarea id="lag-services" rows="6" placeholder="Konzeption & Gestaltung&#10;Corporate Design&#10;Print-Design"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field">
+                    <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
+                    <div class="img-field">
+                        <input type="url" id="lag-gal1" placeholder="https://...">
+                        <div class="img-preview" id="lag-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 2</label>
+                    <div class="img-field">
+                        <input type="url" id="lag-gal2" placeholder="https://...">
+                        <div class="img-preview" id="lag-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Bild 3</label>
+                    <div class="img-field">
+                        <input type="url" id="lag-gal3" placeholder="https://...">
+                        <div class="img-preview" id="lag-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
+                    <div class="img-field">
+                        <input type="url" id="lag-galFull" placeholder="https://...">
+                        <div class="img-preview" id="lag-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div>
+                <div id="lagChallengeList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Statistiken (4 Werte)</div>
+                <div id="lagStatList"></div>
+            </div>
+        </section>
+
+        <!-- ── Green Mierendorff Panel ── -->
+        <section class="panel" id="panel-gm">
+            <h1 class="panel-title">Green Mierendorff</h1>
+            <p class="panel-sub">Inhalte der Unterseite gm.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="gm-heroImg" placeholder="https://..."><div class="img-preview" id="gm-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Kategorie</label><input type="text" id="gm-heroCat" placeholder="Umwelt · Corporate Identity"></div>
+                <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="gm-heroTitle" placeholder="Green Mierendorff"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field"><label class="field-label">Überschrift</label><input type="text" id="gm-introHeadline" placeholder="Nachhaltigkeit eine unverwechselbare Stimme geben"></div>
+                <div class="field"><label class="field-label">Absatz 1</label><textarea id="gm-introText1" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Absatz 2</label><textarea id="gm-introText2" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label><textarea id="gm-services" rows="5" placeholder="Corporate Identity&#10;Art Direction&#10;Brandbook"></textarea></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="gm-gal1" placeholder="https://..."><div class="img-preview" id="gm-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="gm-gal2" placeholder="https://..."><div class="img-preview" id="gm-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="gm-gal3" placeholder="https://..."><div class="img-preview" id="gm-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="gm-galFull" placeholder="https://..."><div class="img-preview" id="gm-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+            </div>
+            <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="gmChallengeList"></div></div>
+            <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="gmStatList"></div></div>
+        </section>
+
+        <!-- ── SynVer*Z Panel ── -->
+        <section class="panel" id="panel-synverz">
+            <h1 class="panel-title">SynVer*Z</h1>
+            <p class="panel-sub">Inhalte der Unterseite synverz.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="svz-heroImg" placeholder="https://..."><div class="img-preview" id="svz-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Kategorie</label><input type="text" id="svz-heroCat" placeholder="Wissenschaft · Brand Design"></div>
+                <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="svz-heroTitle" placeholder="SynVer*Z"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field"><label class="field-label">Überschrift</label><input type="text" id="svz-introHeadline" placeholder="Wissenschaftliche Vielfalt visuell strukturieren"></div>
+                <div class="field"><label class="field-label">Absatz 1</label><textarea id="svz-introText1" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Absatz 2</label><textarea id="svz-introText2" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label><textarea id="svz-services" rows="5" placeholder="Strategie & Art Direction&#10;Brand & UI Design&#10;Logo & visuelle Identität"></textarea></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="svz-gal1" placeholder="https://..."><div class="img-preview" id="svz-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="svz-gal2" placeholder="https://..."><div class="img-preview" id="svz-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="svz-gal3" placeholder="https://..."><div class="img-preview" id="svz-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="svz-galFull" placeholder="https://..."><div class="img-preview" id="svz-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+            </div>
+            <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="svzChallengeList"></div></div>
+            <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="svzStatList"></div></div>
+        </section>
+
+        <!-- ── Visit Spandau Panel ── -->
+        <section class="panel" id="panel-spandau">
+            <h1 class="panel-title">Visit Spandau</h1>
+            <p class="panel-sub">Inhalte der Unterseite spandau.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="spa-heroImg" placeholder="https://..."><div class="img-preview" id="spa-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Kategorie</label><input type="text" id="spa-heroCat" placeholder="Tourismus · Stadtmarketing"></div>
+                <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="spa-heroTitle" placeholder="Visit Spandau"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field"><label class="field-label">Überschrift</label><input type="text" id="spa-introHeadline" placeholder="Einem Berliner Bezirk eine unverwechselbare Identität geben"></div>
+                <div class="field"><label class="field-label">Absatz 1</label><textarea id="spa-introText1" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Absatz 2</label><textarea id="spa-introText2" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label><textarea id="spa-services" rows="5" placeholder="Brand & Design&#10;Art Direction&#10;Visual Communication"></textarea></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="spa-gal1" placeholder="https://..."><div class="img-preview" id="spa-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="spa-gal2" placeholder="https://..."><div class="img-preview" id="spa-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="spa-gal3" placeholder="https://..."><div class="img-preview" id="spa-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="spa-galFull" placeholder="https://..."><div class="img-preview" id="spa-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+            </div>
+            <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="spaChallengeList"></div></div>
+            <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="spaStatList"></div></div>
+        </section>
+
+        <!-- ── Impressum Panel ── -->
+        <section class="panel" id="panel-impressum">
+            <h1 class="panel-title">Impressum</h1>
+            <p class="panel-sub">Angaben gemäß § 5 TMG auf impressum.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Angaben zur Person</div>
+                <div class="field"><label class="field-label">Name</label><input type="text" id="imp-name" placeholder="Daniel Wieczorek"></div>
+                <div class="field"><label class="field-label">Straße und Hausnummer</label><input type="text" id="imp-street" placeholder="Rötebuckweg 46"></div>
+                <div class="field"><label class="field-label">PLZ und Ort</label><input type="text" id="imp-city" placeholder="79104 Freiburg im Breisgau"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Kontakt</div>
+                <div class="field"><label class="field-label">Telefon</label><input type="text" id="imp-phone" placeholder="+49 (0)151 5311 4950"></div>
+                <div class="field"><label class="field-label">E-Mail</label><input type="email" id="imp-email" placeholder="info@freund-hase.com"></div>
+            </div>
+        </section>
+
+        <!-- ── Datenschutz Panel ── -->
+        <section class="panel" id="panel-datenschutz">
+            <h1 class="panel-title">Datenschutz</h1>
+            <p class="panel-sub">Kontaktangaben in der datenschutz.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Verantwortliche Stelle</div>
+                <div class="field"><label class="field-label">Name</label><input type="text" id="dsc-name" placeholder="Daniel Wieczorek"></div>
+                <div class="field"><label class="field-label">Adresse</label><input type="text" id="dsc-address" placeholder="79104 Freiburg im Breisgau"></div>
+                <div class="field"><label class="field-label">Telefon</label><input type="text" id="dsc-phone" placeholder="+49 176 62024099"></div>
+                <div class="field"><label class="field-label">E-Mail</label><input type="email" id="dsc-email" placeholder="info@freund-hase.com"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Hoster</div>
+                <div class="field"><label class="field-label">Name / Firma</label><input type="text" id="dsc-hostName" placeholder="4koepfe | Borsdorf, Tetzl GbR"></div>
+                <div class="field"><label class="field-label">Straße</label><input type="text" id="dsc-hostStreet" placeholder="Gerichtsstraße 4"></div>
+                <div class="field"><label class="field-label">PLZ und Ort</label><input type="text" id="dsc-hostCity" placeholder="01796 Pirna"></div>
+            </div>
+        </section>
+
+        <!-- ── DoctorBox Panel ── -->
+        <section class="panel" id="panel-db">
+            <h1 class="panel-title">DoctorBox</h1>
+            <p class="panel-sub">Inhalte der Unterseite db.html bearbeiten.</p>
+            <div class="card">
+                <div class="card-title">Hero</div>
+                <div class="field"><label class="field-label">Hintergrundbild (Pfad)</label><div class="img-field"><input type="url" id="db-heroImg" placeholder="images/db/db_hero.jpg"><div class="img-preview" id="db-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Kategorie</label><input type="text" id="db-heroCat" placeholder="UI/UX Design · Gesundheit"></div>
+                <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="db-heroTitle" placeholder="DoctorBox"></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Intro-Bereich</div>
+                <div class="field"><label class="field-label">Überschrift</label><input type="text" id="db-introHeadline" placeholder="UX-Design für digitale Gesundheitsanwendungen"></div>
+                <div class="field"><label class="field-label">Absatz 1</label><textarea id="db-introText1" rows="4"></textarea></div>
+                <div class="field"><label class="field-label">Absatz 2</label><textarea id="db-introText2" rows="3"></textarea></div>
+                <div class="field"><label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label><textarea id="db-services" rows="5" placeholder="UI/UX-Konzeption mit Figma&#10;Entwicklung modularer UI-Komponenten&#10;Iterationen auf Basis von Nutzerfeedback"></textarea></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Galerie</div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="db-gal1" placeholder="images/db/db_screen1.jpg"><div class="img-preview" id="db-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="db-gal2" placeholder="images/db/db_screen2.jpg"><div class="img-preview" id="db-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="db-gal3" placeholder="images/db/db_screen3.jpg"><div class="img-preview" id="db-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="db-galFull" placeholder="images/db/db_fullwidth.jpg"><div class="img-preview" id="db-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+            </div>
+            <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="dbChallengeList"></div></div>
+            <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="dbStatList"></div></div>
         </section>
 
         <!-- ── Einstellungen Panel ── -->
@@ -724,7 +1235,8 @@ const DEFAULTS = {
         years:      '10+',
         yearsLabel: 'Jahre Erfahrung'
     },
-    contact: { email: 'hallo@freund-hase.com' }
+    contact: { email: 'hallo@freund-hase.com', emailLabel: 'hallo@freund-hase.com', ctaLabel: 'Jetzt kennenlernen' },
+    skills: ['UI/UX Design', 'Art Direction', 'Branding', 'Barrierefreiheit', 'Neos CMS', 'Editorial Design']
 };
 
 let data = {};
@@ -746,6 +1258,15 @@ function save() {
     collectForms();
     localStorage.setItem(LS_KEY, JSON.stringify(data));
     saveTDA();
+    saveUIQ();
+    saveAIB();
+    saveLAG();
+    saveGM();
+    saveSVZ();
+    saveSPA();
+    saveDB();
+    saveIMP();
+    saveDSC();
     dirty = false;
     updateStatus('Gespeichert', false);
     showToast('Änderungen gespeichert', false);
@@ -770,9 +1291,41 @@ function populateForms() {
     updateImgPreview('a-portrait', 'a-portrait-preview');
 
     const c = data.contact || {};
-    set('c-email', c.email);
+    set('c-email',      c.email);
+    set('c-emailLabel', c.emailLabel);
+    set('c-ctaLabel',   c.ctaLabel);
 
     buildProjectList();
+    buildChips(data.skills || DEFAULTS.skills);
+}
+
+/* ── Chip Editor ── */
+function buildChips(skills) {
+    const list = document.getElementById('skillChips');
+    list.innerHTML = '';
+    skills.forEach(skill => addChip(skill));
+}
+
+function addChip(value) {
+    const list = document.getElementById('skillChips');
+    const item = document.createElement('div');
+    item.className = 'chip-item';
+    item.innerHTML = `
+        <input class="chip-input" type="text" value="${value.replace(/"/g,'&quot;')}" placeholder="Skill…" aria-label="Skill bearbeiten">
+        <button class="chip-del" title="Entfernen" aria-label="Skill entfernen">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>`;
+    const input = item.querySelector('.chip-input');
+    input.addEventListener('input', () => { input.style.width = Math.max(60, input.value.length * 9 + 20) + 'px'; markDirty(); });
+    input.style.width = Math.max(60, value.length * 9 + 20) + 'px';
+    item.querySelector('.chip-del').addEventListener('click', () => { item.remove(); markDirty(); });
+    list.appendChild(item);
+    return input;
+}
+
+function collectSkills() {
+    return Array.from(document.querySelectorAll('#skillChips .chip-input'))
+        .map(i => i.value.trim()).filter(Boolean);
 }
 
 function set(id, val) {
@@ -797,7 +1350,8 @@ function collectForms() {
         years:      get('a-years'),
         yearsLabel: get('a-yearsLabel')
     };
-    data.contact = { email: get('c-email') };
+    data.skills  = collectSkills();
+    data.contact = { email: get('c-email'), emailLabel: get('c-emailLabel'), ctaLabel: get('c-ctaLabel') };
 
     // Collect projects from rendered list
     const items = document.querySelectorAll('.proj-item');
@@ -986,6 +1540,12 @@ document.addEventListener('keydown', e => {
 });
 
 /* ── Reset ── */
+document.getElementById('addChipBtn').addEventListener('click', () => {
+    const input = addChip('');
+    input.focus();
+    markDirty();
+});
+
 document.getElementById('btnReset').addEventListener('click', () => {
     if (!confirm('Alle Inhalte auf die Standardwerte zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
     data = JSON.parse(JSON.stringify(DEFAULTS));
@@ -1036,7 +1596,7 @@ const PW_HASH_KEY   = 'freundhase_pw_hash';
 const RESET_KEY     = 'freundhase_reset';
 const SETTINGS_KEY  = 'freundhase_settings';
 // Default hash for "nase123!" — once the user changes the password, this is no longer used
-const DEFAULT_HASH  = '01e258efce84646f4876ad22a326fa5c8e34c73be26a37d75776b75a9d2d6ad1';
+const DEFAULT_HASH  = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
 
 function getStoredHash() { return localStorage.getItem(PW_HASH_KEY) || DEFAULT_HASH; }
 function getSettings()   { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(e) { return {}; } }
@@ -1078,33 +1638,41 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 });
 
 /* Forgot password */
-document.getElementById('btnForgot').addEventListener('click', () => {
-    const settings = getSettings();
-    const email    = settings.recoveryEmail;
-    if (!email) {
-        document.getElementById('loginError').textContent =
-            'Keine Recovery-E-Mail gespeichert. Bitte wende dich direkt an den Administrator.';
-        return;
-    }
-    // Generate 6-char alphanumeric code
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    const code  = Array.from(crypto.getRandomValues(new Uint8Array(6)))
-                       .map(b => chars[b % chars.length]).join('');
+document.getElementById('btnForgot').addEventListener('click', async () => {
+    const chars  = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const code   = Array.from(crypto.getRandomValues(new Uint8Array(6)))
+                        .map(b => chars[b % chars.length]).join('');
     const expiry = Date.now() + 15 * 60 * 1000; // 15 minutes
     localStorage.setItem(RESET_KEY, JSON.stringify({ code, expiry }));
 
-    const subject = encodeURIComponent('CMS Passwort zurücksetzen — freund-hase.com');
-    const body    = encodeURIComponent(
-        'Dein Reset-Code für das CMS:\n\n' + code +
-        '\n\nDieser Code ist 15 Minuten gültig.\n\nGib den Code auf der Login-Seite unter "Passwort vergessen" ein.'
-    );
-    window.location.href = 'mailto:' + email + '?subject=' + subject + '&body=' + body;
+    const settings = getSettings();
+    const email    = settings.recoveryEmail;
+
+    // Try to send via PHP (only works when hosted on server)
+    let emailSent = false;
+    if (email) {
+        try {
+            const res  = await fetch('send-reset.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ to: email, code })
+            });
+            const json = await res.json();
+            if (json.ok) emailSent = true;
+        } catch(e) { /* offline or not hosted */ }
+    }
 
     document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('loginError').textContent = '';
+    document.getElementById('loginError').textContent  = '';
     document.getElementById('resetSection').classList.add('show');
-    document.getElementById('resetCodeSuccess').textContent =
-        'Reset-Code wurde an ' + email + ' gesendet (E-Mail-App öffnet sich).';
+
+    if (emailSent) {
+        document.getElementById('resetCodeSuccess').textContent =
+            'Reset-Code wurde an ' + email + ' gesendet.';
+    } else {
+        document.getElementById('resetCodeSuccess').textContent =
+            'Kein Server verfügbar — dein Code: ' + code;
+    }
 });
 
 document.getElementById('btnCancelReset').addEventListener('click', () => {
@@ -1189,7 +1757,7 @@ const LS_TDA = 'freundhase_cms_tda';
 
 const DEFAULTS_TDA = {
     hero: {
-        image: 'https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg',
+        image: 'images/tdacademy/td_academy_website_1920x1080.jpg',
         cat:   'E-Learning · Bildung',
         title: 'TD Academy'
     },
@@ -1200,10 +1768,10 @@ const DEFAULTS_TDA = {
         services: 'Strategie & Konzeption\nArt Direction\nUI/UX Design\nCorporate Identity\nPrint & Digital'
     },
     gallery: {
-        img1:    'https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg',
-        img2:    'https://www.freund-hase.com/images/td_academy_logo_1920x1080.jpg',
-        img3:    'https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg',
-        imgFull: 'https://www.freund-hase.com/images/td-academy-website_parts_1920x1080.jpg'
+        img1:    'images/tdacademy/td_academy_website_1920x1080.jpg',
+        img2:    'images/tdacademy/td_academy_logo_1920x1080.jpg',
+        img3:    'images/tdacademy/td-academy-website_parts_1920x1080.jpg',
+        imgFull: 'images/tdacademy/td-academy-website_parts_1920x1080.jpg'
     },
     challenges: [
         { num:'01', label:'Herausforderung', title:'Wissenschaft trifft Design',   text:'Interdisziplinäre Forschungsplattformen stehen vor einem grundlegenden Widerspruch: Wissenschaftlichkeit erfordert Tiefe und Präzision, gute UX fordert Einfachheit und Intuitivität. Das Design musste beide Welten überzeugend vereinen — ohne die Integrität der Inhalte zu kompromittieren.' },
@@ -1341,9 +1909,675 @@ function collectTDAForms() {
     });
 });
 
+/* ── Umwelt im Quartier Data ── */
+const LS_UIQ = 'freundhase_cms_uiq';
+
+const DEFAULTS_UIQ = {
+    hero: {
+        image: 'images/uiq/uiq_website_1920x1080.jpg',
+        cat:   'Nachhaltigkeit · Kampagne',
+        title: 'Umwelt im Quartier'
+    },
+    intro: {
+        headline: 'Nachhaltigkeit im Stadtquartier sichtbar machen',
+        text1: 'Umwelt im Quartier ist eine Bundesinitiative des Bundesministeriums für Umwelt, Naturschutz und nukleare Sicherheit. Ziel war es, Umwelt- und Nachhaltigkeitsthemen direkt in die Stadtquartiere zu tragen — und dort Bewohnerinnen und Bewohner für einen bewussteren Umgang mit Ressourcen zu sensibilisieren.',
+        text2: 'Im Auftrag der Gröschel Branding GmbH verantwortete ich die gesamte visuelle Kommunikation: von der Website über Printmaterialien bis hin zu Motion-Design und Bewegtbild — einheitlich, klar und wirkungsstark.',
+        services: 'Website UI/UX Design\nPrint-Materialien\nMotion Design\nThumbnail-Erstellung\nVisuelles Kommunikationskonzept'
+    },
+    gallery: {
+        img1:    'images/uiq/uiq_website_1920x1080.jpg',
+        img2:    'images/uiq/uiq_banner_1920x1080.png',
+        img3:    'images/uiq/uiq_poster_1920x1080.jpg',
+        imgFull: 'images/uiq/uiq_flyer_1920x1080.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Vielfalt mit einer Stimme',      text:'Die Initiative richtet sich an ganz unterschiedliche Stadtquartiere — von urbanen Großstadtbezirken bis hin zu kleinstädtischen Wohngebieten. Das Design musste flexibel genug sein, um lokal zu wirken, und dennoch als einheitliche Bundesinitiative erkennbar bleiben.' },
+        { num:'02', label:'Ansatz',          title:'Integrierte Kommunikation',       text:'Statt isolierter Einzelmaßnahmen entstand ein kohärentes visuelles System: Website, Flyer, Poster, Banner und Motion-Clips sprechen dieselbe Designsprache — abgestimmt auf die jeweiligen Kommunikationskanäle und Zielgruppen vor Ort.' },
+        { num:'03', label:'Medienvielfalt',  title:'Von Print bis Motion',            text:'Flyer für Dessau, Bochum und weitere Quartiersstädte, Rollup-Banner für Veranstaltungen, Motion-Design für Social Media und digitale Kanäle sowie ein konsistentes Website-Erscheinungsbild — alle Materialien greifen ineinander und verstärken die Botschaft.' },
+        { num:'04', label:'Ergebnis',        title:'Wirkung vor Ort',                 text:'Die Initiative erreichte Bewohnerinnen und Bewohner in mehreren deutschen Stadtquartieren mit konsistenter, ansprechender Kommunikation. Das entwickelte Designsystem ermöglichte effiziente Anpassungen für neue Standorte ohne Qualitätsverlust.' }
+    ],
+    stats: [
+        { num:'5+',   label:'Stadtquartiere\nerreicht' },
+        { num:'3',    label:'Medienkanäle\nPrint · Web · Motion' },
+        { num:'1',    label:'Einheitliche\nDesignsprache' },
+        { num:'BMU',  label:'Bundesministerium\nals Auftraggeber' }
+    ]
+};
+
+let dataUIQ = {};
+
+function loadUIQ() {
+    try {
+        const raw = localStorage.getItem(LS_UIQ);
+        dataUIQ = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS_UIQ));
+    } catch(e) { dataUIQ = JSON.parse(JSON.stringify(DEFAULTS_UIQ)); }
+    populateUIQForms();
+}
+
+function saveUIQ() {
+    collectUIQForms();
+    localStorage.setItem(LS_UIQ, JSON.stringify(dataUIQ));
+}
+
+function populateUIQForms() {
+    const h = dataUIQ.hero || {};
+    setVal('uiq-heroImg',   h.image || '');
+    setVal('uiq-heroCat',   h.cat   || '');
+    setVal('uiq-heroTitle', h.title || '');
+    updateImgPreview('uiq-heroImg', 'uiq-heroImg-preview');
+
+    const intro = dataUIQ.intro || {};
+    setVal('uiq-introHeadline', intro.headline || '');
+    setVal('uiq-introText1',    intro.text1    || '');
+    setVal('uiq-introText2',    intro.text2    || '');
+    setVal('uiq-services',      intro.services || '');
+
+    const g = dataUIQ.gallery || {};
+    setVal('uiq-gal1',    g.img1    || ''); updateImgPreview('uiq-gal1',    'uiq-gal1-preview');
+    setVal('uiq-gal2',    g.img2    || ''); updateImgPreview('uiq-gal2',    'uiq-gal2-preview');
+    setVal('uiq-gal3',    g.img3    || ''); updateImgPreview('uiq-gal3',    'uiq-gal3-preview');
+    setVal('uiq-galFull', g.imgFull || ''); updateImgPreview('uiq-galFull', 'uiq-galFull-preview');
+
+    buildUIQChallengeList();
+    buildUIQStatList();
+}
+
+function buildUIQChallengeList() {
+    const container = document.getElementById('uiqChallengeList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataUIQ.challenges || []).forEach((c, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;">
+                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${c.num} — ${c.label}</div>
+                <div class="field">
+                    <label class="field-label">Titel</label>
+                    <input type="text" id="uiq-ch${i}-title" value="${escHtml(c.title)}">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Text</label>
+                    <textarea id="uiq-ch${i}-text" rows="4">${escHtml(c.text)}</textarea>
+                </div>
+            </div>`);
+    });
+}
+
+function buildUIQStatList() {
+    const container = document.getElementById('uiqStatList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataUIQ.stats || []).forEach((s, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;">
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Wert ${i+1}</label>
+                    <input type="text" id="uiq-st${i}-num" value="${escHtml(s.num)}">
+                </div>
+                <div class="field" style="margin-bottom:0">
+                    <label class="field-label">Beschriftung</label>
+                    <input type="text" id="uiq-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}">
+                </div>
+            </div>`);
+    });
+}
+
+function collectUIQForms() {
+    dataUIQ.hero = {
+        image: document.getElementById('uiq-heroImg')?.value   || '',
+        cat:   document.getElementById('uiq-heroCat')?.value   || '',
+        title: document.getElementById('uiq-heroTitle')?.value || ''
+    };
+    dataUIQ.intro = {
+        headline: document.getElementById('uiq-introHeadline')?.value || '',
+        text1:    document.getElementById('uiq-introText1')?.value    || '',
+        text2:    document.getElementById('uiq-introText2')?.value    || '',
+        services: document.getElementById('uiq-services')?.value      || ''
+    };
+    dataUIQ.gallery = {
+        img1:    document.getElementById('uiq-gal1')?.value    || '',
+        img2:    document.getElementById('uiq-gal2')?.value    || '',
+        img3:    document.getElementById('uiq-gal3')?.value    || '',
+        imgFull: document.getElementById('uiq-galFull')?.value || ''
+    };
+    (dataUIQ.challenges || []).forEach((c, i) => {
+        c.title = document.getElementById(`uiq-ch${i}-title`)?.value || c.title;
+        c.text  = document.getElementById(`uiq-ch${i}-text`)?.value  || c.text;
+    });
+    (dataUIQ.stats || []).forEach((s, i) => {
+        s.num   = document.getElementById(`uiq-st${i}-num`)?.value || s.num;
+        s.label = document.getElementById(`uiq-st${i}-lbl`)?.value || s.label;
+    });
+}
+
+// Hook UIQ image previews
+['uiq-heroImg','uiq-gal1','uiq-gal2','uiq-gal3','uiq-galFull'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', function() {
+        updateImgPreview(id, id + '-preview');
+        markDirty();
+    });
+});
+
+// Hook UIQ save into main save
+const _origSave = save;
+window.saveUIQHooked = true;
+
+/* ── Ab ins B! Data ── */
+const LS_AIB = 'freundhase_cms_abinsb';
+
+const DEFAULTS_AIB = {
+    hero: {
+        image: 'images/abinsb/website_abinsb_1920x1080.jpg',
+        cat:   'Tourismus · Branding',
+        title: 'Ab ins B!'
+    },
+    intro: {
+        headline: 'Berlin neu entdecken lassen',
+        text1: 'Ab ins B! ist eine mehrjährige Tourismus- und Entdeckerkampagne für die Berliner Bezirke jenseits des S-Bahn-Rings. Die Initiative fördert die kulturelle Vielfalt und regionale Identität der einzelnen Bezirke — und bringt Berliner wie Touristen dazu, die Stadt abseits der bekannten Pfade zu erkunden.',
+        text2: 'Im Auftrag der Gröschel Branding GmbH entwickelte ich das gesamte visuelle Erscheinungsbild: von Keyvisual und Logo über Print-Materialien und Plakate bis hin zu Social-Media-Assets und digitalem Content — konsistent, wiedererkennbar und lokal verankert.',
+        services: 'Branding & Keyvisual\nArt Direction\nPrint-Werbemittel\nSocial Media Design\nWebsite & Digital'
+    },
+    gallery: {
+        img1:    'images/abinsb/website_abinsb_1920x1080.jpg',
+        img2:    'images/abinsb/abinsb_instagram_1920x1080.jpg',
+        img3:    'images/abinsb/flyer_abinsb_1920x1080.jpg',
+        imgFull: 'images/abinsb/Plakat_abinsb_1920x1080.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Vielfalt unter einem Dach',            text:'Die Kampagne musste zwölf sehr unterschiedliche Berliner Bezirke unter einem gemeinsamen visuellen Dach vereinen — ohne die lokale Eigenheit jedes Bezirks zu nivellieren.' },
+        { num:'02', label:'Ansatz',          title:'Das rote B als Identifikationspunkt',  text:'Das zentrale Keyvisual — ein markantes rotes „B" — schafft sofortige Wiedererkennung und funktioniert kanalübergreifend: auf Plakaten in der U-Bahn, im Instagram-Feed, auf Flyern vor Ort und auf der Website.' },
+        { num:'03', label:'Kanalstrategie',  title:'Print trifft Digital',                 text:'Von großformatigen Außenplakaten über Flyer für die Bezirksbüros bis zu Social-Media-Templates für Instagram und Facebook — alle Kommunikationsmittel wurden in einem System gedacht und konsequent ausgerollt.' },
+        { num:'04', label:'Ergebnis',        title:'Berlins Kieze im Rampenlicht',         text:'Die Kampagne steigerte die Sichtbarkeit der Berliner Randbezirke spürbar und wurde mehrjährig weitergeführt — ein klares Zeichen für ihren Erfolg.' }
+    ],
+    stats: [
+        { num:'12',  label:'Berliner Bezirke\nkommuniziert' },
+        { num:'4+',  label:'Medienkanäle\nPrint · Web · Social · OOH' },
+        { num:'3',   label:'Kampagnenjahre\nLaufzeit' },
+        { num:'1',   label:'Starkes Keyvisual\nfür ganz Berlin' }
+    ]
+};
+
+let dataAIB = {};
+
+function loadAIB() {
+    try {
+        const raw = localStorage.getItem(LS_AIB);
+        dataAIB = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS_AIB));
+    } catch(e) { dataAIB = JSON.parse(JSON.stringify(DEFAULTS_AIB)); }
+    populateAIBForms();
+}
+
+function saveAIB() {
+    collectAIBForms();
+    localStorage.setItem(LS_AIB, JSON.stringify(dataAIB));
+}
+
+function populateAIBForms() {
+    const h = dataAIB.hero || {};
+    setVal('aib-heroImg',   h.image || '');
+    setVal('aib-heroCat',   h.cat   || '');
+    setVal('aib-heroTitle', h.title || '');
+    updateImgPreview('aib-heroImg', 'aib-heroImg-preview');
+
+    const intro = dataAIB.intro || {};
+    setVal('aib-introHeadline', intro.headline || '');
+    setVal('aib-introText1',    intro.text1    || '');
+    setVal('aib-introText2',    intro.text2    || '');
+    setVal('aib-services',      intro.services || '');
+
+    const g = dataAIB.gallery || {};
+    setVal('aib-gal1',    g.img1    || ''); updateImgPreview('aib-gal1',    'aib-gal1-preview');
+    setVal('aib-gal2',    g.img2    || ''); updateImgPreview('aib-gal2',    'aib-gal2-preview');
+    setVal('aib-gal3',    g.img3    || ''); updateImgPreview('aib-gal3',    'aib-gal3-preview');
+    setVal('aib-galFull', g.imgFull || ''); updateImgPreview('aib-galFull', 'aib-galFull-preview');
+
+    buildAIBChallengeList();
+    buildAIBStatList();
+}
+
+function buildAIBChallengeList() {
+    const container = document.getElementById('aibChallengeList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataAIB.challenges || []).forEach((c, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;">
+                <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${c.num} — ${c.label}</div>
+                <div class="field"><label class="field-label">Titel</label><input type="text" id="aib-ch${i}-title" value="${escHtml(c.title)}"></div>
+                <div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="aib-ch${i}-text" rows="4">${escHtml(c.text)}</textarea></div>
+            </div>`);
+    });
+}
+
+function buildAIBStatList() {
+    const container = document.getElementById('aibStatList');
+    if (!container) return;
+    container.innerHTML = '';
+    (dataAIB.stats || []).forEach((s, i) => {
+        container.insertAdjacentHTML('beforeend', `
+            <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;">
+                <div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="aib-st${i}-num" value="${escHtml(s.num)}"></div>
+                <div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="aib-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div>
+            </div>`);
+    });
+}
+
+function collectAIBForms() {
+    dataAIB.hero = {
+        image: document.getElementById('aib-heroImg')?.value   || '',
+        cat:   document.getElementById('aib-heroCat')?.value   || '',
+        title: document.getElementById('aib-heroTitle')?.value || ''
+    };
+    dataAIB.intro = {
+        headline: document.getElementById('aib-introHeadline')?.value || '',
+        text1:    document.getElementById('aib-introText1')?.value    || '',
+        text2:    document.getElementById('aib-introText2')?.value    || '',
+        services: document.getElementById('aib-services')?.value      || ''
+    };
+    dataAIB.gallery = {
+        img1:    document.getElementById('aib-gal1')?.value    || '',
+        img2:    document.getElementById('aib-gal2')?.value    || '',
+        img3:    document.getElementById('aib-gal3')?.value    || '',
+        imgFull: document.getElementById('aib-galFull')?.value || ''
+    };
+    (dataAIB.challenges || []).forEach((c, i) => {
+        c.title = document.getElementById(`aib-ch${i}-title`)?.value || c.title;
+        c.text  = document.getElementById(`aib-ch${i}-text`)?.value  || c.text;
+    });
+    (dataAIB.stats || []).forEach((s, i) => {
+        s.num   = document.getElementById(`aib-st${i}-num`)?.value || s.num;
+        s.label = document.getElementById(`aib-st${i}-lbl`)?.value || s.label;
+    });
+}
+
+['aib-heroImg','aib-gal1','aib-gal2','aib-gal3','aib-galFull'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', function() {
+        updateImgPreview(id, id + '-preview');
+        markDirty();
+    });
+});
+
+/* ── LAG Märkische Seen Data ── */
+const LS_LAG = 'freundhase_cms_lag';
+
+const DEFAULTS_LAG = {
+    hero: { image: 'images/lag/Roll_Up_LAG_1920x1080.jpg', cat: 'Regionalentwicklung · Corporate Design', title: 'LAG Märkische Seen' },
+    intro: {
+        headline: 'Regionale Identität sichtbar gestalten',
+        text1: 'Die LAG Märkische Seen e.V. ist eine LEADER-Aktionsgruppe, die sich der nachhaltigen Entwicklung ländlicher Räume in Brandenburg widmet. Ihr Auftrag: lokale Akteure vernetzen, innovative Ideen fördern und das Leben in der Region aktiv gestalten.',
+        text2: 'Im Auftrag der Gröschel Branding GmbH entwickelte ich eine einheitliche visuelle Kommunikation, die die thematische Vielfalt der geförderten Projekte transportiert — und gleichzeitig die regionale Identität der Märkischen Seenlandschaft stärkt.',
+        services: 'Konzeption & Gestaltung\nCorporate Design\nPrint-Design\nMesse & Ausstellung\nDigitale Grafiken'
+    },
+    gallery: {
+        img1: 'images/lag/Roll_Up_LAG_1920x1080.jpg',
+        img2: 'images/lag/Flyer_LAG_1920x1080.jpg',
+        img3: 'images/lag/Match_LAG_1920x1080.jpg',
+        imgFull: 'images/lag/Sign_LAG_1920x1080.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Themenvielfalt mit einer Stimme',  text:'Die LAG Märkische Seen fördert Projekte aus den unterschiedlichsten Bereichen — von Tourismus über Naturschutz bis hin zu Dorfentwicklung. Das Design musste diese Vielfalt widerspiegeln, ohne die visuelle Kohärenz zu verlieren.' },
+        { num:'02', label:'Ansatz',          title:'Flexibles Designsystem',           text:'Aufbauend auf bestehenden Designelementen wurde eine einheitliche Bildsprache entwickelt, die flexibel auf verschiedene analoge und digitale Formate anwendbar ist — von Roll-Ups und Flyern bis hin zu Messeauftritten.' },
+        { num:'03', label:'Umsetzung',       title:'Print als Kommunikationsanker',    text:'Im Zentrum standen hochwertige Print-Kommunikationsmittel: Roll-Ups für Veranstaltungen, Flyer für Förderprogramme, Bannersysteme für Messeauftritte und Beschilderungen für geförderte Projekte vor Ort.' },
+        { num:'04', label:'Ergebnis',        title:'Sichtbarkeit für die Region',      text:'Die LAG Märkische Seen tritt heute mit einem professionellen, konsistenten Erscheinungsbild auf — bei Messen, Veranstaltungen und in der regionalen Öffentlichkeit.' }
+    ],
+    stats: [
+        { num:'6+',  label:'Kommunikationsmittel\nentwickelt' },
+        { num:'1',   label:'Einheitliches\nDesignsystem' },
+        { num:'EU',  label:'LEADER-Programm\ngefördert' },
+        { num:'BB',  label:'Brandenburg\nSeenlandschaft' }
+    ]
+};
+
+let dataLAG = {};
+
+function loadLAG() {
+    try {
+        const raw = localStorage.getItem(LS_LAG);
+        dataLAG = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS_LAG));
+    } catch(e) { dataLAG = JSON.parse(JSON.stringify(DEFAULTS_LAG)); }
+    populateLAGForms();
+}
+
+function saveLAG() {
+    collectLAGForms();
+    localStorage.setItem(LS_LAG, JSON.stringify(dataLAG));
+}
+
+function populateLAGForms() {
+    const h = dataLAG.hero || {};
+    setVal('lag-heroImg', h.image || ''); setVal('lag-heroCat', h.cat || ''); setVal('lag-heroTitle', h.title || '');
+    updateImgPreview('lag-heroImg', 'lag-heroImg-preview');
+    const intro = dataLAG.intro || {};
+    setVal('lag-introHeadline', intro.headline || ''); setVal('lag-introText1', intro.text1 || '');
+    setVal('lag-introText2', intro.text2 || ''); setVal('lag-services', intro.services || '');
+    const g = dataLAG.gallery || {};
+    setVal('lag-gal1', g.img1 || ''); updateImgPreview('lag-gal1', 'lag-gal1-preview');
+    setVal('lag-gal2', g.img2 || ''); updateImgPreview('lag-gal2', 'lag-gal2-preview');
+    setVal('lag-gal3', g.img3 || ''); updateImgPreview('lag-gal3', 'lag-gal3-preview');
+    setVal('lag-galFull', g.imgFull || ''); updateImgPreview('lag-galFull', 'lag-galFull-preview');
+    buildLAGChallengeList(); buildLAGStatList();
+}
+
+function buildLAGChallengeList() {
+    const c = document.getElementById('lagChallengeList'); if (!c) return; c.innerHTML = '';
+    (dataLAG.challenges || []).forEach((ch, i) => { c.insertAdjacentHTML('beforeend', `<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="lag-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="lag-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); });
+}
+
+function buildLAGStatList() {
+    const c = document.getElementById('lagStatList'); if (!c) return; c.innerHTML = '';
+    (dataLAG.stats || []).forEach((s, i) => { c.insertAdjacentHTML('beforeend', `<div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;"><div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="lag-st${i}-num" value="${escHtml(s.num)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="lag-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div></div>`); });
+}
+
+function collectLAGForms() {
+    dataLAG.hero = { image: document.getElementById('lag-heroImg')?.value || '', cat: document.getElementById('lag-heroCat')?.value || '', title: document.getElementById('lag-heroTitle')?.value || '' };
+    dataLAG.intro = { headline: document.getElementById('lag-introHeadline')?.value || '', text1: document.getElementById('lag-introText1')?.value || '', text2: document.getElementById('lag-introText2')?.value || '', services: document.getElementById('lag-services')?.value || '' };
+    dataLAG.gallery = { img1: document.getElementById('lag-gal1')?.value || '', img2: document.getElementById('lag-gal2')?.value || '', img3: document.getElementById('lag-gal3')?.value || '', imgFull: document.getElementById('lag-galFull')?.value || '' };
+    (dataLAG.challenges || []).forEach((ch, i) => { ch.title = document.getElementById(`lag-ch${i}-title`)?.value || ch.title; ch.text = document.getElementById(`lag-ch${i}-text`)?.value || ch.text; });
+    (dataLAG.stats || []).forEach((s, i) => { s.num = document.getElementById(`lag-st${i}-num`)?.value || s.num; s.label = document.getElementById(`lag-st${i}-lbl`)?.value || s.label; });
+}
+
+['lag-heroImg','lag-gal1','lag-gal2','lag-gal3','lag-galFull'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', function() { updateImgPreview(id, id + '-preview'); markDirty(); });
+});
+
+/* ── Green Mierendorff Data ── */
+const LS_GM = 'freundhase_cms_gm';
+const DEFAULTS_GM = {
+    hero: { image: 'images/gm/Brandbook_Mierendorff.jpg', cat: 'Umwelt · Corporate Identity', title: 'Green Mierendorff' },
+    intro: {
+        headline: 'Nachhaltigkeit eine unverwechselbare Stimme geben',
+        text1: 'Green Mierendorff ist ein kommunales Klimaschutzprojekt des Berliner Bezirks Charlottenburg-Wilmersdorf. Die Initiative fördert nachhaltige Stadtentwicklung auf der Mierendorff-Insel und sensibilisiert Anwohnerinnen und Anwohner für ökologisches Handeln im urbanen Raum.',
+        text2: 'Im Auftrag der Gröschel Branding GmbH entwickelte ich ein vollständiges Corporate-Design-System: von der Grundlagengestaltung über das Brandbook bis hin zu Flyern, Plakaten und Visitenkarten — visuell klar, inhaltlich überzeugend und konsequent auf die ökologischen Projektziele abgestimmt.',
+        services: 'Corporate Identity\nArt Direction\nBrandbook\nPrint-Design\nInformationsmaterialien'
+    },
+    gallery: {
+        img1: 'images/gm/Brandbook_Mierendorff.jpg',
+        img2: 'images/gm/Brandbook_2_mierendorff.jpg',
+        img3: 'images/gm/Flyer_mierendorff.jpg',
+        imgFull: 'images/gm/Plakat_mierendorff.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Ökologie und Identität vereinen',   text:'Ein kommunales Klimaschutzprojekt muss Glaubwürdigkeit ausstrahlen und gleichzeitig Menschen ansprechen — ohne belehrend zu wirken. Das Corporate Design musste ökologische Werte klar kommunizieren und dabei eine einladende, ortsgebundene Identität für die Mierendorff-Insel aufbauen.' },
+        { num:'02', label:'Ansatz',          title:'Vollständiges CI-System',           text:'Ausgehend von einem einheitlichen Logo und einer klar definierten Bildsprache entstand ein modulares Corporate-Design-System: konsistente Typographie, ein ökologisch geprägtes Farbkonzept und flexible Designvorlagen, die sich vom Plakat bis zur Visitenkarte nahtlos adaptieren lassen.' },
+        { num:'03', label:'Brandbook',       title:'Das Design als Regelwerk',          text:'Das entwickelte Brandbook dokumentiert alle Designentscheidungen verbindlich: Logo-Varianten und Schutzräume, Farb- und Typographiesystem, Bildsprache und Anwendungsbeispiele. Es ermöglicht dem Projektteam eine konsistente eigenständige Kommunikation.' },
+        { num:'04', label:'Ergebnis',        title:'Sichtbar nachhaltiger',             text:'Green Mierendorff tritt heute mit einem professionellen, wiedererkennbaren Erscheinungsbild in die Öffentlichkeit — bei Veranstaltungen, in Printmaterialien und im digitalen Raum.' }
+    ],
+    stats: [
+        { num:'1',   label:'Vollständiges\nCI-System' },
+        { num:'6+',  label:'Print-Formate\nentwickelt' },
+        { num:'CHW', label:'Bezirk\nCharlottenburg-Wilmersdorf' },
+        { num:'∞',   label:'Erweiterbar durch\ndas Brandbook' }
+    ]
+};
+let dataGM = {};
+function loadGM() { try { const r = localStorage.getItem(LS_GM); dataGM = r ? JSON.parse(r) : JSON.parse(JSON.stringify(DEFAULTS_GM)); } catch(e) { dataGM = JSON.parse(JSON.stringify(DEFAULTS_GM)); } populateGMForms(); }
+function saveGM() { collectGMForms(); localStorage.setItem(LS_GM, JSON.stringify(dataGM)); }
+function populateGMForms() {
+    const h = dataGM.hero || {}; setVal('gm-heroImg', h.image||''); setVal('gm-heroCat', h.cat||''); setVal('gm-heroTitle', h.title||''); updateImgPreview('gm-heroImg','gm-heroImg-preview');
+    const i = dataGM.intro || {}; setVal('gm-introHeadline', i.headline||''); setVal('gm-introText1', i.text1||''); setVal('gm-introText2', i.text2||''); setVal('gm-services', i.services||'');
+    const g = dataGM.gallery || {}; ['gal1','gal2','gal3','galFull'].forEach(k => { setVal('gm-'+k, g[k.replace('gal','img').replace('Full','Full')]||g[k]||''); updateImgPreview('gm-'+k,'gm-'+k+'-preview'); });
+    setVal('gm-gal1', g.img1||''); updateImgPreview('gm-gal1','gm-gal1-preview');
+    setVal('gm-gal2', g.img2||''); updateImgPreview('gm-gal2','gm-gal2-preview');
+    setVal('gm-gal3', g.img3||''); updateImgPreview('gm-gal3','gm-gal3-preview');
+    setVal('gm-galFull', g.imgFull||''); updateImgPreview('gm-galFull','gm-galFull-preview');
+    buildGMChallengeList(); buildGMStatList();
+}
+function buildGMChallengeList() { const c=document.getElementById('gmChallengeList'); if(!c) return; c.innerHTML=''; (dataGM.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="gm-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="gm-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
+function buildGMStatList() { const c=document.getElementById('gmStatList'); if(!c) return; c.innerHTML=''; (dataGM.stats||[]).forEach((s,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;"><div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="gm-st${i}-num" value="${escHtml(s.num)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="gm-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div></div>`); }); }
+function collectGMForms() {
+    dataGM.hero = { image: document.getElementById('gm-heroImg')?.value||'', cat: document.getElementById('gm-heroCat')?.value||'', title: document.getElementById('gm-heroTitle')?.value||'' };
+    dataGM.intro = { headline: document.getElementById('gm-introHeadline')?.value||'', text1: document.getElementById('gm-introText1')?.value||'', text2: document.getElementById('gm-introText2')?.value||'', services: document.getElementById('gm-services')?.value||'' };
+    dataGM.gallery = { img1: document.getElementById('gm-gal1')?.value||'', img2: document.getElementById('gm-gal2')?.value||'', img3: document.getElementById('gm-gal3')?.value||'', imgFull: document.getElementById('gm-galFull')?.value||'' };
+    (dataGM.challenges||[]).forEach((ch,i)=>{ ch.title=document.getElementById(`gm-ch${i}-title`)?.value||ch.title; ch.text=document.getElementById(`gm-ch${i}-text`)?.value||ch.text; });
+    (dataGM.stats||[]).forEach((s,i)=>{ s.num=document.getElementById(`gm-st${i}-num`)?.value||s.num; s.label=document.getElementById(`gm-st${i}-lbl`)?.value||s.label; });
+}
+['gm-heroImg','gm-gal1','gm-gal2','gm-gal3','gm-galFull'].forEach(id => { document.getElementById(id)?.addEventListener('input', function() { updateImgPreview(id, id+'-preview'); markDirty(); }); });
+
+/* ── SynVer*Z Data ── */
+const LS_SVZ = 'freundhase_cms_synverz';
+const DEFAULTS_SVZ = {
+    hero: { image: 'images/synverz/poster.jpg', cat: 'Wissenschaft · Brand Design', title: 'SynVer*Z' },
+    intro: {
+        headline: 'Wissenschaftliche Vielfalt visuell strukturieren',
+        text1: 'SynVer*Z ist ein vom BMBF gefördertes Forschungsnetzwerk mit über 25 Teilprojekten aus verschiedenen Wissenschaftsdisziplinen. Die zentrale Herausforderung: diese Vielfalt strukturieren — ohne Einzelstimmen zu unterdrücken — und dabei wissenschaftliche Glaubwürdigkeit mit öffentlicher Verständlichkeit zu vereinen.',
+        text2: 'Im Auftrag der Gröschel Branding GmbH entwickelte ich ein modulares Brand-Design-System: von Logo und visueller Identität über Magazin- und Posterlayouts bis hin zu Motion Design für eine Interview-Videoserie — konsistent, klar und wissenschaftlich fundiert.',
+        services: 'Strategie & Art Direction\nBrand & UI Design\nLogo & visuelle Identität\nMagazin & Posterlayout\nMotion Design'
+    },
+    gallery: {
+        img1: 'images/synverz/poster.jpg',
+        img2: 'images/synverz/abschlusspublikation.jpg',
+        img3: 'images/synverz/fokus_2z.jpg',
+        imgFull: 'images/synverz/website.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'25 Projekte, eine Stimme',          text:'Ein Forschungsnetzwerk mit über 25 Teilprojekten aus unterschiedlichen Disziplinen braucht eine visuelle Klammer, die Einheit schafft, ohne die Eigenständigkeit der Einzelprojekte zu untergraben.' },
+        { num:'02', label:'Ansatz',          title:'Modulares Designsystem',            text:'Klare visuelle Hierarchien, ein reduziertes Farbsystem und sich wiederholende Gestaltungsmuster schaffen Orientierung und Wiedererkennung über alle Formate hinweg.' },
+        { num:'03', label:'Medienvielfalt',  title:'Print, Digital und Bewegtbild',     text:'Das Designsystem wurde über alle Kanäle ausgerollt: Posterlayouts, Abschlusspublikation, Fokus-Hefte, Faltkarten, Newsletter-Templates und Motion Design für eine Interview-Videoserie.' },
+        { num:'04', label:'Ergebnis',        title:'Forschung sichtbar gemacht',        text:'SynVer*Z tritt als einheitliche Dachinitiative öffentlich auf — mit gestärkter Sichtbarkeit und verbesserter Orientierung innerhalb der Projektkommunikation.' }
+    ],
+    stats: [
+        { num:'25+', label:'Teilprojekte\nvernetzt' },
+        { num:'8+',  label:'Publikationsformate\ngestaltet' },
+        { num:'3',   label:'Medienkanäle\nPrint · Digital · Motion' },
+        { num:'1',   label:'Modulares\nDesignsystem' }
+    ]
+};
+let dataSVZ = {};
+function loadSVZ() { try { const r=localStorage.getItem(LS_SVZ); dataSVZ=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_SVZ)); } catch(e) { dataSVZ=JSON.parse(JSON.stringify(DEFAULTS_SVZ)); } populateSVZForms(); }
+function saveSVZ() { collectSVZForms(); localStorage.setItem(LS_SVZ, JSON.stringify(dataSVZ)); }
+function populateSVZForms() {
+    const h=dataSVZ.hero||{}; setVal('svz-heroImg',h.image||''); setVal('svz-heroCat',h.cat||''); setVal('svz-heroTitle',h.title||''); updateImgPreview('svz-heroImg','svz-heroImg-preview');
+    const i=dataSVZ.intro||{}; setVal('svz-introHeadline',i.headline||''); setVal('svz-introText1',i.text1||''); setVal('svz-introText2',i.text2||''); setVal('svz-services',i.services||'');
+    const g=dataSVZ.gallery||{}; setVal('svz-gal1',g.img1||''); updateImgPreview('svz-gal1','svz-gal1-preview'); setVal('svz-gal2',g.img2||''); updateImgPreview('svz-gal2','svz-gal2-preview'); setVal('svz-gal3',g.img3||''); updateImgPreview('svz-gal3','svz-gal3-preview'); setVal('svz-galFull',g.imgFull||''); updateImgPreview('svz-galFull','svz-galFull-preview');
+    buildSVZChallengeList(); buildSVZStatList();
+}
+function buildSVZChallengeList() { const c=document.getElementById('svzChallengeList'); if(!c) return; c.innerHTML=''; (dataSVZ.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="svz-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="svz-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
+function buildSVZStatList() { const c=document.getElementById('svzStatList'); if(!c) return; c.innerHTML=''; (dataSVZ.stats||[]).forEach((s,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;"><div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="svz-st${i}-num" value="${escHtml(s.num)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="svz-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div></div>`); }); }
+function collectSVZForms() {
+    dataSVZ.hero={image:document.getElementById('svz-heroImg')?.value||'',cat:document.getElementById('svz-heroCat')?.value||'',title:document.getElementById('svz-heroTitle')?.value||''};
+    dataSVZ.intro={headline:document.getElementById('svz-introHeadline')?.value||'',text1:document.getElementById('svz-introText1')?.value||'',text2:document.getElementById('svz-introText2')?.value||'',services:document.getElementById('svz-services')?.value||''};
+    dataSVZ.gallery={img1:document.getElementById('svz-gal1')?.value||'',img2:document.getElementById('svz-gal2')?.value||'',img3:document.getElementById('svz-gal3')?.value||'',imgFull:document.getElementById('svz-galFull')?.value||''};
+    (dataSVZ.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`svz-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`svz-ch${i}-text`)?.value||ch.text;});
+    (dataSVZ.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`svz-st${i}-num`)?.value||s.num;s.label=document.getElementById(`svz-st${i}-lbl`)?.value||s.label;});
+}
+['svz-heroImg','svz-gal1','svz-gal2','svz-gal3','svz-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
+
+/* ── Visit Spandau Data ── */
+const LS_SPA = 'freundhase_cms_spandau';
+const DEFAULTS_SPA = {
+    hero: { image: 'images/spandau/logo_spandau_1920x1080.jpg', cat: 'Tourismus · Stadtmarketing', title: 'Visit Spandau' },
+    intro: {
+        headline: 'Einem Berliner Bezirk eine unverwechselbare Identität geben',
+        text1: 'Visit Spandau ist eine umfassende Marken- und Kommunikationsinitiative für den Berliner Bezirk Spandau, realisiert im Auftrag der Gröschel Branding GmbH. Ziel war es, eine eigenständige visuelle Identität aufzubauen, die kommunale Inhalte strukturiert, lokale Identität betont und eine konsistente Kommunikation über digitale und analoge Kanäle ermöglicht.',
+        text2: 'Von der Logoentwicklung über ein modulares Designsystem bis hin zu Print-Materialien wie Magazin, Faltkarte und Eintrittskarte — alle Kommunikationsmittel folgen einem klar definierten visuellen System, das Wiedererkennbarkeit schafft, ohne bürokratisch zu wirken.',
+        services: 'Brand & Design\nArt Direction\nVisual Communication\nLogoentwicklung\nDesignsystem'
+    },
+    gallery: {
+        img1: 'images/spandau/website_spandau_1920x1080.jpg',
+        img2: 'images/spandau/plakat_spandau_1920x1080.jpg',
+        img3: 'images/spandau/faltkarte_spandau_1920x1080.jpg',
+        imgFull: 'images/spandau/spandau_magazin_1920x1080.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Identität ohne Wiedererkennbarkeit',    text:'Der Bezirk Spandau verfügte über keine kohärente visuelle Identität in der Außenkommunikation. Die bestehende Darstellung war funktional, bot jedoch wenig Wiedererkennbarkeit und Orientierung — das Potenzial des Bezirks blieb kommunikativ ungenutzt.' },
+        { num:'02', label:'Ansatz',          title:'Modulares Brand- und Designsystem',     text:'Im Zentrum stand die Entwicklung eines modularen Brand- und Designsystems mit klarer Typografie, einer reduzierten Farbpalette und wiederkehrenden Gestaltungselementen, das Orientierung und Wiedererkennung über alle Formate hinweg ermöglicht.' },
+        { num:'03', label:'Logoentwicklung', title:'Ein Zeichen für Spandau',               text:'Das neue Logo verbindet institutionelle Anforderungen mit einer einladenden, modernen Gestaltungssprache. Es funktioniert in öffentlichen Räumen, auf Print-Materialien und digital — ohne bürokratisch zu wirken.' },
+        { num:'04', label:'Ergebnis',        title:'Klares System, starke Wahrnehmung',    text:'Visit Spandau kommuniziert heute mit einem klaren, einheitlichen visuellen System — vom Magazin über Plakate bis hin zur Eintrittskarte. Das Designsystem stärkt die externe Wahrnehmung des Bezirks nachhaltig.' }
+    ],
+    stats: [
+        { num:'1',  label:'Berliner Bezirk\nneu positioniert' },
+        { num:'8+', label:'Kommunikationsmittel\nentwickelt' },
+        { num:'1',  label:'Modulares\nDesignsystem' },
+        { num:'3',  label:'Medienkanäle\nPrint · Digital · Outdoor' }
+    ]
+};
+let dataSPA = {};
+function loadSPA() { try { const r=localStorage.getItem(LS_SPA); dataSPA=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_SPA)); } catch(e) { dataSPA=JSON.parse(JSON.stringify(DEFAULTS_SPA)); } populateSPAForms(); }
+function saveSPA() { collectSPAForms(); localStorage.setItem(LS_SPA, JSON.stringify(dataSPA)); }
+function populateSPAForms() {
+    const h=dataSPA.hero||{}; setVal('spa-heroImg',h.image||''); setVal('spa-heroCat',h.cat||''); setVal('spa-heroTitle',h.title||''); updateImgPreview('spa-heroImg','spa-heroImg-preview');
+    const i=dataSPA.intro||{}; setVal('spa-introHeadline',i.headline||''); setVal('spa-introText1',i.text1||''); setVal('spa-introText2',i.text2||''); setVal('spa-services',i.services||'');
+    const g=dataSPA.gallery||{}; setVal('spa-gal1',g.img1||''); updateImgPreview('spa-gal1','spa-gal1-preview'); setVal('spa-gal2',g.img2||''); updateImgPreview('spa-gal2','spa-gal2-preview'); setVal('spa-gal3',g.img3||''); updateImgPreview('spa-gal3','spa-gal3-preview'); setVal('spa-galFull',g.imgFull||''); updateImgPreview('spa-galFull','spa-galFull-preview');
+    buildSPAChallengeList(); buildSPAStatList();
+}
+function buildSPAChallengeList() { const c=document.getElementById('spaChallengeList'); if(!c) return; c.innerHTML=''; (dataSPA.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="spa-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="spa-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
+function buildSPAStatList() { const c=document.getElementById('spaStatList'); if(!c) return; c.innerHTML=''; (dataSPA.stats||[]).forEach((s,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;"><div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="spa-st${i}-num" value="${escHtml(s.num)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="spa-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div></div>`); }); }
+function collectSPAForms() {
+    dataSPA.hero={image:document.getElementById('spa-heroImg')?.value||'',cat:document.getElementById('spa-heroCat')?.value||'',title:document.getElementById('spa-heroTitle')?.value||''};
+    dataSPA.intro={headline:document.getElementById('spa-introHeadline')?.value||'',text1:document.getElementById('spa-introText1')?.value||'',text2:document.getElementById('spa-introText2')?.value||'',services:document.getElementById('spa-services')?.value||''};
+    dataSPA.gallery={img1:document.getElementById('spa-gal1')?.value||'',img2:document.getElementById('spa-gal2')?.value||'',img3:document.getElementById('spa-gal3')?.value||'',imgFull:document.getElementById('spa-galFull')?.value||''};
+    (dataSPA.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`spa-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`spa-ch${i}-text`)?.value||ch.text;});
+    (dataSPA.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`spa-st${i}-num`)?.value||s.num;s.label=document.getElementById(`spa-st${i}-lbl`)?.value||s.label;});
+}
+['spa-heroImg','spa-gal1','spa-gal2','spa-gal3','spa-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
+
+/* ── Impressum Data ── */
+const LS_IMP = 'freundhase_cms_impressum';
+const DEFAULTS_IMP = {
+    name: 'Daniel Wieczorek', street: 'Rötebuckweg 46', city: '79104 Freiburg im Breisgau',
+    phone: '+49 (0)151 5311 4950', email: 'info@freund-hase.com'
+};
+let dataIMP = {};
+function loadIMP() { try { const r=localStorage.getItem(LS_IMP); dataIMP=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_IMP)); } catch(e) { dataIMP=JSON.parse(JSON.stringify(DEFAULTS_IMP)); } populateIMPForms(); }
+function saveIMP() { collectIMPForms(); localStorage.setItem(LS_IMP, JSON.stringify(dataIMP)); }
+function populateIMPForms() {
+    setVal('imp-name', dataIMP.name||''); setVal('imp-street', dataIMP.street||'');
+    setVal('imp-city', dataIMP.city||''); setVal('imp-phone', dataIMP.phone||'');
+    setVal('imp-email', dataIMP.email||'');
+}
+function collectIMPForms() {
+    dataIMP.name=document.getElementById('imp-name')?.value||'';
+    dataIMP.street=document.getElementById('imp-street')?.value||'';
+    dataIMP.city=document.getElementById('imp-city')?.value||'';
+    dataIMP.phone=document.getElementById('imp-phone')?.value||'';
+    dataIMP.email=document.getElementById('imp-email')?.value||'';
+}
+
+/* ── Datenschutz Data ── */
+const LS_DSC = 'freundhase_cms_datenschutz';
+const DEFAULTS_DSC = {
+    name: 'Daniel Wieczorek', address: '79104 Freiburg im Breisgau',
+    phone: '+49 176 62024099', email: 'info@freund-hase.com',
+    hostName: '4koepfe | Borsdorf, Tetzl GbR', hostStreet: 'Gerichtsstraße 4', hostCity: '01796 Pirna'
+};
+let dataDSC = {};
+function loadDSC() { try { const r=localStorage.getItem(LS_DSC); dataDSC=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_DSC)); } catch(e) { dataDSC=JSON.parse(JSON.stringify(DEFAULTS_DSC)); } populateDSCForms(); }
+function saveDSC() { collectDSCForms(); localStorage.setItem(LS_DSC, JSON.stringify(dataDSC)); }
+function populateDSCForms() {
+    setVal('dsc-name', dataDSC.name||''); setVal('dsc-address', dataDSC.address||'');
+    setVal('dsc-phone', dataDSC.phone||''); setVal('dsc-email', dataDSC.email||'');
+    setVal('dsc-hostName', dataDSC.hostName||''); setVal('dsc-hostStreet', dataDSC.hostStreet||'');
+    setVal('dsc-hostCity', dataDSC.hostCity||'');
+}
+function collectDSCForms() {
+    dataDSC.name=document.getElementById('dsc-name')?.value||'';
+    dataDSC.address=document.getElementById('dsc-address')?.value||'';
+    dataDSC.phone=document.getElementById('dsc-phone')?.value||'';
+    dataDSC.email=document.getElementById('dsc-email')?.value||'';
+    dataDSC.hostName=document.getElementById('dsc-hostName')?.value||'';
+    dataDSC.hostStreet=document.getElementById('dsc-hostStreet')?.value||'';
+    dataDSC.hostCity=document.getElementById('dsc-hostCity')?.value||'';
+}
+
+/* ── DoctorBox Data ── */
+const LS_DB = 'freundhase_cms_db';
+const DEFAULTS_DB = {
+    hero: { image: 'images/db/db_hero.jpg', cat: 'UI/UX Design · Gesundheit', title: 'DoctorBox' },
+    intro: {
+        headline: 'UX-Design für digitale Gesundheitsanwendungen',
+        text1: 'Für die Web- und App-Plattform von DoctorBox wurde das UI/UX-Design kontinuierlich weiterentwickelt. Ziel war es, komplexe Gesundheitsinformationen intuitiv darzustellen und neue Funktionen nahtlos in bestehende Nutzerflüsse zu integrieren.',
+        text2: 'Zum Einsatz kamen Figma, ein skalierbares Designsystem und ein iterativer Arbeitsprozess im internationalen Entwicklerteam.',
+        services: 'UI/UX-Konzeption & visuelles Design mit Figma\nEntwicklung modularer UI-Komponenten\nIterationen auf Basis von Nutzerfeedback\nEnge Zusammenarbeit mit internationalem Produkt- & Dev-Team'
+    },
+    gallery: {
+        img1: 'images/db/db_screen1.jpg',
+        img2: 'images/db/db_screen2.jpg',
+        img3: 'images/db/db_screen3.jpg',
+        imgFull: 'images/db/db_fullwidth.jpg'
+    },
+    challenges: [
+        { num:'01', label:'Herausforderung', title:'Komplexität verständlich machen',         text:'Gesundheitsdaten sind komplex und sensibel. Die App musste medizinische Informationen klar strukturieren und für Nutzer ohne Fachkenntnisse verständlich aufbereiten — ohne die Tiefe der Daten zu verlieren.' },
+        { num:'02', label:'Ansatz',          title:'Iteratives Design mit echtem Feedback',   text:'Regelmäßige Nutzertests und enge Abstimmung mit dem internationalen Produkt- und Entwicklerteam bildeten die Basis. Neue Features wurden als Figma-Prototypen gebaut, getestet und iteriert.' },
+        { num:'03', label:'Design System',   title:'Skalierbare Komponentenbibliothek',       text:'Ein modulares Designsystem in Figma stellte sicher, dass Web und App konsistent aussehen. Komponenten wurden einmal definiert und überall wiederverwendet.' },
+        { num:'04', label:'Ergebnis',        title:'Messbare Verbesserungen',                  text:'Nach jedem Release zeigte sich: Nutzer fanden sich schneller zurecht, der Support-Aufwand sank und das visuelle Erscheinungsbild über App und Web wurde einheitlicher.' }
+    ],
+    stats: [
+        { num:'2+', label:'Jahre kontinuierliche\nZusammenarbeit' },
+        { num:'∞',  label:'Iterationen auf Basis\nvon Nutzerfeedback' },
+        { num:'1',  label:'Skalierbares\nDesign System' },
+        { num:'App',label:'Web & Mobile\nkonsistent gestaltet' }
+    ]
+};
+let dataDB = {};
+function loadDB() { try { const r=localStorage.getItem(LS_DB); dataDB=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_DB)); } catch(e) { dataDB=JSON.parse(JSON.stringify(DEFAULTS_DB)); } populateDBForms(); }
+function saveDB() { collectDBForms(); localStorage.setItem(LS_DB, JSON.stringify(dataDB)); }
+function populateDBForms() {
+    const h=dataDB.hero||{}; setVal('db-heroImg',h.image||''); setVal('db-heroCat',h.cat||''); setVal('db-heroTitle',h.title||''); updateImgPreview('db-heroImg','db-heroImg-preview');
+    const i=dataDB.intro||{}; setVal('db-introHeadline',i.headline||''); setVal('db-introText1',i.text1||''); setVal('db-introText2',i.text2||''); setVal('db-services',i.services||'');
+    const g=dataDB.gallery||{}; setVal('db-gal1',g.img1||''); updateImgPreview('db-gal1','db-gal1-preview'); setVal('db-gal2',g.img2||''); updateImgPreview('db-gal2','db-gal2-preview'); setVal('db-gal3',g.img3||''); updateImgPreview('db-gal3','db-gal3-preview'); setVal('db-galFull',g.imgFull||''); updateImgPreview('db-galFull','db-galFull-preview');
+    buildDBChallengeList(); buildDBStatList();
+}
+function buildDBChallengeList() { const c=document.getElementById('dbChallengeList'); if(!c) return; c.innerHTML=''; (dataDB.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="db-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="db-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
+function buildDBStatList() { const c=document.getElementById('dbStatList'); if(!c) return; c.innerHTML=''; (dataDB.stats||[]).forEach((s,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px;align-items:start;"><div class="field" style="margin-bottom:0"><label class="field-label">Wert ${i+1}</label><input type="text" id="db-st${i}-num" value="${escHtml(s.num)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Beschriftung</label><input type="text" id="db-st${i}-lbl" value="${escHtml(s.label.replace(/\n/g,' '))}"></div></div>`); }); }
+function collectDBForms() {
+    dataDB.hero={image:document.getElementById('db-heroImg')?.value||'',cat:document.getElementById('db-heroCat')?.value||'',title:document.getElementById('db-heroTitle')?.value||''};
+    dataDB.intro={headline:document.getElementById('db-introHeadline')?.value||'',text1:document.getElementById('db-introText1')?.value||'',text2:document.getElementById('db-introText2')?.value||'',services:document.getElementById('db-services')?.value||''};
+    dataDB.gallery={img1:document.getElementById('db-gal1')?.value||'',img2:document.getElementById('db-gal2')?.value||'',img3:document.getElementById('db-gal3')?.value||'',imgFull:document.getElementById('db-galFull')?.value||''};
+    (dataDB.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`db-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`db-ch${i}-text`)?.value||ch.text;});
+    (dataDB.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`db-st${i}-num`)?.value||s.num;s.label=document.getElementById(`db-st${i}-lbl`)?.value||s.label;});
+}
+['db-heroImg','db-gal1','db-gal2','db-gal3','db-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
+
+
+/* ── Path Migration: freund-hase.com URLs → local images/ ── */
+(function migrateLegacyPaths() {
+    const keyFolderMap = {
+        'freundhase_cms_tda':     'tdacademy',
+        'freundhase_cms_uiq':     'uiq',
+        'freundhase_cms_abinsb':  'abinsb',
+        'freundhase_cms_lag':     'lag',
+        'freundhase_cms_gm':      'gm',
+        'freundhase_cms_synverz': 'synverz',
+        'freundhase_cms_spandau': 'spandau',
+        'freundhase_cms_db':      'db',
+    };
+    const oldPattern = /^https?:\/\/(www\.)?freund-hase\.com\/images\//;
+    function fixUrl(url, folder) {
+        if (!url || !oldPattern.test(url)) return url;
+        let filename = url.replace(oldPattern, '');
+        // UIQ banner: was downloaded as .png but referenced as .jpg
+        if (folder === 'uiq' && filename === 'uiq_banner_1920x1080.jpg') filename = 'uiq_banner_1920x1080.png';
+        return 'images/' + folder + '/' + filename;
+    }
+    function fixObj(obj, folder) {
+        if (!obj || typeof obj !== 'object') return;
+        Object.keys(obj).forEach(k => {
+            if (typeof obj[k] === 'string') obj[k] = fixUrl(obj[k], folder);
+            else if (typeof obj[k] === 'object') fixObj(obj[k], folder);
+        });
+    }
+    Object.entries(keyFolderMap).forEach(([lsKey, folder]) => {
+        const raw = localStorage.getItem(lsKey);
+        if (!raw) return;
+        try {
+            const data = JSON.parse(raw);
+            fixObj(data, folder);
+            localStorage.setItem(lsKey, JSON.stringify(data));
+        } catch(e) {}
+    });
+})();
+
 /* ── Init ── */
 load();
 loadTDA();
+loadUIQ();
+loadAIB();
+loadLAG();
+loadGM();
+loadSVZ();
+loadSPA();
+loadDB();
+loadIMP();
+loadDSC();
 populateSettings();
 updateStatus('Gespeichert', false);
 if (isAuthenticated()) { showApp(); }

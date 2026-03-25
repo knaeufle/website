@@ -205,33 +205,40 @@ img { display: block; max-width: 100%; }
 /* ============================
    Footer
    ============================ */
-footer {
+.footer {
     background: var(--bg-alt);
     border-top: 1px solid rgba(255,255,255,0.05);
     padding: 22px clamp(20px, 5vw, 60px);
 }
-.foot-inner {
+.footer-inner {
     max-width: var(--wrap); margin: 0 auto;
     display: flex; align-items: center;
     justify-content: space-between; gap: 16px;
     flex-wrap: wrap;
 }
-.foot-copy {
+.footer-copy {
     font-family: var(--font-ui);
     font-size: 0.68rem; letter-spacing: 0.06em;
     color: var(--text-muted);
 }
-.foot-copy a:hover { color: var(--accent); }
-.foot-top {
-    font-family: var(--font-ui);
-    font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase;
+.footer-right {
+    display: flex; align-items: center; gap: 20px;
+}
+.footer-link {
+    font-family: var(--font-ui); font-size: 0.68rem;
+    letter-spacing: 0.06em; color: var(--text-muted);
+    transition: color 0.2s;
+}
+.footer-link:hover { color: var(--accent); }
+.footer-top {
+    font-family: var(--font-ui); font-size: 0.68rem;
+    font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
     color: var(--text-muted);
     display: flex; align-items: center; gap: 8px;
     transition: color 0.2s;
 }
-.foot-top:hover { color: var(--accent); }
-.foot-top svg { width: 11px; height: 11px; stroke: currentColor; fill: none; }
+.footer-top:hover { color: var(--accent); }
+.footer-top svg { width: 11px; height: 11px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 /* ============================
    Keyframes

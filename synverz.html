@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="images/favicon-magenta.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SynVer*Z — Daniel Wieczorek · freund-hase.com</title>
+    <meta name="description" content="Brand Design und Corporate Identity für SynVer*Z — ein BMBF-gefördertes Forschungsnetzwerk mit über 25 Teilprojekten aus verschiedenen Wissenschaftsdisziplinen.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .proj-hero {
+            position: relative; height: 90vh; min-height: 520px;
+            display: flex; align-items: flex-end;
+            overflow: hidden; padding-top: var(--nav-h);
+        }
+        .proj-hero-bg {
+            position: absolute; inset: 0;
+            background-image: url('images/synverz/poster.jpg');
+            background-size: cover; background-position: center;
+            transform: scale(1.04); transition: transform 8s ease-out;
+        }
+        .proj-hero-bg.loaded { transform: scale(1); }
+        .proj-hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 50%, rgba(10,10,10,0.15) 100%);
+        }
+        .proj-hero-content {
+            position: relative; z-index: 2;
+            width: 100%; max-width: var(--wrap); margin: 0 auto;
+            padding: 0 clamp(20px,5vw,60px) clamp(48px,8vw,80px);
+        }
+        .proj-breadcrumb { display: flex; align-items: center; gap: 10px; font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; }
+        .proj-breadcrumb a { color: var(--text-muted); transition: color 0.2s; }
+        .proj-breadcrumb a:hover { color: var(--accent); }
+        .proj-breadcrumb svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.5; flex-shrink: 0; }
+        .proj-hero-cat { display: inline-block; font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+        .proj-hero-title { font-family: var(--font-display); font-size: clamp(3.5rem,9vw,8rem); font-weight: 900; line-height: 0.9; color: var(--text-light); margin-bottom: 24px; }
+        .proj-hero-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+        .proj-hero-tag { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.12); padding: 6px 14px; border-radius: 2px; }
+
+        .intro-section { background: var(--bg); padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px); }
+        .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px,8vw,120px); max-width: var(--wrap); margin: 0 auto; align-items: start; }
+        @media (max-width: 768px) { .intro-grid { grid-template-columns: 1fr; } }
+        .intro-label { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; display: block; }
+        .intro-headline { font-family: var(--font-display); font-size: clamp(1.9rem,3.5vw,3rem); font-weight: 700; line-height: 1.15; color: var(--text-light); margin-bottom: 28px; }
+        .intro-headline em { font-style: italic; color: var(--accent); }
+        .intro-text { font-size: clamp(1rem,1.2vw,1.1rem); line-height: 1.75; color: rgba(250,250,248,0.75); margin-bottom: 20px; }
+        .services-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); padding: 36px; border-radius: 2px; }
+        .services-title { font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 24px; }
+        .services-list { display: flex; flex-direction: column; gap: 14px; }
+        .services-item { display: flex; align-items: center; gap: 14px; font-family: var(--font-ui); font-size: 0.95rem; font-weight: 500; color: var(--text-light); }
+        .services-item::before { content: ''; display: block; width: 20px; height: 1px; background: var(--accent); flex-shrink: 0; }
+        .deliverables-title { font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 32px; margin-bottom: 16px; }
+        .deliverables-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+        .deliverable-tag { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); border: 1px solid rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 1px; transition: border-color 0.2s, color 0.2s; }
+        .deliverable-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+        .gallery-section { background: var(--bg-alt); padding: clamp(48px,8vw,100px) 0; }
+        .gallery-wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(20px,5vw,60px); }
+        .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+        @media (max-width: 640px) { .gallery-grid { grid-template-columns: 1fr; } }
+        .gallery-item { position: relative; overflow: hidden; }
+        .gallery-item.full { grid-column: 1 / -1; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 3s ease-in-out; }
+        .gallery-item:hover img { transform: scale(1.04); }
+        .gallery-item.full img { aspect-ratio: 16/7; }
+        .gallery-item:not(.full) img { aspect-ratio: 4/3; }
+
+        .challenge-section { background: var(--bg); padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px); }
+        .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px,6vw,80px); max-width: var(--wrap); margin: 0 auto; }
+        @media (max-width: 768px) { .challenge-grid { grid-template-columns: 1fr; } }
+        .challenge-block { padding: 40px; border-top: 1px solid rgba(255,255,255,0.08); }
+        .challenge-num { font-family: var(--font-display); font-size: clamp(3rem,5vw,5rem); font-weight: 900; color: var(--accent-dim); line-height: 1; margin-bottom: 20px; }
+        .challenge-label { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; display: block; }
+        .challenge-title { font-family: var(--font-display); font-size: clamp(1.4rem,2.5vw,2rem); font-weight: 700; color: var(--text-light); margin-bottom: 16px; line-height: 1.2; }
+        .challenge-text { font-size: 0.98rem; line-height: 1.75; color: rgba(250,250,248,0.65); }
+
+        .stats-section { background: var(--surface); padding: clamp(64px,9vw,110px) clamp(20px,5vw,60px); }
+        .stats-wrap { max-width: var(--wrap); margin: 0 auto; }
+        .stats-eyebrow { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 56px; display: block; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: clamp(24px,4vw,48px); border-top: 1px solid rgba(26,25,24,0.1); padding-top: 48px; }
+        @media (max-width: 768px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+        @media (max-width: 400px) { .stats-grid { grid-template-columns: 1fr; } }
+        .stat-item { padding-right: 24px; }
+        .stat-num { font-family: var(--font-display); font-size: clamp(2.8rem,5vw,4.5rem); font-weight: 900; color: var(--text-dark); line-height: 1; margin-bottom: 10px; }
+        .stat-num em { font-style: normal; color: var(--accent); }
+        .stat-label { font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500; color: var(--text-dark-mid); line-height: 1.4; }
+
+        .fullimg-section { position: relative; overflow: hidden; height: clamp(300px,50vw,640px); }
+        .fullimg-section img { width: 100%; height: 100%; object-fit: cover; transition: transform 3s ease-in-out; }
+        .fullimg-section:hover img { transform: scale(1.04); }
+
+        .next-section { background: var(--bg); padding: clamp(72px,10vw,120px) clamp(20px,5vw,60px); }
+        .next-wrap { max-width: var(--wrap); margin: 0 auto; }
+        .next-label { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 40px; display: block; }
+        .next-link { display: flex; align-items: center; justify-content: space-between; padding: 32px 0; border-top: 1px solid rgba(255,255,255,0.07); transition: border-color 0.3s; }
+        .next-link:last-child { border-bottom: 1px solid rgba(255,255,255,0.07); }
+        .next-link:hover { border-color: var(--accent); }
+        .next-link-inner { display: flex; flex-direction: column; gap: 6px; }
+        .next-link-cat { font-family: var(--font-ui); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
+        .next-link-name { font-family: var(--font-display); font-size: clamp(1.4rem,2.5vw,2.2rem); font-weight: 700; color: var(--text-light); transition: color 0.2s; }
+        .next-link:hover .next-link-name { color: var(--accent); }
+        .next-arrow { width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out); flex-shrink: 0; }
+        .next-link:hover .next-arrow { background: var(--accent); border-color: var(--accent); transform: translate(4px,-4px); }
+        .next-arrow svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        .contact-section { background: var(--surface); padding: clamp(80px,12vw,160px) clamp(20px,5vw,60px); text-align: center; }
+        .ct-label { font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; display: block; }
+        .ct-headline { font-family: var(--font-display); font-size: clamp(2.8rem,6vw,6rem); font-weight: 900; line-height: 1.02; color: var(--text-dark); margin-bottom: 56px; }
+        .ct-headline em { font-style: italic; color: var(--accent); }
+        .ct-email { display: inline-flex; align-items: center; gap: 14px; font-family: var(--font-display); font-size: clamp(1.2rem,2.5vw,2rem); font-weight: 700; color: var(--text-dark); border-bottom: 2px solid var(--accent); padding-bottom: 4px; transition: color 0.2s, gap 0.3s var(--ease-out); }
+        .ct-email:hover { color: var(--accent); gap: 22px; }
+        .ct-email svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+        .ct-social { display: flex; justify-content: center; gap: 32px; margin-top: 48px; }
+        .ct-social a { font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dark-mid); transition: color 0.2s; }
+        .ct-social a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav class="nav solid" role="navigation" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="Zurück zur Startseite">freund<em>·</em>hase</a>
+        <ul class="nav-links" role="list">
+            <li><a href="index.html#projekte">Projekte</a></li>
+            <li><a href="index.html#ueber-mich">Über mich</a></li>
+            <li><a href="index.html#kunden">Kunden</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="nav-ham" id="navHam" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<nav class="mob-nav" id="mobNav" aria-label="Mobile Navigation">
+    <a href="index.html#projekte" class="mob-nav-link">Projekte</a>
+    <a href="index.html#ueber-mich" class="mob-nav-link">Über mich</a>
+    <a href="index.html#kunden" class="mob-nav-link">Kunden</a>
+    <a href="index.html#kontakt" class="mob-nav-link">Kontakt</a>
+</nav>
+
+<!-- ─── Hero ─── -->
+<section class="proj-hero" aria-label="SynVer*Z">
+    <div class="proj-hero-bg" id="projHeroBg"></div>
+    <div class="proj-hero-overlay"></div>
+    <div class="proj-hero-content">
+        <div class="proj-breadcrumb rv">
+            <a href="index.html">Startseite</a>
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            <a href="index.html#projekte">Projekte</a>
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+            <span>SynVer*Z</span>
+        </div>
+        <span class="proj-hero-cat rv d1">Wissenschaft · Brand Design</span>
+        <h1 class="proj-hero-title rv d2">SynVer*Z</h1>
+        <div class="proj-hero-tags rv d3">
+            <span class="proj-hero-tag">Brand Design</span>
+            <span class="proj-hero-tag">Art Direction</span>
+            <span class="proj-hero-tag">Corporate Identity</span>
+            <span class="proj-hero-tag">Motion Design</span>
+            <span class="proj-hero-tag">Print</span>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Intro ─── -->
+<section class="intro-section" aria-label="Projektbeschreibung">
+    <div class="intro-grid">
+        <div>
+            <span class="intro-label rv">Das Projekt</span>
+            <h2 class="intro-headline rv d1">
+                Wissenschaftliche Vielfalt<br><em>visuell</em> strukturieren
+            </h2>
+            <p class="intro-text rv d2">
+                SynVer*Z ist ein vom BMBF gefördertes Forschungsnetzwerk mit über 25 Teilprojekten aus verschiedenen Wissenschaftsdisziplinen. Die zentrale Herausforderung: diese Vielfalt strukturieren — ohne Einzelstimmen zu unterdrücken — und dabei wissenschaftliche Glaubwürdigkeit mit öffentlicher Verständlichkeit zu vereinen.
+            </p>
+            <p class="intro-text rv d3">
+                Im Auftrag der Gröschel Branding GmbH entwickelte ich ein modulares Brand-Design-System: von Logo und visueller Identität über Magazin- und Posterlayouts bis hin zu Motion Design für eine Interview-Videoserie — konsistent, klar und wissenschaftlich fundiert.
+            </p>
+        </div>
+        <div class="rv d2">
+            <div class="services-box">
+                <p class="services-title">Leistungsumfang</p>
+                <ul class="services-list">
+                    <li class="services-item">Strategie &amp; Art Direction</li>
+                    <li class="services-item">Brand &amp; UI Design</li>
+                    <li class="services-item">Logo &amp; visuelle Identität</li>
+                    <li class="services-item">Magazin &amp; Posterlayout</li>
+                    <li class="services-item">Motion Design</li>
+                </ul>
+                <p class="deliverables-title">Deliverables</p>
+                <div class="deliverables-tags">
+                    <span class="deliverable-tag">Logo</span>
+                    <span class="deliverable-tag">Designsystem</span>
+                    <span class="deliverable-tag">Poster</span>
+                    <span class="deliverable-tag">Magazin</span>
+                    <span class="deliverable-tag">Newsletter</span>
+                    <span class="deliverable-tag">Faltkarte</span>
+                    <span class="deliverable-tag">Motion</span>
+                    <span class="deliverable-tag">Website UI</span>
+                </div>
+                <p class="deliverables-title">Auftraggeber</p>
+                <div class="deliverables-tags">
+                    <span class="deliverable-tag">BMBF-gefördert</span>
+                    <span class="deliverable-tag">Gröschel Branding</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Gallery ─── -->
+<section class="gallery-section" aria-label="Projektbilder">
+    <div class="gallery-wrap">
+        <div class="gallery-grid">
+            <div class="gallery-item full rv">
+                <img src="images/synverz/poster.jpg" alt="SynVer*Z — Poster Design" loading="lazy">
+            </div>
+            <div class="gallery-item rv d1">
+                <img src="images/synverz/abschlusspublikation.jpg" alt="SynVer*Z — Abschlusspublikation" loading="lazy">
+            </div>
+            <div class="gallery-item rv d2">
+                <img src="images/synverz/fokus_2z.jpg" alt="SynVer*Z — Fokus Publikation" loading="lazy">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Challenge & Approach ─── -->
+<section class="challenge-section" aria-label="Herausforderung und Vorgehen">
+    <div class="challenge-grid">
+        <div class="challenge-block rv">
+            <div class="challenge-num" aria-hidden="true">01</div>
+            <span class="challenge-label">Herausforderung</span>
+            <h3 class="challenge-title">25 Projekte, eine Stimme</h3>
+            <p class="challenge-text">
+                Ein Forschungsnetzwerk mit über 25 Teilprojekten aus unterschiedlichen Disziplinen — von Ingenieurwissenschaften bis Sozialforschung — braucht eine visuelle Klammer, die Einheit schafft, ohne die Eigenständigkeit der Einzelprojekte zu untergraben. Wissenschaftliche Seriosität und öffentliche Zugänglichkeit mussten gleichermaßen gewährleistet sein.
+            </p>
+        </div>
+        <div class="challenge-block rv d2">
+            <div class="challenge-num" aria-hidden="true">02</div>
+            <span class="challenge-label">Ansatz</span>
+            <h3 class="challenge-title">Modulares Designsystem</h3>
+            <p class="challenge-text">
+                Klare visuelle Hierarchien, ein reduziertes Farbsystem und sich wiederholende Gestaltungsmuster schaffen Orientierung und Wiedererkennung. Das modulare System ermöglicht konsistente Anwendung über alle Formate hinweg — von A0-Postern und Magazinen bis zu digitalen Newslettern und Motion-Content.
+            </p>
+        </div>
+        <div class="challenge-block rv d1">
+            <div class="challenge-num" aria-hidden="true">03</div>
+            <span class="challenge-label">Medienvielfalt</span>
+            <h3 class="challenge-title">Print, Digital und Bewegtbild</h3>
+            <p class="challenge-text">
+                Das Designsystem wurde konsequent über alle Kanäle ausgerollt: Posterlayouts für Konferenzen, eine Abschlusspublikation, Fokus-Hefte, Faltkarten, Newsletter-Templates und Motion-Design für eine Interview-Videoserie — alle Formate sprechen dieselbe visuelle Sprache.
+            </p>
+        </div>
+        <div class="challenge-block rv d3">
+            <div class="challenge-num" aria-hidden="true">04</div>
+            <span class="challenge-label">Ergebnis</span>
+            <h3 class="challenge-title">Forschung sichtbar gemacht</h3>
+            <p class="challenge-text">
+                SynVer*Z tritt als einheitliche Dachinitiative öffentlich auf — mit gestärkter Sichtbarkeit und verbesserter Orientierung innerhalb der Projektkommunikation. Das Designsystem ermöglicht effiziente Erweiterung für neue Publikationen und Veranstaltungsformate.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Stats ─── -->
+<section class="stats-section" aria-label="Projektergebnisse">
+    <div class="stats-wrap">
+        <span class="stats-eyebrow rv">Projektumfang</span>
+        <div class="stats-grid">
+            <div class="stat-item rv">
+                <div class="stat-num"><em>25</em>+</div>
+                <div class="stat-label">Teilprojekte<br>vernetzt</div>
+            </div>
+            <div class="stat-item rv d1">
+                <div class="stat-num"><em>8</em>+</div>
+                <div class="stat-label">Publikations­formate<br>gestaltet</div>
+            </div>
+            <div class="stat-item rv d2">
+                <div class="stat-num"><em>3</em></div>
+                <div class="stat-label">Medienkanäle<br>Print · Digital · Motion</div>
+            </div>
+            <div class="stat-item rv d3">
+                <div class="stat-num"><em>1</em></div>
+                <div class="stat-label">Modulares<br>Designsystem</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── Full-width Image ─── -->
+<div class="fullimg-section" role="img" aria-label="SynVer*Z — Website UI">
+    <img src="images/synverz/website.jpg" alt="SynVer*Z — Website Design" loading="lazy">
+</div>
+
+<!-- ─── Next Projects ─── -->
+<section class="next-section" aria-label="Weitere Projekte">
+    <div class="next-wrap">
+        <span class="next-label rv">Weitere Arbeiten</span>
+        <a href="gm.html" class="next-link rv d1">
+            <div class="next-link-inner">
+                <span class="next-link-cat">Umwelt · Corporate Identity</span>
+                <span class="next-link-name">Green Mierendorff</span>
+            </div>
+            <div class="next-arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </div>
+        </a>
+        <a href="db.html" class="next-link rv d2">
+            <div class="next-link-inner">
+                <span class="next-link-cat">UI/UX Design · Gesundheit</span>
+                <span class="next-link-name">DoctorBox</span>
+            </div>
+            <div class="next-arrow">
+                <svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- ─── Contact CTA ─── -->
+<section class="contact-section" id="kontakt" aria-label="Kontakt">
+    <span class="ct-label rv">Kontakt</span>
+    <h2 class="ct-headline rv d1">Nächstes Projekt<br>gemeinsam <em>gestalten?</em></h2>
+    <a href="mailto:hallo@freund-hase.com" class="ct-email rv d2" aria-label="E-Mail senden">
+        hallo@freund-hase.com
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <nav class="ct-social rv d3" aria-label="Social Media">
+        <a href="https://www.instagram.com/freund.hase/" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.linkedin.com/in/daniel-wieczorek-14030173" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href="https://www.xing.com/profile/Daniel_Wieczorek2" target="_blank" rel="noopener noreferrer">XING</a>
+    </nav>
+</section>
+
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="footer-copy">© 2025 Daniel Wieczorek · freund-hase.com</span>
+        <div class="footer-right">
+            <a href="impressum.html" class="footer-link">Impressum</a>
+            <a href="datenschutz.html" class="footer-link">Datenschutz</a>
+            <a href="#" class="footer-top" aria-label="Zurück nach oben">
+                <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                Nach oben
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const revEls = document.querySelectorAll('.rv');
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        revEls.forEach(el => io.observe(el));
+    } else { revEls.forEach(el => el.classList.add('visible')); }
+
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    if (cursor && ring) {
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+            ring.style.left   = e.clientX + 'px'; ring.style.top   = e.clientY + 'px';
+        });
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+            el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+        });
+    }
+
+    const ham = document.getElementById('navHam');
+    const mobNav = document.getElementById('mobNav');
+    ham.addEventListener('click', () => {
+        const open = mobNav.classList.toggle('open');
+        ham.classList.toggle('open', open);
+        ham.setAttribute('aria-expanded', open);
+    });
+    mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        mobNav.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false');
+    }));
+
+    window.addEventListener('load', () => {
+        setTimeout(() => document.getElementById('projHeroBg').classList.add('loaded'), 100);
+    });
+
+    /* ── CMS Content Loader (SVZ) ── */
+    (function () {
+        let cms;
+        try { cms = JSON.parse(localStorage.getItem('freundhase_cms_synverz')); } catch(e) {}
+        if (!cms) return;
+        const h = cms.hero;
+        if (h) {
+            const bg = document.getElementById('projHeroBg');
+            if (bg && h.image) bg.style.backgroundImage = 'url(' + h.image + ')';
+            const cat = document.querySelector('.proj-hero-cat');
+            if (cat && h.cat) cat.textContent = h.cat;
+            const title = document.querySelector('.proj-hero-title');
+            if (title && h.title) title.innerHTML = h.title.replace(/\n/g, '<br>');
+        }
+        const intro = cms.intro;
+        if (intro) {
+            const headline = document.querySelector('.intro-headline');
+            if (headline && intro.headline) headline.innerHTML = intro.headline;
+            const texts = document.querySelectorAll('.intro-text');
+            if (texts[0] && intro.text1) texts[0].textContent = intro.text1;
+            if (texts[1] && intro.text2) texts[1].textContent = intro.text2;
+            if (intro.services) {
+                const list = document.querySelector('.services-list');
+                if (list) list.innerHTML = intro.services.split('\n').filter(s => s.trim()).map(s => `<li class="services-item">${s.trim()}</li>`).join('');
+            }
+        }
+        const g = cms.gallery;
+        if (g) {
+            const imgs = document.querySelectorAll('.gallery-item img');
+            if (imgs[0] && g.img1) imgs[0].src = g.img1;
+            if (imgs[1] && g.img2) imgs[1].src = g.img2;
+            if (imgs[2] && g.img3) imgs[2].src = g.img3;
+            const fullImg = document.querySelector('.fullimg-section img');
+            if (fullImg && g.imgFull) fullImg.src = g.imgFull;
+        }
+        if (Array.isArray(cms.challenges)) {
+            const blocks = document.querySelectorAll('.challenge-block');
+            cms.challenges.forEach((c, i) => {
+                if (!blocks[i]) return;
+                const t = blocks[i].querySelector('.challenge-title');
+                const p = blocks[i].querySelector('.challenge-text');
+                if (t && c.title) t.textContent = c.title;
+                if (p && c.text)  p.textContent = c.text;
+            });
+        }
+        if (Array.isArray(cms.stats)) {
+            const items = document.querySelectorAll('.stat-item');
+            cms.stats.forEach((s, i) => {
+                if (!items[i]) return;
+                const numEl = items[i].querySelector('.stat-num');
+                const lblEl = items[i].querySelector('.stat-label');
+                if (numEl && s.num)   numEl.innerHTML = '<em>' + s.num + '</em>';
+                if (lblEl && s.label) lblEl.innerHTML = s.label.replace(/\n/g, '<br>');
+            });
+        }
+    })();
+</script>
+</body>
+</html>

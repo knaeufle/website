@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="images/favicon-magenta.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datenschutz — Daniel Wieczorek · freund-hase.com</title>
+    <meta name="description" content="Datenschutzerklärung von freund-hase.com — Daniel Wieczorek, Grafikdesigner und Art Director.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Outfit:wght@400;500;600;700&family=Source+Sans+3:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .legal-hero {
+            background: var(--bg);
+            padding: calc(var(--nav-h) + clamp(60px,10vw,120px)) clamp(20px,5vw,60px) clamp(48px,6vw,80px);
+        }
+        .legal-hero-inner {
+            max-width: 760px; margin: 0 auto;
+        }
+        .legal-eyebrow {
+            font-family: var(--font-ui); font-size: 0.7rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent);
+            margin-bottom: 20px; display: block;
+        }
+        .legal-title {
+            font-family: var(--font-display); font-size: clamp(2.4rem,5vw,4.5rem);
+            font-weight: 900; line-height: 1; color: var(--text-light); margin-bottom: 20px;
+        }
+        .legal-meta {
+            font-family: var(--font-ui); font-size: 0.78rem; color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+
+        .legal-body {
+            background: var(--bg-alt);
+            padding: clamp(48px,8vw,100px) clamp(20px,5vw,60px);
+        }
+        .legal-body-inner {
+            max-width: 760px; margin: 0 auto;
+        }
+
+        .legal-section { margin-bottom: clamp(40px,6vw,64px); }
+        .legal-section:last-child { margin-bottom: 0; }
+
+        .legal-h2 {
+            font-family: var(--font-display); font-size: clamp(1.3rem,2vw,1.8rem);
+            font-weight: 700; color: var(--text-light); margin-bottom: 28px;
+            padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.07);
+        }
+        .legal-h3 {
+            font-family: var(--font-ui); font-size: 0.9rem; font-weight: 700;
+            letter-spacing: 0.06em; color: var(--accent); margin: 28px 0 12px;
+            text-transform: uppercase;
+        }
+        .legal-p {
+            font-size: 0.97rem; line-height: 1.8; color: rgba(250,250,248,0.72);
+            margin-bottom: 16px;
+        }
+        .legal-p:last-child { margin-bottom: 0; }
+        .legal-p a {
+            color: var(--accent); text-decoration: underline; text-underline-offset: 3px;
+        }
+        .legal-p a:hover { opacity: 0.8; }
+        .legal-ul {
+            margin: 12px 0 16px 0; padding-left: 0; list-style: none;
+        }
+        .legal-ul li {
+            font-size: 0.97rem; line-height: 1.75; color: rgba(250,250,248,0.72);
+            padding-left: 20px; position: relative; margin-bottom: 6px;
+        }
+        .legal-ul li::before {
+            content: ''; position: absolute; left: 0; top: 12px;
+            width: 8px; height: 1px; background: var(--accent);
+        }
+
+        .legal-contact-box {
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 2px; padding: 28px 32px; margin: 16px 0 24px;
+        }
+        .legal-contact-box p {
+            font-size: 0.93rem; line-height: 1.75; color: rgba(250,250,248,0.72);
+            margin: 0;
+        }
+        .legal-contact-box strong {
+            color: var(--text-light); font-weight: 600;
+        }
+
+        .legal-toc {
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 2px; padding: 28px 32px; margin-bottom: 48px;
+        }
+        .legal-toc-title {
+            font-family: var(--font-ui); font-size: 0.68rem; font-weight: 700;
+            letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted);
+            margin-bottom: 16px; display: block;
+        }
+        .legal-toc ol {
+            padding-left: 0; list-style: none; counter-reset: toc-counter;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .legal-toc li {
+            counter-increment: toc-counter;
+            font-family: var(--font-ui); font-size: 0.85rem; color: rgba(250,250,248,0.6);
+            display: flex; gap: 12px; align-items: baseline;
+        }
+        .legal-toc li::before {
+            content: counter(toc-counter, decimal-leading-zero);
+            font-size: 0.7rem; font-weight: 700; color: var(--accent); flex-shrink: 0;
+        }
+        .legal-toc li a {
+            color: inherit; transition: color 0.2s;
+        }
+        .legal-toc li a:hover { color: var(--accent); }
+
+        footer.legal-footer {
+            background: var(--bg);
+        }
+    </style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav class="nav solid" role="navigation" aria-label="Hauptnavigation">
+    <div class="nav-inner">
+        <a href="index.html" class="nav-logo" aria-label="Zurück zur Startseite">freund<em>·</em>hase</a>
+        <ul class="nav-links" role="list">
+            <li><a href="index.html#projekte">Projekte</a></li>
+            <li><a href="index.html#ueber-mich">Über mich</a></li>
+            <li><a href="index.html#kunden">Kunden</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+        <button class="nav-ham" id="navHam" aria-label="Menü öffnen" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+    </div>
+</nav>
+
+<nav class="mob-nav" id="mobNav" aria-label="Mobile Navigation">
+    <a href="index.html#projekte" class="mob-nav-link">Projekte</a>
+    <a href="index.html#ueber-mich" class="mob-nav-link">Über mich</a>
+    <a href="index.html#kunden" class="mob-nav-link">Kunden</a>
+    <a href="index.html#kontakt" class="mob-nav-link">Kontakt</a>
+</nav>
+
+<!-- ─── Hero ─── -->
+<div class="legal-hero">
+    <div class="legal-hero-inner">
+        <span class="legal-eyebrow rv">Rechtliches</span>
+        <h1 class="legal-title rv d1">Datenschutz­erklärung</h1>
+        <p class="legal-meta rv d2">Stand: März 2025</p>
+    </div>
+</div>
+
+<!-- ─── Body ─── -->
+<div class="legal-body">
+    <div class="legal-body-inner">
+
+        <!-- Inhaltsverzeichnis -->
+        <nav class="legal-toc rv" aria-label="Inhaltsverzeichnis">
+            <span class="legal-toc-title">Inhalt</span>
+            <ol>
+                <li><a href="#abschnitt-1">Datenschutz auf einen Blick</a></li>
+                <li><a href="#abschnitt-2">Hosting</a></li>
+                <li><a href="#abschnitt-3">Allgemeine Hinweise und Pflichtinformationen</a></li>
+                <li><a href="#abschnitt-4">Datenerfassung auf dieser Website</a></li>
+                <li><a href="#abschnitt-5">Analyse-Tools und Werbung</a></li>
+            </ol>
+        </nav>
+
+        <!-- 1 -->
+        <div class="legal-section rv" id="abschnitt-1">
+            <h2 class="legal-h2">1. Datenschutz auf einen Blick</h2>
+
+            <h3 class="legal-h3">Allgemeine Hinweise</h3>
+            <p class="legal-p">Die folgenden Hinweise geben einen einfachen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie diese Website besuchen. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Ausführliche Informationen zum Thema Datenschutz entnehmen Sie unserer unter diesem Text aufgeführten Datenschutzerklärung.</p>
+
+            <h3 class="legal-h3">Datenerfassung auf dieser Website</h3>
+            <p class="legal-p"><strong>Wer ist verantwortlich für die Datenerfassung auf dieser Website?</strong><br>
+            Die Datenverarbeitung auf dieser Website erfolgt durch den Websitebetreiber. Dessen Kontaktdaten können Sie dem Abschnitt „Hinweis zur verantwortlichen Stelle" in dieser Datenschutzerklärung entnehmen.</p>
+            <p class="legal-p"><strong>Wie erfassen wir Ihre Daten?</strong><br>
+            Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese mitteilen (z. B. Daten, die Sie in ein Kontaktformular eingeben). Andere Daten werden automatisch oder nach Ihrer Einwilligung beim Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor allem technische Daten (z. B. Internetbrowser, Betriebssystem oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt automatisch, sobald Sie diese Website betreten.</p>
+            <p class="legal-p"><strong>Wofür nutzen wir Ihre Daten?</strong><br>
+            Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung der Website zu gewährleisten. Andere Daten können zur Analyse Ihres Nutzerverhaltens verwendet werden. Sofern über die Website Verträge geschlossen oder angebahnt werden können, werden die übermittelten Daten auch für Vertragsangebote, Bestellungen oder sonstige Auftragsanfragen verarbeitet.</p>
+            <p class="legal-p"><strong>Welche Rechte haben Sie bezüglich Ihrer Daten?</strong><br>
+            Sie haben jederzeit das Recht, unentgeltlich Auskunft über Herkunft, Empfänger und Zweck Ihrer gespeicherten personenbezogenen Daten zu erhalten. Sie haben außerdem ein Recht, die Berichtigung oder Löschung dieser Daten zu verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt haben, können Sie diese Einwilligung jederzeit für die Zukunft widerrufen. Außerdem haben Sie das Recht, unter bestimmten Umständen die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen ein Beschwerderecht bei der zuständigen Aufsichtsbehörde zu.</p>
+        </div>
+
+        <!-- 2 -->
+        <div class="legal-section rv" id="abschnitt-2">
+            <h2 class="legal-h2">2. Hosting</h2>
+
+            <h3 class="legal-h3">Externes Hosting</h3>
+            <p class="legal-p">Diese Website wird extern gehostet. Die personenbezogenen Daten, die auf dieser Website erfasst werden, werden auf den Servern des Hosters gespeichert. Hierbei kann es sich v. a. um IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten, Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige Daten, die über eine Website generiert werden, handeln.</p>
+            <p class="legal-p">Das externe Hosting erfolgt zum Zwecke der Vertragserfüllung gegenüber unseren potenziellen und bestehenden Kunden (Art. 6 Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und effizienten Bereitstellung unseres Online-Angebots durch einen professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO).</p>
+            <p class="legal-p">Unser Hoster wird Ihre Daten nur insoweit verarbeiten, wie dies zur Erfüllung seiner Leistungspflichten erforderlich ist und unsere Weisungen in Bezug auf diese Daten befolgen.</p>
+            <p class="legal-p">Wir setzen folgenden Hoster ein:</p>
+            <div class="legal-contact-box">
+                <p>
+                    <strong id="dsc-hostName">4koepfe | Borsdorf, Tetzl GbR</strong><br>
+                    <span id="dsc-hostStreet">Gerichtsstraße 4</span><br>
+                    <span id="dsc-hostCity">01796 Pirna</span>
+                </p>
+            </div>
+
+            <h3 class="legal-h3">Auftragsverarbeitung</h3>
+            <p class="legal-p">Wir haben einen Vertrag über Auftragsverarbeitung (AVV) mit dem oben genannten Anbieter geschlossen. Hierbei handelt es sich um einen datenschutzrechtlich vorgeschriebenen Vertrag, der gewährleistet, dass dieser die personenbezogenen Daten unserer Websitebesucher nur nach unseren Weisungen und unter Einhaltung der DSGVO verarbeitet.</p>
+        </div>
+
+        <!-- 3 -->
+        <div class="legal-section rv" id="abschnitt-3">
+            <h2 class="legal-h2">3. Allgemeine Hinweise und Pflichtinformationen</h2>
+
+            <h3 class="legal-h3">Datenschutz</h3>
+            <p class="legal-p">Die Betreiber dieser Seiten nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend den gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerklärung.</p>
+            <p class="legal-p">Wenn Sie diese Website benutzen, werden verschiedene personenbezogene Daten erhoben. Personenbezogene Daten sind Daten, mit denen Sie persönlich identifiziert werden können. Die vorliegende Datenschutzerklärung erläutert, welche Daten wir erheben und wofür wir sie nutzen. Sie erläutert auch, wie und zu welchem Zweck das geschieht.</p>
+            <p class="legal-p">Wir weisen darauf hin, dass die Datenübertragung im Internet (z. B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.</p>
+
+            <h3 class="legal-h3">Hinweis zur verantwortlichen Stelle</h3>
+            <p class="legal-p">Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:</p>
+            <div class="legal-contact-box">
+                <p>
+                    <strong id="dsc-name">Daniel Wieczorek</strong><br>
+                    <span id="dsc-address">79104 Freiburg im Breisgau</span><br><br>
+                    Telefon: <span id="dsc-phone">+49 176 62024099</span><br>
+                    E-Mail: <a id="dsc-email-link" href="mailto:info@freund-hase.com">info@freund-hase.com</a>
+                </p>
+            </div>
+            <p class="legal-p">Verantwortliche Stelle ist die natürliche oder juristische Person, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet.</p>
+
+            <h3 class="legal-h3">Speicherdauer</h3>
+            <p class="legal-p">Soweit innerhalb dieser Datenschutzerklärung keine speziellere Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten bei uns, bis der Zweck für die Datenverarbeitung entfällt. Wenn Sie ein berechtigtes Löschersuchen geltend machen oder eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre Daten gelöscht, sofern wir keine anderen rechtlich zulässigen Gründe für die Speicherung Ihrer personenbezogenen Daten haben (z. B. steuer- oder handelsrechtliche Aufbewahrungsfristen); im letztgenannten Fall erfolgt die Löschung nach Fortfall dieser Gründe.</p>
+
+            <h3 class="legal-h3">Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung</h3>
+            <p class="legal-p">Sofern Sie in die Datenverarbeitung eingewilligt haben, verarbeiten wir Ihre personenbezogenen Daten auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO bzw. Art. 9 Abs. 2 lit. a DSGVO, sofern besondere Datenkategorien nach Art. 9 Abs. 1 DSGVO verarbeitet werden. Im Falle einer ausdrücklichen Einwilligung in die Übertragung personenbezogener Daten in Drittstaaten erfolgt die Datenverarbeitung außerdem auf Grundlage von Art. 49 Abs. 1 lit. a DSGVO. Sofern Sie in die Speicherung von Cookies oder in den Zugriff auf Informationen in Ihr Endgerät (z. B. via Device-Fingerprinting) eingewilligt haben, erfolgt die Datenverarbeitung zusätzlich auf Grundlage von § 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit widerrufbar.</p>
+
+            <h3 class="legal-h3">Widerruf Ihrer Einwilligung zur Datenverarbeitung</h3>
+            <p class="legal-p">Viele Datenverarbeitungsvorgänge sind nur mit Ihrer ausdrücklichen Einwilligung möglich. Sie können eine bereits erteilte Einwilligung jederzeit widerrufen. Die Rechtmäßigkeit der bis zum Widerruf erfolgten Datenverarbeitung bleibt vom Widerruf unberührt.</p>
+
+            <h3 class="legal-h3">Widerspruchsrecht gegen die Datenerhebung in besonderen Fällen sowie gegen Direktwerbung (Art. 21 DSGVO)</h3>
+            <p class="legal-p">Wenn die Datenverarbeitung auf Grundlage von Art. 6 Abs. 1 lit. e oder f DSGVO erfolgt, haben Sie jederzeit das Recht, aus Gründen, die sich aus Ihrer besonderen Situation ergeben, gegen die Verarbeitung Ihrer personenbezogenen Daten Widerspruch einzulegen; dies gilt auch für ein auf diese Bestimmungen gestütztes Profiling. Die jeweilige Rechtsgrundlage, auf denen eine Verarbeitung beruht, entnehmen Sie dieser Datenschutzerklärung.</p>
+
+            <h3 class="legal-h3">Beschwerderecht bei der zuständigen Aufsichtsbehörde</h3>
+            <p class="legal-p">Im Falle von Verstößen gegen die DSGVO steht den Betroffenen ein Beschwerderecht bei einer Aufsichtsbehörde, insbesondere in dem Mitgliedstaat ihres gewöhnlichen Aufenthalts, ihres Arbeitsplatzes oder des Orts des mutmaßlichen Verstoßes zu.</p>
+
+            <h3 class="legal-h3">Recht auf Datenübertragbarkeit</h3>
+            <p class="legal-p">Sie haben das Recht, Daten, die wir auf Grundlage Ihrer Einwilligung oder in Erfüllung eines Vertrags automatisiert verarbeiten, an sich oder an einen Dritten in einem gängigen, maschinenlesbaren Format aushändigen zu lassen. Sofern Sie die direkte Übertragung der Daten an einen anderen Verantwortlichen verlangen, erfolgt dies nur, soweit es technisch machbar ist.</p>
+
+            <h3 class="legal-h3">Auskunft, Berichtigung und Löschung</h3>
+            <p class="legal-p">Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung und ggf. ein Recht auf Berichtigung oder Löschung dieser Daten. Hierzu sowie zu weiteren Fragen zum Thema personenbezogene Daten können Sie sich jederzeit an uns wenden.</p>
+
+            <h3 class="legal-h3">Recht auf Einschränkung der Verarbeitung</h3>
+            <p class="legal-p">Sie haben das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen. Hierzu können Sie sich jederzeit an uns wenden. Das Recht auf Einschränkung der Verarbeitung besteht in folgenden Fällen:</p>
+            <ul class="legal-ul">
+                <li>Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten personenbezogenen Daten bestreiten, benötigen wir in der Regel Zeit, um dies zu überprüfen. Für die Dauer der Prüfung haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
+                <li>Wenn die Verarbeitung Ihrer personenbezogenen Daten unrechtmäßig geschah/geschieht, können Sie statt der Löschung die Einschränkung der Datenverarbeitung verlangen.</li>
+                <li>Wenn wir Ihre personenbezogenen Daten nicht mehr benötigen, Sie sie jedoch zur Ausübung, Verteidigung oder Geltendmachung von Rechtsansprüchen benötigen, haben Sie das Recht, statt der Löschung die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
+                <li>Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt haben, muss eine Abwägung zwischen Ihren und unseren Interessen vorgenommen werden. Solange noch nicht feststeht, wessen Interessen überwiegen, haben Sie das Recht, die Einschränkung der Verarbeitung Ihrer personenbezogenen Daten zu verlangen.</li>
+            </ul>
+
+            <h3 class="legal-h3">SSL- bzw. TLS-Verschlüsselung</h3>
+            <p class="legal-p">Diese Seite nutzt aus Sicherheitsgründen und zum Schutz der Übertragung vertraulicher Inhalte, wie zum Beispiel Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber senden, eine SSL- bzw. TLS-Verschlüsselung. Eine verschlüsselte Verbindung erkennen Sie daran, dass die Adresszeile des Browsers von „http://" auf „https://" wechselt und an dem Schloss-Symbol in Ihrer Browserzeile.</p>
+        </div>
+
+        <!-- 4 -->
+        <div class="legal-section rv" id="abschnitt-4">
+            <h2 class="legal-h2">4. Datenerfassung auf dieser Website</h2>
+
+            <h3 class="legal-h3">Server-Log-Dateien</h3>
+            <p class="legal-p">Der Provider der Seiten erhebt und speichert automatisch Informationen in so genannten Server-Log-Dateien, die Ihr Browser automatisch an uns übermittelt. Dies sind:</p>
+            <ul class="legal-ul">
+                <li>Browsertyp und Browserversion</li>
+                <li>Verwendetes Betriebssystem</li>
+                <li>Referrer URL</li>
+                <li>Hostname des zugreifenden Rechners</li>
+                <li>Uhrzeit der Serveranfrage</li>
+                <li>IP-Adresse</li>
+            </ul>
+            <p class="legal-p">Eine Zusammenführung dieser Daten mit anderen Datenquellen wird nicht vorgenommen. Die Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes Interesse an der technisch fehlerfreien Darstellung und der Optimierung seiner Website – hierzu müssen die Server-Log-Files erfasst werden.</p>
+
+            <h3 class="legal-h3">Kontaktformular</h3>
+            <p class="legal-p">Wenn Sie uns per Kontaktformular Anfragen zukommen lassen, werden Ihre Angaben aus dem Anfrageformular inklusive der von Ihnen dort angegebenen Kontaktdaten zwecks Bearbeitung der Anfrage und für den Fall von Anschlussfragen bei uns gespeichert. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
+            <p class="legal-p">Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde.</p>
+            <p class="legal-p">Die von Ihnen im Kontaktformular eingegebenen Daten verbleiben bei uns, bis Sie uns zur Löschung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck für die Datenspeicherung entfällt (z. B. nach abgeschlossener Bearbeitung Ihrer Anfrage). Zwingende gesetzliche Bestimmungen – insbesondere Aufbewahrungsfristen – bleiben unberührt.</p>
+
+            <h3 class="legal-h3">Anfrage per E-Mail, Telefon oder Telefax</h3>
+            <p class="legal-p">Wenn Sie uns per E-Mail, Telefon oder Telefax kontaktieren, wird Ihre Anfrage inklusive aller daraus hervorgehenden personenbezogenen Daten (Name, Anfrage) zum Zwecke der Bearbeitung Ihres Anliegens bei uns gespeichert und verarbeitet. Diese Daten geben wir nicht ohne Ihre Einwilligung weiter.</p>
+            <p class="legal-p">Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO, sofern Ihre Anfrage mit der Erfüllung eines Vertrags zusammenhängt oder zur Durchführung vorvertraglicher Maßnahmen erforderlich ist. In allen übrigen Fällen beruht die Verarbeitung auf unserem berechtigten Interesse an der effektiven Bearbeitung der an uns gerichteten Anfragen (Art. 6 Abs. 1 lit. f DSGVO) oder auf Ihrer Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) sofern diese abgefragt wurde.</p>
+            <p class="legal-p">Die von Ihnen an uns per Kontaktanfragen übersandten Daten verbleiben bei uns, bis Sie uns zur Löschung auffordern, Ihre Einwilligung zur Speicherung widerrufen oder der Zweck für die Datenspeicherung entfällt (z. B. nach abgeschlossener Bearbeitung Ihres Anliegens). Zwingende gesetzliche Bestimmungen – insbesondere gesetzliche Aufbewahrungsfristen – bleiben unberührt.</p>
+        </div>
+
+        <!-- 5 -->
+        <div class="legal-section rv" id="abschnitt-5">
+            <h2 class="legal-h2">5. Analyse-Tools und Werbung</h2>
+
+            <h3 class="legal-h3">Google Analytics</h3>
+            <p class="legal-p">Diese Website nutzt Funktionen des Webanalysedienstes Google Analytics. Anbieter ist die Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland.</p>
+            <p class="legal-p">Google Analytics ermöglicht es dem Websitebetreiber, das Verhalten der Websitebesucher zu analysieren. Hierbei erhält der Websitebetreiber verschiedene Nutzungsdaten, wie z. B. Seitenaufrufe, Verweildauer, verwendete Betriebssysteme und Herkunft des Nutzers. Diese Daten werden von Google ggf. in einem Profil zusammengefasst, das dem jeweiligen Nutzer bzw. dessen Endgerät zugeordnet wird.</p>
+            <p class="legal-p">Die Nutzung dieses Dienstes erfolgt auf Grundlage Ihrer Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO und § 25 Abs. 1 TDDDG. Die Einwilligung ist jederzeit widerrufbar.</p>
+            <p class="legal-p">Die Datenübertragung in die USA wird auf die Standardvertragsklauseln der EU-Kommission gestützt. Details finden Sie hier: <a href="https://business.safety.google/adscontrollerterms/sccs/" target="_blank" rel="noopener noreferrer">business.safety.google/adscontrollerterms/sccs/</a></p>
+
+            <h3 class="legal-h3">IP-Anonymisierung</h3>
+            <p class="legal-p">Wir haben auf dieser Website die Funktion IP-Anonymisierung aktiviert. Dadurch wird Ihre IP-Adresse von Google innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen Vertragsstaaten des Abkommens über den Europäischen Wirtschaftsraum vor der Übermittlung in die USA gekürzt. Nur in Ausnahmefällen wird die volle IP-Adresse an einen Server von Google in den USA übertragen und dort gekürzt.</p>
+
+            <h3 class="legal-h3">Browser Plugin</h3>
+            <p class="legal-p">Sie können die Erfassung und Verarbeitung Ihrer Daten durch Google verhindern, indem Sie das unter dem folgenden Link verfügbare Browser-Plugin herunterladen und installieren: <a href="https://tools.google.com/dlpage/gaoptout?hl=de" target="_blank" rel="noopener noreferrer">tools.google.com/dlpage/gaoptout</a></p>
+            <p class="legal-p">Mehr Informationen zum Umgang mit Nutzerdaten bei Google Analytics finden Sie in der Datenschutzerklärung von Google: <a href="https://support.google.com/analytics/answer/6004245?hl=de" target="_blank" rel="noopener noreferrer">support.google.com/analytics/answer/6004245</a></p>
+
+            <h3 class="legal-h3">Auftragsverarbeitung</h3>
+            <p class="legal-p">Wir haben mit Google einen Vertrag zur Auftragsverarbeitung abgeschlossen und setzen die strengen Vorgaben der deutschen Datenschutzbehörden bei der Nutzung von Google Analytics vollständig um.</p>
+        </div>
+
+    </div>
+</div>
+
+<!-- ─── Footer ─── -->
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="footer-copy">© 2025 Daniel Wieczorek · freund-hase.com</span>
+        <div class="footer-right">
+            <a href="impressum.html" class="footer-link">Impressum</a>
+            <a href="datenschutz.html" class="footer-link">Datenschutz</a>
+            <a href="#" class="footer-top" aria-label="Zurück nach oben">
+                <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                Nach oben
+            </a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    const revEls = document.querySelectorAll('.rv');
+    if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+        }, { threshold: 0.12 });
+        revEls.forEach(el => io.observe(el));
+    } else { revEls.forEach(el => el.classList.add('visible')); }
+
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    if (cursor && ring) {
+        document.addEventListener('mousemove', e => {
+            cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px';
+            ring.style.left   = e.clientX + 'px'; ring.style.top   = e.clientY + 'px';
+        });
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+            el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+        });
+    }
+
+    /* ── CMS Content Loader ── */
+    (function() {
+        const raw = localStorage.getItem('freundhase_cms_datenschutz');
+        if (!raw) return;
+        try {
+            const d = JSON.parse(raw);
+            const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.textContent = val; };
+            set('dsc-name', d.name);
+            set('dsc-address', d.address);
+            set('dsc-phone', d.phone);
+            const emailEl = document.getElementById('dsc-email-link');
+            if (emailEl && d.email) { emailEl.textContent = d.email; emailEl.href = 'mailto:' + d.email; }
+            set('dsc-hostName', d.hostName);
+            set('dsc-hostStreet', d.hostStreet);
+            set('dsc-hostCity', d.hostCity);
+        } catch(e) {}
+    })();
+
+    const ham = document.getElementById('navHam');
+    const mobNav = document.getElementById('mobNav');
+    ham.addEventListener('click', () => {
+        const open = mobNav.classList.toggle('open');
+        ham.classList.toggle('open', open);
+        ham.setAttribute('aria-expanded', open);
+    });
+    mobNav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+        mobNav.classList.remove('open'); ham.classList.remove('open'); ham.setAttribute('aria-expanded','false');
+    }));
+</script>
+</body>
+</html>

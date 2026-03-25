@@ -2,6 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="images/favicon-magenta.svg">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Wieczorek — Senior Art Director & UI/UX Designer</title>
     <meta name="description" content="Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.">
@@ -195,13 +196,14 @@
         .proj-card:hover .proj-bg { transform: scale(1.14); }
 
         /* Images */
-        .p1 .proj-bg { background-image: url('https://www.freund-hase.com/images/td_academy_website_1920x1080.jpg'); }
-        .p2 .proj-bg { background-image: url('https://www.freund-hase.com/images/uiq_website_1920x1080.jpg'); }
-        .p3 .proj-bg { background-image: url('https://www.freund-hase.com/images/website_abinsb_1920x1080.jpg'); }
-        .p4 .proj-bg { background-image: url('https://www.freund-hase.com/images/Roll_Up_LAG_1920x1080.jpg'); }
-        .p5 .proj-bg { background-image: url('https://www.freund-hase.com/images/Brandbook_Mierendorff.jpg'); }
-        .p6 .proj-bg { background-image: url('https://freund-hase.com/images/logo_spandau_1920x1080.jpg'); }
-        .p7 .proj-bg { background-image: url('https://freund-hase.com/images/poster.jpg'); }
+        .p1 .proj-bg { background-image: url('images/tdacademy/td_academy_website_1920x1080.jpg'); }
+        .p2 .proj-bg { background-image: url('images/uiq/uiq_website_1920x1080.jpg'); }
+        .p3 .proj-bg { background-image: url('images/abinsb/website_abinsb_1920x1080.jpg'); }
+        .p4 .proj-bg { background-image: url('images/lag/Roll_Up_LAG_1920x1080.jpg'); }
+        .p5 .proj-bg { background-image: url('images/gm/Brandbook_Mierendorff.jpg'); }
+        .p6 .proj-bg { background-image: url('images/spandau/logo_spandau_1920x1080.jpg'); }
+        .p7 .proj-bg { background-image: url('images/synverz/poster.jpg'); }
+        .p8 .proj-bg { background-image: url('images/db/db_hero.jpg'); }
 
         .proj-card-link {
             position: absolute; inset: 0; z-index: 2;
@@ -250,9 +252,6 @@
             font-size: 0.83rem;
             color: rgba(255,255,255,0.55);
             line-height: 1.62;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
             overflow: hidden;
             max-height: 0; opacity: 0;
             margin-bottom: 0;
@@ -373,7 +372,7 @@
             margin: 0 auto clamp(48px,7vw,72px);
             flex-wrap: wrap;
         }
-        .clients-hd-left {}
+
         .clients-label {
             font-family: var(--font-ui);
             font-size: 0.7rem; font-weight: 700;
@@ -607,7 +606,7 @@
         </article>
 
         <article class="proj-card p2" role="listitem" tabindex="0" aria-label="Umwelt im Quartier">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="Umwelt im Quartier — Projekt ansehen"></a>
+            <a href="uiq.html" class="proj-card-link" aria-label="Umwelt im Quartier — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">02</span>
@@ -619,7 +618,7 @@
         </article>
 
         <article class="proj-card p3" role="listitem" tabindex="0" aria-label="AbinsB!">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="AbinsB! — Projekt ansehen"></a>
+            <a href="abinsb.html" class="proj-card-link" aria-label="AbinsB! — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">03</span>
@@ -631,7 +630,7 @@
         </article>
 
         <article class="proj-card p4" role="listitem" tabindex="0" aria-label="LAG Märkische Seen">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="LAG Märkische Seen — Projekt ansehen"></a>
+            <a href="lag.html" class="proj-card-link" aria-label="LAG Märkische Seen — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">04</span>
@@ -643,7 +642,7 @@
         </article>
 
         <article class="proj-card p6" role="listitem" tabindex="0" aria-label="Visit Spandau">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="Visit Spandau — Projekt ansehen"></a>
+            <a href="spandau.html" class="proj-card-link" aria-label="Visit Spandau — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">05</span>
@@ -655,7 +654,7 @@
         </article>
 
         <article class="proj-card p7" role="listitem" tabindex="0" aria-label="Synverz">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="Synverz — Projekt ansehen"></a>
+            <a href="synverz.html" class="proj-card-link" aria-label="Synverz — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">06</span>
@@ -666,11 +665,23 @@
             </div>
         </article>
 
-        <article class="proj-card p5 wide" role="listitem" tabindex="0" aria-label="Green Mierendorff">
-            <a href="index.html#projekte" class="proj-card-link" aria-label="Green Mierendorff — Projekt ansehen"></a>
+        <article class="proj-card p8" role="listitem" tabindex="0" aria-label="DoctorBox">
+            <a href="db.html" class="proj-card-link" aria-label="DoctorBox — Projekt ansehen"></a>
             <div class="proj-bg"></div>
             <div class="proj-overlay">
                 <span class="proj-num">07</span>
+                <h3 class="proj-name">DoctorBox</h3>
+                <p class="proj-cat">UI/UX Design · Gesundheit</p>
+                <p class="proj-desc">Nutzerzentriertes UI/UX-Design für Web und App — kontinuierlich weiterentwickelt mit Figma und skalierbarem Designsystem.</p>
+                <a href="db.html" class="proj-readmore">Mehr ansehen <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+            </div>
+        </article>
+
+        <article class="proj-card p5 wide" role="listitem" tabindex="0" aria-label="Green Mierendorff">
+            <a href="gm.html" class="proj-card-link" aria-label="Green Mierendorff — Projekt ansehen"></a>
+            <div class="proj-bg"></div>
+            <div class="proj-overlay">
+                <span class="proj-num">08</span>
                 <h3 class="proj-name">Green Mierendorff</h3>
                 <p class="proj-cat">Umwelt · Corporate Identity</p>
                 <p class="proj-desc">Vollständige Corporate Identity für ein nachhaltiges Quartiersentwicklungsprojekt in Berlin — Brandbook, Flyer, Visitenkarten.</p>
@@ -712,7 +723,7 @@
 
             <div class="about-vis rv d2">
                 <div class="about-vis-box">
-                    <img src="https://www.freund-hase.com/images/freund-hase.png"
+                    <img src="images/index/freund-hase.png"
                          alt="Daniel Wieczorek — Senior Art Director"
                          class="about-portrait" loading="lazy">
                     <div class="av-frame" aria-hidden="true"></div>
@@ -728,13 +739,13 @@
 </section>
 
 <!-- ─── Clients Slider ─── -->
-<section class="clients-section" id="kunden" role="region" aria-label="Kunden und Branchen">
+<section class="clients-section" id="kunden" role="region" aria-label="Referenzen und Marken">
     <div class="clients-header rv">
         <div class="clients-hd-left">
-            <span class="clients-label">Kunden &amp; Branchen</span>
-            <h2 class="clients-title">Vertrauen seit<br><em style="font-style:italic;color:var(--accent)">über 10 Jahren</em></h2>
+            <span class="clients-label">Referenzen &amp; Marken</span>
+            <h2 class="clients-title">Projekte für starke<br><em style="font-style:italic;color:var(--accent)">Marken & Institutionen</em></h2>
         </div>
-        <span class="clients-count">11 Referenzkunden</span>
+        <span class="clients-count">11 Referenzprojekte</span>
     </div>
 
     <div class="slider-wrap rv d1">
@@ -742,57 +753,57 @@
             <div class="slider-track" id="sliderTrack" role="list">
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/td_167x150h.png" alt="TD Academy" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/td_167x150h.png" alt="TD Academy" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/aqua_consult1_167x150h.png" alt="Aqua Consult" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/aqua_consult1_167x150h.png" alt="Aqua Consult" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Aqua_Ventus_167x150h.png" alt="Aqua Ventus" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/Aqua_Ventus_167x150h.png" alt="Aqua Ventus" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/CK_167x150h.png" alt="CK" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/CK_167x150h.png" alt="Camping Kirchzarten" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/db1_167x150h.png" alt="Deutsche Bahn" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/db1_167x150h.png" alt="Doctorbox" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/hsw_167x150h.png" alt="HSW" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/hsw_167x150h.png" alt="HSW" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Pronol_167x150h.png" alt="Pronol" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/Pronol_167x150h.png" alt="Pronol" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/spandau_167x150h.png" alt="Bezirk Spandau" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/spandau_167x150h.png" alt="Bezirk Spandau" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/Synverz_167x150h.png" alt="Synverz" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/Synverz_167x150h.png" alt="Synverz" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/tub_167x150h.png" alt="TU Berlin" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/tub_167x150h.png" alt="TU Berlin" loading="lazy">
                     </div>
                 </div>
                 <div class="slider-slide" role="listitem">
                     <div class="slider-logo-box">
-                        <img class="slider-logo-img" src="https://www.freund-hase.com/images/scaled/vb1_167x150h.png" alt="VB" loading="lazy">
+                        <img class="slider-logo-img" src="images/index/vb1_167x150h.png" alt="VB" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -808,6 +819,9 @@
             </button>
         </div>
     </div>
+    <p style="max-width:var(--wrap);margin:20px auto 0;padding:0 clamp(20px,5vw,60px);font-family:var(--font-ui);font-size:0.65rem;color:rgba(0,0,0,0.35);letter-spacing:0.04em;">
+        Ausgewählte Referenzen — teils realisiert im Auftrag der Gröschel Branding GmbH.
+    </p>
 </section>
 
 <!-- ─── Contact ─── -->
@@ -828,23 +842,25 @@
             </a>
         </div>
         <nav class="ct-social rv d3" aria-label="Social Media Links">
-            <a href="#" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
-            <a href="#" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
-            <a href="#" rel="noopener noreferrer" aria-label="XING">XING</a>
+            <a href="https://www.instagram.com/freund.hase/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Instagram</a>
+            <a href="https://www.linkedin.com/in/daniel-wieczorek-14030173" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">LinkedIn</a>
+            <a href="https://www.xing.com/profile/Daniel_Wieczorek2" target="_blank" rel="noopener noreferrer" aria-label="XING">XING</a>
         </nav>
     </div>
 </section>
 
 <!-- ─── Footer ─── -->
-<footer role="contentinfo">
-    <div class="foot-inner">
-        <p class="foot-copy">© 2025 Daniel Wieczorek · freund-hase.com · <a href="#" style="color:inherit;">Impressum</a></p>
-        <a href="#" class="foot-top" aria-label="Zurück nach oben">
-            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 19V5M5 12l7-7 7 7"/>
-            </svg>
-            Nach oben
-        </a>
+<footer class="footer">
+    <div class="footer-inner">
+        <span class="footer-copy">© 2025 Daniel Wieczorek · freund-hase.com</span>
+        <div class="footer-right">
+            <a href="impressum.html" class="footer-link">Impressum</a>
+            <a href="datenschutz.html" class="footer-link">Datenschutz</a>
+            <a href="#" class="footer-top" aria-label="Zurück nach oben">
+                <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+                Nach oben
+            </a>
+        </div>
     </div>
 </footer>
 
@@ -1256,18 +1272,25 @@
             if (avLbl && a.yearsLabel) avLbl.textContent = a.yearsLabel;
         }
 
+        /* Skills / Chips */
+        if (cms.skills && cms.skills.length) {
+            const tagsEl = document.querySelector('.tags');
+            if (tagsEl) {
+                tagsEl.innerHTML = cms.skills
+                    .map(s => `<span class="tag">${s}</span>`)
+                    .join('');
+            }
+        }
+
         /* Contact */
         const c = cms.contact;
-        if (c && c.email) {
+        if (c) {
             const ctEmail = document.querySelector('.ct-email');
             if (ctEmail) {
-                ctEmail.href = 'mailto:' + c.email;
-                /* Replace text node (first child) keeping the SVG arrow */
-                const textNode = ctEmail.firstChild;
-                if (textNode && textNode.nodeType === 3) {
-                    textNode.textContent = c.email + ' ';
-                } else {
-                    ctEmail.prepend(document.createTextNode(c.email + ' '));
+                if (c.email) ctEmail.href = 'mailto:' + c.email;
+                if (c.emailLabel) {
+                    const textNode = ctEmail.firstChild;
+                    if (textNode && textNode.nodeType === 3) textNode.textContent = c.emailLabel + ' ';
                 }
             }
         }
