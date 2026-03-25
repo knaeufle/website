@@ -1217,9 +1217,10 @@
             if (tagline && h.tagline) tagline.textContent = h.tagline;
         }
 
-        /* Projects */
+        /* Projects — update content + reorder DOM */
         if (Array.isArray(cms.projects)) {
-            cms.projects.forEach(p => {
+            const grid = document.querySelector('.proj-grid');
+            cms.projects.forEach((p, idx) => {
                 const card = document.querySelector('.proj-card.' + p.id);
                 if (!card) return;
 
@@ -1229,22 +1230,21 @@
                 const numEl  = card.querySelector('.proj-num');
                 const bg     = card.querySelector('.proj-bg');
 
-                if (nameEl && p.name) nameEl.textContent = p.name;
-                if (catEl  && p.cat)  catEl.textContent  = p.cat;
-                if (descEl && p.desc) descEl.textContent = p.desc;
-                if (numEl  && p.num)  numEl.textContent  = p.num;
+                if (nameEl && p.name)  nameEl.textContent = p.name;
+                if (catEl  && p.cat)   catEl.textContent  = p.cat;
+                if (descEl && p.desc)  descEl.textContent = p.desc;
+                if (numEl  && p.num)   numEl.textContent  = p.num;
                 if (bg     && p.image) bg.style.backgroundImage = 'url(' + p.image + ')';
-
-                /* Update aria-label on card */
                 if (p.name) card.setAttribute('aria-label', p.name);
-
-                /* Update links if present */
                 if (p.link) {
                     const cardLink = card.querySelector('.proj-card-link');
                     const readmore = card.querySelector('a.proj-readmore');
                     if (cardLink) cardLink.href = p.link;
                     if (readmore) readmore.href = p.link;
                 }
+
+                /* Reorder: move card to match saved position */
+                if (grid) grid.appendChild(card);
             });
         }
 
