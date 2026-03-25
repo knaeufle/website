@@ -1278,6 +1278,12 @@ function load() {
     } catch(e) {
         data = JSON.parse(JSON.stringify(DEFAULTS));
     }
+    // Merge any projects from DEFAULTS that are missing in stored data (e.g. newly added)
+    if (!data.projects) data.projects = [];
+    const storedIds = new Set(data.projects.map(p => p.id));
+    DEFAULTS.projects.forEach(def => {
+        if (!storedIds.has(def.id)) data.projects.push(JSON.parse(JSON.stringify(def)));
+    });
     populateForms();
 }
 
