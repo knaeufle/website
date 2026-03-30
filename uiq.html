@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Umwelt im Quartier — Daniel Wieczorek · freund-hase.com</title>
     <meta name="description" content="Art Direction und integriertes Kommunikationsdesign für die Bundesinitiative Umwelt im Quartier — Print, Web, Motion.">
+
+    <link rel="canonical" href="https://freund-hase.com/uiq.html">
+    <meta property="og:type"         content="article">
+    <meta property="og:url"          content="https://freund-hase.com/uiq.html">
+    <meta property="og:title"        content="Umwelt im Quartier — Daniel Wieczorek · freund-hase.com">
+    <meta property="og:description"  content="Art Direction und integriertes Kommunikationsdesign für die Bundesinitiative Umwelt im Quartier — Print, Web, Motion.">
+    <meta property="og:image"        content="https://freund-hase.com/images/og-preview.jpg">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="Umwelt im Quartier — Daniel Wieczorek · freund-hase.com">
+    <meta name="twitter:description" content="Art Direction und integriertes Kommunikationsdesign für die Bundesinitiative Umwelt im Quartier — Print, Web, Motion.">
+    <meta name="twitter:image"       content="https://freund-hase.com/images/og-preview.jpg">
+    <script type="application/ld+json">
+    [{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://freund-hase.com"},{"@type":"ListItem","position":2,"name":"Umwelt im Quartier","item":"https://freund-hase.com/uiq.html"}]},{"@context":"https://schema.org","@type":"CreativeWork","name":"Umwelt im Quartier","url":"https://freund-hase.com/uiq.html","description":"Art Direction und integriertes Kommunikationsdesign für die Bundesinitiative Umwelt im Quartier — Print, Web, Motion.","creator":{"@type":"Person","name":"Daniel Wieczorek","url":"https://freund-hase.com"}}]
+    </script>
+
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -722,6 +739,13 @@
                 if (lblEl && s.label) lblEl.innerHTML = s.label.replace(/\n/g, '<br>');
             });
         }
+
+        /* Chips */
+        function setChips(el, csv, cls) { if (!el || !csv) return; const t = csv.split(',').map(s=>s.trim()).filter(Boolean); if (t.length) el.innerHTML = t.map(s=>`<span class="${cls}">${s}</span>`).join(''); }
+        if (cms.heroTags) setChips(document.querySelector('.proj-hero-tags'), cms.heroTags, 'proj-hero-tag');
+        const tagGroups = document.querySelectorAll('.deliverables-tags');
+        if (cms.deliverables) setChips(tagGroups[0], cms.deliverables, 'deliverable-tag');
+        if (cms.tools) setChips(tagGroups[1], cms.tools, 'deliverable-tag');
     })();
 </script>
 <script src="cookie-consent.js"></script>

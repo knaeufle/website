@@ -48,30 +48,33 @@
 #cc-banner {
     position: fixed; bottom: 0; left: 0; right: 0; z-index: 9000;
     background: #1a1a1a; border-top: 1px solid rgba(255,255,255,0.08);
-    padding: 18px clamp(16px,5vw,60px);
+    padding: 16px clamp(16px,5vw,60px);
     font-family: 'Outfit', 'Segoe UI', sans-serif;
     transform: translateY(100%); opacity: 0;
     transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s;
+    box-sizing: border-box;
 }
 #cc-banner.show { transform: translateY(0); opacity: 1; }
 #cc-banner-inner {
     max-width: 1200px; margin: 0 auto;
-    display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
 }
 #cc-banner p {
-    flex: 1; min-width: 220px;
+    flex: 1; min-width: 0;
     font-size: 0.82rem; line-height: 1.6; color: rgba(255,255,255,0.75);
     margin: 0;
 }
 #cc-banner p strong { color: #fff; font-weight: 600; }
 #cc-banner-btns {
-    display: flex; align-items: center; gap: 10px; flex-shrink: 0; flex-wrap: wrap;
+    display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap;
+    width: 100%;
 }
 .cc-btn {
     font-family: 'Outfit', sans-serif; font-size: 0.75rem;
     font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
     padding: 9px 18px; border-radius: 2px; cursor: pointer;
     transition: opacity 0.2s, background 0.2s; border: none; white-space: nowrap;
+    flex: 1; text-align: center;
 }
 .cc-btn-ghost {
     background: transparent; color: rgba(255,255,255,0.5);
@@ -83,23 +86,35 @@
 .cc-btn-reject:hover { background: rgba(255,255,255,0.14); }
 .cc-btn-accept { background: #d4177a; color: #fff; }
 .cc-btn-accept:hover { opacity: 0.88; }
+@media (min-width: 600px) {
+    #cc-banner-btns { width: auto; }
+    .cc-btn { flex: none; }
+}
 
 /* ── Cookie Modal ── */
 #cc-overlay {
     position: fixed; inset: 0; z-index: 9100;
     background: rgba(0,0,0,0.72); backdrop-filter: blur(4px);
-    display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: flex-end; justify-content: center;
     opacity: 0; pointer-events: none;
     transition: opacity 0.25s;
-    padding: 20px;
+    padding: 0;
 }
 #cc-overlay.show { opacity: 1; pointer-events: all; }
 #cc-modal {
     background: #1e1e1e; border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 4px; width: 100%; max-width: 480px;
-    padding: 32px; position: relative;
-    transform: translateY(12px); transition: transform 0.25s;
+    border-radius: 4px 4px 0 0; width: 100%; max-width: 100%;
+    padding: 24px 20px 32px; position: relative;
+    transform: translateY(20px); transition: transform 0.25s;
     font-family: 'Outfit', 'Segoe UI', sans-serif;
+    max-height: 90vh; overflow-y: auto; box-sizing: border-box;
+}
+@media (min-width: 600px) {
+    #cc-overlay { align-items: center; padding: 20px; }
+    #cc-modal {
+        border-radius: 4px; max-width: 480px;
+        padding: 32px; max-height: none; overflow-y: visible;
+    }
 }
 #cc-overlay.show #cc-modal { transform: translateY(0); }
 #cc-modal-close {

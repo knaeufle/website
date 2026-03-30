@@ -6,6 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoctorBox — Daniel Wieczorek · freund-hase.com</title>
     <meta name="description" content="UI/UX-Design für die Web- und App-Plattform von DoctorBox — nutzerzentrierte Gesundheitsanwendungen mit Figma und modularem Designsystem.">
+
+    <link rel="canonical" href="https://freund-hase.com/db.html">
+    <meta property="og:type"         content="article">
+    <meta property="og:url"          content="https://freund-hase.com/db.html">
+    <meta property="og:title"        content="DoctorBox — Daniel Wieczorek · freund-hase.com">
+    <meta property="og:description"  content="UI/UX-Design für die Web- und App-Plattform von DoctorBox — nutzerzentrierte Gesundheitsanwendungen mit Figma und modularem Designsystem.">
+    <meta property="og:image"        content="https://freund-hase.com/images/og-preview.jpg">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="DoctorBox — Daniel Wieczorek · freund-hase.com">
+    <meta name="twitter:description" content="UI/UX-Design für die Web- und App-Plattform von DoctorBox — nutzerzentrierte Gesundheitsanwendungen mit Figma und modularem Designsystem.">
+    <meta name="twitter:image"       content="https://freund-hase.com/images/og-preview.jpg">
+    <script type="application/ld+json">
+    [{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://freund-hase.com"},{"@type":"ListItem","position":2,"name":"DoctorBox","item":"https://freund-hase.com/db.html"}]},{"@context":"https://schema.org","@type":"CreativeWork","name":"DoctorBox","url":"https://freund-hase.com/db.html","description":"UI/UX-Design für die Web- und App-Plattform von DoctorBox — nutzerzentrierte Gesundheitsanwendungen mit Figma und modularem Designsystem.","creator":{"@type":"Person","name":"Daniel Wieczorek","url":"https://freund-hase.com"}}]
+    </script>
+
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -268,7 +285,6 @@
                 <p class="deliverables-title">Tools</p>
                 <div class="deliverables-tags">
                     <span class="deliverable-tag">Figma</span>
-                    <span class="deliverable-tag">Zeplin</span>
                     <span class="deliverable-tag">Jira</span>
                 </div>
             </div>
@@ -358,7 +374,7 @@
 
 <!-- ─── Full-width Image ─── -->
 <div class="fullimg-section" role="img" aria-label="DoctorBox — App Detailansicht">
-    <img src="images/db/dbapp2.jpg" alt="DoctorBox — App Detailansicht" loading="lazy">
+    <img src="images/db/dbapp2.jpg" alt="DoctorBox — App Detailansicht" loading="lazy" onerror="this.closest('.fullimg-section').style.display='none';">
 </div>
 
 <!-- ─── Next Projects ─── -->
@@ -453,9 +469,18 @@
                     visible.forEach(el => { el.style.gridColumn = '1 / -1'; el.querySelector('img').style.aspectRatio = '16/7'; });
                 }
             })();
-            if (g.imgFull) { const el = document.querySelector('.fullimg-section img');          if (el) el.src = g.imgFull; }
+            if (g.imgFull) { const el = document.querySelector('.fullimg-section img'); if (el) { el.src = g.imgFull; } } else if (g.hasOwnProperty('imgFull') && !g.imgFull) { const el = document.querySelector('.fullimg-section'); if (el) el.style.display = 'none'; }
             if (d.challenges) { d.challenges.forEach((ch, idx) => { const t = document.querySelectorAll('.challenge-title')[idx]; const p = document.querySelectorAll('.challenge-text')[idx]; if (t) t.textContent = ch.title; if (p) p.textContent = ch.text; }); }
             if (d.stats) { d.stats.forEach((s, idx) => { const n = document.querySelectorAll('.stat-num')[idx]; const l = document.querySelectorAll('.stat-label')[idx]; if (n) n.textContent = s.num; if (l) l.textContent = s.label; }); }
+            function setChips(container, csv) { if (!container || !csv) return; const tags = csv.split(',').map(s=>s.trim()).filter(Boolean); if (!tags.length) return; container.innerHTML = tags.map(t=>`<span class="deliverable-tag">${t}</span>`).join(''); }
+            if (d.heroTags) { const wrap = document.querySelector('.proj-hero-tags'); if (wrap) { const tags = d.heroTags.split(',').map(s=>s.trim()).filter(Boolean); if (tags.length) wrap.innerHTML = tags.map(t=>`<span class="proj-hero-tag">${t}</span>`).join(''); } }
+            const tagGroups = document.querySelectorAll('.deliverables-tags');
+            if (d.deliverables) setChips(tagGroups[0], d.deliverables);
+            if (d.tools) setChips(tagGroups[1], d.tools);
+            if (d.cta) {
+                const label = document.querySelector('.app-link-banner span'); if (label && d.cta.label) label.textContent = d.cta.label;
+                const btn = document.querySelector('.app-link-btn'); if (btn) { if (d.cta.btnText) btn.firstChild.textContent = d.cta.btnText + ' '; if (d.cta.btnUrl) btn.href = d.cta.btnUrl; }
+            }
         } catch(e) {}
     })();
 

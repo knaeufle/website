@@ -265,7 +265,7 @@
         }
         .field-hint { font-size: 0.68rem; color: rgba(250,250,248,0.3); margin-top: 5px; }
 
-        input[type="text"], input[type="email"], input[type="url"], textarea {
+        input[type="text"], input[type="email"], textarea {
             width: 100%; background: rgba(255,255,255,0.04);
             border: 1px solid var(--border); border-radius: 2px;
             color: var(--text); padding: 10px 14px;
@@ -274,13 +274,15 @@
             outline: none;
         }
         input[type="text"]:focus, input[type="email"]:focus,
-        input[type="url"]:focus, textarea:focus {
+        textarea:focus {
             border-color: var(--accent);
         }
         textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 
-        /* ── Image field with preview ── */
+        /* ── Image field with preview + upload ── */
         .img-field { display: flex; gap: 12px; align-items: flex-start; }
+        .img-field-inputs { flex: 1; display: flex; gap: 6px; align-items: center; }
+        .img-field-inputs input { flex: 1; }
         .img-field input { flex: 1; }
         .img-preview {
             width: 72px; height: 52px; border-radius: 2px;
@@ -288,9 +290,47 @@
             border: 1px solid var(--border);
             object-fit: cover; flex-shrink: 0;
             overflow: hidden; display: flex; align-items: center; justify-content: center;
+            transition: border-color 0.2s;
         }
         .img-preview img { width: 100%; height: 100%; object-fit: cover; }
         .img-preview-placeholder { font-size: 0.6rem; color: var(--muted); text-align: center; padding: 4px; }
+
+        /* Upload button */
+        .img-upload-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; flex-shrink: 0;
+            background: rgba(255,255,255,0.06); border: 1px solid var(--border);
+            border-radius: 2px; cursor: pointer; color: rgba(255,255,255,0.5);
+            transition: background 0.2s, color 0.2s; position: relative;
+        }
+        .img-upload-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+        .img-upload-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+        .img-upload-btn input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; }
+        /* Drag-over state */
+        .img-field.drag-over .img-preview { border-color: var(--accent); }
+        .img-field.drag-over { outline: 2px dashed var(--accent); outline-offset: 3px; border-radius: 3px; }
+        .img-uploading { opacity: 0.5; pointer-events: none; }
+
+        /* ── Logo list (Clients panel) ── */
+        .logo-list { display: flex; flex-direction: column; gap: 10px; }
+        .logo-item {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+            border-radius: 3px; padding: 12px 14px;
+            display: flex; align-items: center; gap: 12px;
+        }
+        .logo-item.drag-over-item { border-color: var(--accent); background: var(--accent-dim); }
+        .logo-drag-handle {
+            cursor: grab; color: rgba(255,255,255,0.25); flex-shrink: 0; padding: 2px;
+        }
+        .logo-drag-handle svg { width: 16px; height: 16px; display: block; }
+        .logo-item-fields { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .logo-item-del {
+            background: none; border: none; cursor: pointer;
+            color: rgba(255,255,255,0.25); flex-shrink: 0; padding: 4px;
+            transition: color 0.2s;
+        }
+        .logo-item-del:hover { color: #e05; }
+        .logo-item-del svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
 
         /* ── Project cards in CMS ── */
         .proj-list { display: flex; flex-direction: column; gap: 12px; }
@@ -372,6 +412,7 @@
         }
         .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); display: inline-block; margin-right: 6px; }
         .status-dot.dirty { background: var(--accent); }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
     <script src="cms-cache.js" onerror="void 0"></script>
 </head>
@@ -393,22 +434,7 @@
             <button type="submit" class="login-btn">Anmelden</button>
         </form>
 
-        <!-- Reset code entry (shown after "Passwort vergessen") -->
-        <div class="login-reset" id="resetSection">
-            <div class="login-divider">Code per E-Mail erhalten</div>
-            <form id="resetCodeForm" autocomplete="off">
-                <div class="login-field">
-                    <label for="resetCode">Reset-Code</label>
-                    <input type="text" id="resetCode" placeholder="z.B. A3K9QX" maxlength="8" style="letter-spacing:0.2em;text-transform:uppercase;">
-                </div>
-                <p class="login-error" id="resetCodeError"></p>
-                <p class="login-success" id="resetCodeSuccess"></p>
-                <button type="submit" class="login-btn">Code bestätigen</button>
-                <button type="button" class="login-btn-ghost" id="btnCancelReset">Zurück zum Login</button>
-            </form>
-        </div>
-
-        <!-- New password form (shown after valid code) -->
+        <!-- New password form (shown after reset link click) -->
         <div class="login-reset" id="newPwSection">
             <div class="login-divider">Neues Passwort setzen</div>
             <form id="newPwForm" autocomplete="off">
@@ -472,6 +498,10 @@
             <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             Kontakt
         </div>
+        <div class="sidebar-item" data-panel="clients">
+            <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            Referenzen & Marken
+        </div>
 
         <div class="sidebar-divider"></div>
         <div class="sidebar-section">Unterseiten</div>
@@ -507,6 +537,21 @@
             <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             DoctorBox
         </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Medien</div>
+        <div class="sidebar-item" data-panel="mediathek">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            Mediathek
+        </div>
+
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-section">Neue Seite</div>
+        <div class="sidebar-item" data-panel="neue-unterseite" id="sidebarNeueUnterseite">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Unterseite anlegen
+        </div>
+        <div id="dynPageSidebarItems"></div>
 
         <div class="sidebar-divider"></div>
         <div class="sidebar-section">Rechtliches</div>
@@ -577,7 +622,7 @@
         </section>
 
         <!-- ── Projekte Panel ── -->
-        <section class="panel" id="panel-projekte">
+        <section class="panel" id="panel-projekte" data-folder="index">
             <h1 class="panel-title">Projekte</h1>
             <p class="panel-sub">Alle Portfolio-Projekte — Titel, Kategorie, Beschreibung und Vorschaubild. Reihenfolge per Drag & Drop ändern.</p>
 
@@ -589,7 +634,7 @@
         </section>
 
         <!-- ── About Panel ── -->
-        <section class="panel" id="panel-about">
+        <section class="panel" id="panel-about" data-folder="index">
             <h1 class="panel-title">Über mich</h1>
             <p class="panel-sub">Persönlicher Bereich mit Portrait und Biografie.</p>
 
@@ -598,7 +643,7 @@
                 <div class="field">
                     <label class="field-label">Bild-URL</label>
                     <div class="img-field">
-                        <input type="url" id="a-portrait" placeholder="https://...">
+                        <input type="text" id="a-portrait" placeholder="https://...">
                         <div class="img-preview" id="a-portrait-preview">
                             <span class="img-preview-placeholder">Kein Bild</span>
                         </div>
@@ -669,8 +714,36 @@
             </div>
         </section>
 
+        <!-- ── Referenzen & Marken Panel ── -->
+        <section class="panel" id="panel-clients" data-folder="index">
+            <h1 class="panel-title">Referenzen & Marken</h1>
+            <p class="panel-sub">Logos und Abschnittstexte der Slider-Sektion bearbeiten.</p>
+
+            <div class="card">
+                <div class="card-title">Abschnitt-Text</div>
+                <div class="field">
+                    <label class="field-label">Label (klein)</label>
+                    <input type="text" id="cli-label" placeholder="Referenzen & Marken">
+                </div>
+                <div class="field">
+                    <label class="field-label">Titel (erster Teil)</label>
+                    <input type="text" id="cli-title" placeholder="Projekte für starke">
+                </div>
+                <div class="field">
+                    <label class="field-label">Titel (kursiv, Akzentfarbe)</label>
+                    <input type="text" id="cli-titleEm" placeholder="Marken & Institutionen">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Logos</div>
+                <div class="logo-list" id="logoList"></div>
+                <button class="btn" id="btnAddLogo" type="button" style="margin-top:12px;">+ Neues Logo</button>
+            </div>
+        </section>
+
         <!-- ── TD Academy Panel ── -->
-        <section class="panel" id="panel-tda">
+        <section class="panel" id="panel-tda" data-folder="tdacademy">
             <h1 class="panel-title">TD Academy</h1>
             <p class="panel-sub">Inhalte der Unterseite tdacademy.html bearbeiten.</p>
 
@@ -679,7 +752,7 @@
                 <div class="field">
                     <label class="field-label">Hintergrundbild (URL)</label>
                     <div class="img-field">
-                        <input type="url" id="tda-heroImg" placeholder="https://...">
+                        <input type="text" id="tda-heroImg" placeholder="https://...">
                         <div class="img-preview" id="tda-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -718,28 +791,28 @@
                 <div class="field">
                     <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
                     <div class="img-field">
-                        <input type="url" id="tda-gal1" placeholder="https://...">
+                        <input type="text" id="tda-gal1" placeholder="https://...">
                         <div class="img-preview" id="tda-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 2</label>
                     <div class="img-field">
-                        <input type="url" id="tda-gal2" placeholder="https://...">
+                        <input type="text" id="tda-gal2" placeholder="https://...">
                         <div class="img-preview" id="tda-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 3</label>
                     <div class="img-field">
-                        <input type="url" id="tda-gal3" placeholder="https://...">
+                        <input type="text" id="tda-gal3" placeholder="https://...">
                         <div class="img-preview" id="tda-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
                     <div class="img-field">
-                        <input type="url" id="tda-galFull" placeholder="https://...">
+                        <input type="text" id="tda-galFull" placeholder="https://...">
                         <div class="img-preview" id="tda-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -754,10 +827,15 @@
                 <div class="card-title">Statistiken (4 Werte)</div>
                 <div id="tdaStatList"></div>
             </div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="tda-heroTags" placeholder="Branding, UI/UX Design, Art Direction"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="tda-deliverables" placeholder="Logo, Typographie, Farbsystem"></div>
+            </div>
         </section>
 
         <!-- ── Umwelt im Quartier Panel ── -->
-        <section class="panel" id="panel-uiq">
+        <section class="panel" id="panel-uiq" data-folder="uiq">
             <h1 class="panel-title">Umwelt im Quartier</h1>
             <p class="panel-sub">Inhalte der Unterseite uiq.html bearbeiten.</p>
 
@@ -766,7 +844,7 @@
                 <div class="field">
                     <label class="field-label">Hintergrundbild (URL)</label>
                     <div class="img-field">
-                        <input type="url" id="uiq-heroImg" placeholder="https://...">
+                        <input type="text" id="uiq-heroImg" placeholder="https://...">
                         <div class="img-preview" id="uiq-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -805,28 +883,28 @@
                 <div class="field">
                     <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
                     <div class="img-field">
-                        <input type="url" id="uiq-gal1" placeholder="https://...">
+                        <input type="text" id="uiq-gal1" placeholder="https://...">
                         <div class="img-preview" id="uiq-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 2</label>
                     <div class="img-field">
-                        <input type="url" id="uiq-gal2" placeholder="https://...">
+                        <input type="text" id="uiq-gal2" placeholder="https://...">
                         <div class="img-preview" id="uiq-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 3</label>
                     <div class="img-field">
-                        <input type="url" id="uiq-gal3" placeholder="https://...">
+                        <input type="text" id="uiq-gal3" placeholder="https://...">
                         <div class="img-preview" id="uiq-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
                     <div class="img-field">
-                        <input type="url" id="uiq-galFull" placeholder="https://...">
+                        <input type="text" id="uiq-galFull" placeholder="https://...">
                         <div class="img-preview" id="uiq-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -841,10 +919,15 @@
                 <div class="card-title">Statistiken (4 Werte)</div>
                 <div id="uiqStatList"></div>
             </div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="uiq-heroTags" placeholder="Art Direction, Print Design, UI/UX Design"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="uiq-deliverables" placeholder="Adobe XD, InDesign, Illustrator"></div>
+            </div>
         </section>
 
         <!-- ── Ab ins B! Panel ── -->
-        <section class="panel" id="panel-abinsb">
+        <section class="panel" id="panel-abinsb" data-folder="abinsb">
             <h1 class="panel-title">Ab ins B!</h1>
             <p class="panel-sub">Inhalte der Unterseite abinsb.html bearbeiten.</p>
 
@@ -853,7 +936,7 @@
                 <div class="field">
                     <label class="field-label">Hintergrundbild (URL)</label>
                     <div class="img-field">
-                        <input type="url" id="aib-heroImg" placeholder="https://...">
+                        <input type="text" id="aib-heroImg" placeholder="https://...">
                         <div class="img-preview" id="aib-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -892,28 +975,28 @@
                 <div class="field">
                     <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
                     <div class="img-field">
-                        <input type="url" id="aib-gal1" placeholder="https://...">
+                        <input type="text" id="aib-gal1" placeholder="https://...">
                         <div class="img-preview" id="aib-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 2</label>
                     <div class="img-field">
-                        <input type="url" id="aib-gal2" placeholder="https://...">
+                        <input type="text" id="aib-gal2" placeholder="https://...">
                         <div class="img-preview" id="aib-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 3</label>
                     <div class="img-field">
-                        <input type="url" id="aib-gal3" placeholder="https://...">
+                        <input type="text" id="aib-gal3" placeholder="https://...">
                         <div class="img-preview" id="aib-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
                     <div class="img-field">
-                        <input type="url" id="aib-galFull" placeholder="https://...">
+                        <input type="text" id="aib-galFull" placeholder="https://...">
                         <div class="img-preview" id="aib-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -928,10 +1011,15 @@
                 <div class="card-title">Statistiken (4 Werte)</div>
                 <div id="aibStatList"></div>
             </div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="aib-heroTags" placeholder="Art Direction, Branding, Kampagnendesign"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="aib-deliverables" placeholder="Logo, Keyvisual, Plakate, Flyer"></div>
+            </div>
         </section>
 
         <!-- ── LAG Märkische Seen Panel ── -->
-        <section class="panel" id="panel-lag">
+        <section class="panel" id="panel-lag" data-folder="lag">
             <h1 class="panel-title">LAG Märkische Seen</h1>
             <p class="panel-sub">Inhalte der Unterseite lag.html bearbeiten.</p>
 
@@ -940,7 +1028,7 @@
                 <div class="field">
                     <label class="field-label">Hintergrundbild (URL)</label>
                     <div class="img-field">
-                        <input type="url" id="lag-heroImg" placeholder="https://...">
+                        <input type="text" id="lag-heroImg" placeholder="https://...">
                         <div class="img-preview" id="lag-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -979,28 +1067,28 @@
                 <div class="field">
                     <label class="field-label">Bild 1 — Groß (Fullwidth)</label>
                     <div class="img-field">
-                        <input type="url" id="lag-gal1" placeholder="https://...">
+                        <input type="text" id="lag-gal1" placeholder="https://...">
                         <div class="img-preview" id="lag-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 2</label>
                     <div class="img-field">
-                        <input type="url" id="lag-gal2" placeholder="https://...">
+                        <input type="text" id="lag-gal2" placeholder="https://...">
                         <div class="img-preview" id="lag-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Bild 3</label>
                     <div class="img-field">
-                        <input type="url" id="lag-gal3" placeholder="https://...">
+                        <input type="text" id="lag-gal3" placeholder="https://...">
                         <div class="img-preview" id="lag-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
                 <div class="field">
                     <label class="field-label">Fullwidth-Bild (unterer Bereich)</label>
                     <div class="img-field">
-                        <input type="url" id="lag-galFull" placeholder="https://...">
+                        <input type="text" id="lag-galFull" placeholder="https://...">
                         <div class="img-preview" id="lag-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div>
                     </div>
                 </div>
@@ -1015,15 +1103,21 @@
                 <div class="card-title">Statistiken (4 Werte)</div>
                 <div id="lagStatList"></div>
             </div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="lag-heroTags" placeholder="Art Direction, Corporate Design, Print"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="lag-deliverables" placeholder="Roll-Ups, Flyer, Banner"></div>
+                <div class="field"><label class="field-label">Tools (kommagetrennt)</label><input type="text" id="lag-tools" placeholder="InDesign, Illustrator, Photoshop"></div>
+            </div>
         </section>
 
         <!-- ── Green Mierendorff Panel ── -->
-        <section class="panel" id="panel-gm">
+        <section class="panel" id="panel-gm" data-folder="gm">
             <h1 class="panel-title">Green Mierendorff</h1>
             <p class="panel-sub">Inhalte der Unterseite gm.html bearbeiten.</p>
             <div class="card">
                 <div class="card-title">Hero</div>
-                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="gm-heroImg" placeholder="https://..."><div class="img-preview" id="gm-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="text" id="gm-heroImg" placeholder="https://..."><div class="img-preview" id="gm-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
                 <div class="field"><label class="field-label">Kategorie</label><input type="text" id="gm-heroCat" placeholder="Umwelt · Corporate Identity"></div>
                 <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="gm-heroTitle" placeholder="Green Mierendorff"></div>
             </div>
@@ -1036,22 +1130,28 @@
             </div>
             <div class="card">
                 <div class="card-title">Galerie</div>
-                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="gm-gal1" placeholder="https://..."><div class="img-preview" id="gm-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="gm-gal2" placeholder="https://..."><div class="img-preview" id="gm-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="gm-gal3" placeholder="https://..."><div class="img-preview" id="gm-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="gm-galFull" placeholder="https://..."><div class="img-preview" id="gm-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="text" id="gm-gal1" placeholder="https://..."><div class="img-preview" id="gm-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="text" id="gm-gal2" placeholder="https://..."><div class="img-preview" id="gm-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="text" id="gm-gal3" placeholder="https://..."><div class="img-preview" id="gm-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="text" id="gm-galFull" placeholder="https://..."><div class="img-preview" id="gm-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
             </div>
             <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="gmChallengeList"></div></div>
             <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="gmStatList"></div></div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="gm-heroTags" placeholder="Corporate Identity, Art Direction, Brandbook"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="gm-deliverables" placeholder="Logo, Brandbook, Flyer, Plakat"></div>
+                <div class="field"><label class="field-label">Tools (kommagetrennt)</label><input type="text" id="gm-tools" placeholder="InDesign, Illustrator, Photoshop"></div>
+            </div>
         </section>
 
         <!-- ── SynVer*Z Panel ── -->
-        <section class="panel" id="panel-synverz">
+        <section class="panel" id="panel-synverz" data-folder="synverz">
             <h1 class="panel-title">SynVer*Z</h1>
             <p class="panel-sub">Inhalte der Unterseite synverz.html bearbeiten.</p>
             <div class="card">
                 <div class="card-title">Hero</div>
-                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="svz-heroImg" placeholder="https://..."><div class="img-preview" id="svz-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="text" id="svz-heroImg" placeholder="https://..."><div class="img-preview" id="svz-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
                 <div class="field"><label class="field-label">Kategorie</label><input type="text" id="svz-heroCat" placeholder="Wissenschaft · Brand Design"></div>
                 <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="svz-heroTitle" placeholder="SynVer*Z"></div>
             </div>
@@ -1064,22 +1164,28 @@
             </div>
             <div class="card">
                 <div class="card-title">Galerie</div>
-                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="svz-gal1" placeholder="https://..."><div class="img-preview" id="svz-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="svz-gal2" placeholder="https://..."><div class="img-preview" id="svz-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="svz-gal3" placeholder="https://..."><div class="img-preview" id="svz-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="svz-galFull" placeholder="https://..."><div class="img-preview" id="svz-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="text" id="svz-gal1" placeholder="https://..."><div class="img-preview" id="svz-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="text" id="svz-gal2" placeholder="https://..."><div class="img-preview" id="svz-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="text" id="svz-gal3" placeholder="https://..."><div class="img-preview" id="svz-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="text" id="svz-galFull" placeholder="https://..."><div class="img-preview" id="svz-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
             </div>
             <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="svzChallengeList"></div></div>
             <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="svzStatList"></div></div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="svz-heroTags" placeholder="Brand Design, Art Direction, Motion Design"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="svz-deliverables" placeholder="Logo, Designsystem, Poster, Magazin"></div>
+                <div class="field"><label class="field-label">Auftraggeber (kommagetrennt)</label><input type="text" id="svz-tools" placeholder="BMBF-gefördert, Gröschel Branding"></div>
+            </div>
         </section>
 
         <!-- ── Visit Spandau Panel ── -->
-        <section class="panel" id="panel-spandau">
+        <section class="panel" id="panel-spandau" data-folder="spandau">
             <h1 class="panel-title">Visit Spandau</h1>
             <p class="panel-sub">Inhalte der Unterseite spandau.html bearbeiten.</p>
             <div class="card">
                 <div class="card-title">Hero</div>
-                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="url" id="spa-heroImg" placeholder="https://..."><div class="img-preview" id="spa-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Hintergrundbild (URL)</label><div class="img-field"><input type="text" id="spa-heroImg" placeholder="https://..."><div class="img-preview" id="spa-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
                 <div class="field"><label class="field-label">Kategorie</label><input type="text" id="spa-heroCat" placeholder="Tourismus · Stadtmarketing"></div>
                 <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="spa-heroTitle" placeholder="Visit Spandau"></div>
             </div>
@@ -1092,13 +1198,19 @@
             </div>
             <div class="card">
                 <div class="card-title">Galerie</div>
-                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="spa-gal1" placeholder="https://..."><div class="img-preview" id="spa-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="spa-gal2" placeholder="https://..."><div class="img-preview" id="spa-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="spa-gal3" placeholder="https://..."><div class="img-preview" id="spa-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="spa-galFull" placeholder="https://..."><div class="img-preview" id="spa-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="text" id="spa-gal1" placeholder="https://..."><div class="img-preview" id="spa-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="text" id="spa-gal2" placeholder="https://..."><div class="img-preview" id="spa-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="text" id="spa-gal3" placeholder="https://..."><div class="img-preview" id="spa-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="text" id="spa-galFull" placeholder="https://..."><div class="img-preview" id="spa-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
             </div>
             <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="spaChallengeList"></div></div>
             <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="spaStatList"></div></div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="spa-heroTags" placeholder="Corporate Identity, Art Direction, Logoentwicklung"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="spa-deliverables" placeholder="Logo, Magazin, Flyer, Plakat"></div>
+                <div class="field"><label class="field-label">Tools (kommagetrennt)</label><input type="text" id="spa-tools" placeholder="InDesign, Illustrator, Photoshop"></div>
+            </div>
         </section>
 
         <!-- ── Impressum Panel ── -->
@@ -1138,12 +1250,12 @@
         </section>
 
         <!-- ── DoctorBox Panel ── -->
-        <section class="panel" id="panel-db">
+        <section class="panel" id="panel-db" data-folder="db">
             <h1 class="panel-title">DoctorBox</h1>
             <p class="panel-sub">Inhalte der Unterseite db.html bearbeiten.</p>
             <div class="card">
                 <div class="card-title">Hero</div>
-                <div class="field"><label class="field-label">Hintergrundbild (Pfad)</label><div class="img-field"><input type="url" id="db-heroImg" placeholder="images/db/db_hero.jpg"><div class="img-preview" id="db-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Hintergrundbild (Pfad)</label><div class="img-field"><input type="text" id="db-heroImg" placeholder="images/db/db_hero.jpg"><div class="img-preview" id="db-heroImg-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
                 <div class="field"><label class="field-label">Kategorie</label><input type="text" id="db-heroCat" placeholder="UI/UX Design · Gesundheit"></div>
                 <div class="field"><label class="field-label">Projekttitel</label><input type="text" id="db-heroTitle" placeholder="DoctorBox"></div>
             </div>
@@ -1155,14 +1267,26 @@
                 <div class="field"><label class="field-label">Leistungsumfang (eine Zeile pro Eintrag)</label><textarea id="db-services" rows="5" placeholder="UI/UX-Konzeption mit Figma&#10;Entwicklung modularer UI-Komponenten&#10;Iterationen auf Basis von Nutzerfeedback"></textarea></div>
             </div>
             <div class="card">
+                <div class="card-title">CTA-Banner</div>
+                <div class="field"><label class="field-label">Text links (z.B. "Live ansehen")</label><input type="text" id="db-ctaLabel" placeholder="Live ansehen"></div>
+                <div class="field"><label class="field-label">Button-Text</label><input type="text" id="db-ctaBtnText" placeholder="App ansehen"></div>
+                <div class="field"><label class="field-label">Button-Link (URL)</label><input type="text" id="db-ctaBtnUrl" placeholder="https://www.doctorbox.de/funktionen"></div>
+            </div>
+            <div class="card">
                 <div class="card-title">Galerie</div>
-                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="url" id="db-gal1" placeholder="images/db/db_screen1.jpg"><div class="img-preview" id="db-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="url" id="db-gal2" placeholder="images/db/db_screen2.jpg"><div class="img-preview" id="db-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="url" id="db-gal3" placeholder="images/db/db_screen3.jpg"><div class="img-preview" id="db-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
-                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="url" id="db-galFull" placeholder="images/db/db_fullwidth.jpg"><div class="img-preview" id="db-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 1 — Groß (Fullwidth)</label><div class="img-field"><input type="text" id="db-gal1" placeholder="images/db/db_screen1.jpg"><div class="img-preview" id="db-gal1-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 2</label><div class="img-field"><input type="text" id="db-gal2" placeholder="images/db/db_screen2.jpg"><div class="img-preview" id="db-gal2-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Bild 3</label><div class="img-field"><input type="text" id="db-gal3" placeholder="images/db/db_screen3.jpg"><div class="img-preview" id="db-gal3-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
+                <div class="field"><label class="field-label">Fullwidth-Bild (unterer Bereich)</label><div class="img-field"><input type="text" id="db-galFull" placeholder="images/db/db_fullwidth.jpg"><div class="img-preview" id="db-galFull-preview"><span class="img-preview-placeholder">Kein Bild</span></div></div></div>
             </div>
             <div class="card"><div class="card-title">Herausforderung & Vorgehen (4 Blöcke)</div><div id="dbChallengeList"></div></div>
             <div class="card"><div class="card-title">Statistiken (4 Werte)</div><div id="dbStatList"></div></div>
+            <div class="card">
+                <div class="card-title">Tags & Chips</div>
+                <div class="field"><label class="field-label">Hero-Tags (kommagetrennt)</label><input type="text" id="db-heroTags" placeholder="UI/UX Design, Figma, Healthcare"></div>
+                <div class="field"><label class="field-label">Deliverables (kommagetrennt)</label><input type="text" id="db-deliverables" placeholder="Figma Prototypen, Design System, UI Komponenten"></div>
+                <div class="field"><label class="field-label">Tools (kommagetrennt)</label><input type="text" id="db-tools" placeholder="Figma, Jira"></div>
+            </div>
         </section>
 
         <!-- ── Einstellungen Panel ── -->
@@ -1199,6 +1323,97 @@
                 <button class="btn btn-ghost" id="btnSaveRecovery" style="margin-top:4px;">E-Mail speichern</button>
             </div>
         </section>
+
+        <!-- ── Mediathek Panel ── -->
+        <section class="panel" id="panel-mediathek">
+            <h1 class="panel-title">Mediathek</h1>
+            <p class="panel-sub">Alle Bilder nach Projekt/Ordner — Verwendung einsehen, Alt-Texte für Barrierefreiheit & SEO pflegen.</p>
+
+            <div class="card" style="padding:0;overflow:hidden">
+                <!-- Toolbar -->
+                <div style="display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.07)">
+                    <input type="text" id="mediaSearch" placeholder="Bild suchen…" style="flex:1;min-width:0">
+                    <button class="btn" id="btnLoadMedia" style="flex-shrink:0;white-space:nowrap">
+                        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg>
+                        Bilder laden
+                    </button>
+                </div>
+                <!-- Two-column -->
+                <div style="display:flex;min-height:420px">
+                    <!-- Ordner-Sidebar -->
+                    <div style="width:190px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.07);display:flex;flex-direction:column">
+                        <div id="mediaFolderList" style="flex:1;overflow-y:auto;padding:6px 0"></div>
+                        <div style="padding:10px 12px;border-top:1px solid rgba(255,255,255,.07)">
+                            <button class="btn" id="btnNewFolder" style="width:100%;justify-content:center;font-size:.76rem">
+                                <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                                Neuer Ordner
+                            </button>
+                            <div id="newFolderForm" style="display:none;margin-top:8px;display:none">
+                                <input type="text" id="newFolderName" placeholder="ordner-name"
+                                       style="width:100%;margin-bottom:6px;font-size:.76rem;font-family:monospace;box-sizing:border-box">
+                                <div style="display:flex;gap:6px">
+                                    <button class="btn btn-accent" id="btnNewFolderCreate"
+                                            style="flex:1;justify-content:center;font-size:.74rem">Anlegen</button>
+                                    <button class="btn" id="btnNewFolderCancel"
+                                            style="flex-shrink:0;padding:6px 10px;font-size:.74rem">✕</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Bild-Grid -->
+                    <div style="flex:1;overflow:auto">
+                        <div id="mediaGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1px;background:rgba(255,255,255,.04)">
+                            <div style="grid-column:1/-1;padding:64px;text-align:center;color:var(--text-muted);font-size:.85rem">
+                                Klicke auf „Bilder laden" um die Mediathek zu öffnen.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Neue Unterseite Panel ── -->
+        <section class="panel" id="panel-neue-unterseite">
+            <h1 class="panel-title">Unterseite anlegen</h1>
+            <p class="panel-sub">Erstelle eine neue Projektseite. Sie erscheint automatisch im Projektraster der Startseite.</p>
+
+            <div class="card">
+                <div class="card-title">Neue Seite erstellen</div>
+                <div class="field">
+                    <label class="field-label">Projekttitel <span style="color:var(--accent)">*</span></label>
+                    <input type="text" id="np-title" placeholder="z.B. Mein Projekt">
+                </div>
+                <div class="field">
+                    <label class="field-label">URL-Slug <span style="color:var(--accent)">*</span></label>
+                    <input type="text" id="np-slug" placeholder="z.B. mein-projekt" style="font-family:monospace">
+                    <span class="field-hint">Nur Kleinbuchstaben, Ziffern und Bindestriche. Wird zur Datei: <code id="np-slugPreview">mein-projekt.html</code></span>
+                </div>
+                <div class="field">
+                    <label class="field-label">Kategorie</label>
+                    <input type="text" id="np-cat" placeholder="z.B. Branding · UI/UX">
+                </div>
+                <div class="field">
+                    <label class="field-label">Kurzbeschreibung (für Projektkarte)</label>
+                    <textarea id="np-desc" rows="2" placeholder="Kurze Beschreibung des Projekts..."></textarea>
+                </div>
+                <div class="field">
+                    <label class="field-label">Hero Tags (kommagetrennt)</label>
+                    <input type="text" id="np-tags" placeholder="Branding, UI/UX, Print Design">
+                </div>
+                <button class="btn btn-accent" id="btnCreatePage" style="margin-top:8px;">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    Seite anlegen
+                </button>
+            </div>
+
+            <div class="card" id="dynPagesList" style="display:none;">
+                <div class="card-title">Angelegte Unterseiten</div>
+                <div id="dynPagesListInner"></div>
+            </div>
+        </section>
+
+        <!-- Dynamic page panels injected here -->
+        <div id="dynPanelsContainer"></div>
 
         <!-- ── Import Panel ── -->
         <section class="panel" id="panel-import">
@@ -1282,7 +1497,14 @@ function load() {
     if (!data.projects) data.projects = [];
     const storedIds = new Set(data.projects.map(p => p.id));
     DEFAULTS.projects.forEach(def => {
-        if (!storedIds.has(def.id)) data.projects.push(JSON.parse(JSON.stringify(def)));
+        if (!storedIds.has(def.id)) {
+            data.projects.push(JSON.parse(JSON.stringify(def)));
+        } else {
+            // Restore default image/link if wiped (browser URL-sanitization bug)
+            const proj = data.projects.find(p => p.id === def.id);
+            if (proj && !proj.image && def.image) proj.image = def.image;
+            if (proj && !proj.link  && def.link)  proj.link  = def.link;
+        }
     });
     populateForms();
 }
@@ -1295,7 +1517,8 @@ async function loadAllFromServer() {
     Object.keys(d).forEach(k => localStorage.setItem(k, JSON.stringify(d[k])));
     // Reload main panel
     load();
-    loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC();
+    loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC(); loadClients();
+    loadDynPages();
 }
 
 /* ── Save: localStorage + Server ── */
@@ -1303,22 +1526,29 @@ async function save() {
     collectForms();
     // Collect all CMS keys
     const allData = {};
+    // Main data: use collected data directly (not localStorage — it's stale from page load)
     allData[LS_KEY] = data;
     // Sub-panel save functions write to localStorage; collect afterwards
-    saveTDA(); saveUIQ(); saveAIB(); saveLAG(); saveGM(); saveSVZ(); saveSPA(); saveDB(); saveIMP(); saveDSC();
-    // Gather all freundhase_cms_* keys from localStorage
-    const keys = [LS_KEY,'freundhase_cms_tda','freundhase_cms_uiq','freundhase_cms_abinsb',
+    saveTDA(); saveUIQ(); saveAIB(); saveLAG(); saveGM(); saveSVZ(); saveSPA(); saveDB(); saveIMP(); saveDSC(); saveClients();
+    // Gather subpage keys from localStorage (they were just written above by the save* functions)
+    const keys = ['freundhase_cms_tda','freundhase_cms_uiq','freundhase_cms_abinsb',
                   'freundhase_cms_lag','freundhase_cms_gm','freundhase_cms_synverz',
-                  'freundhase_cms_spandau','freundhase_cms_db','freundhase_cms_impressum','freundhase_cms_datenschutz'];
+                  'freundhase_cms_spandau','freundhase_cms_db','freundhase_cms_impressum','freundhase_cms_datenschutz',
+                  'freundhase_cms_clients','freundhase_cms_pages_registry','freundhase_cms_image_meta'];
     keys.forEach(k => {
         try { const v = localStorage.getItem(k); if (v) allData[k] = JSON.parse(v); } catch(e) {}
     });
     dirty = false;
-    updateStatus('Gespeichert', false);
-    showToast('Änderungen gespeichert', false);
+    updateStatus('Wird gespeichert…', false);
     // Sync to server
     const res = await cmsPost('save', { data: allData });
-    if (!res.ok) showToast('Server-Sync fehlgeschlagen: ' + (res.error || ''), true);
+    if (res.ok) {
+        updateStatus('Gespeichert', false);
+        showToast('Änderungen gespeichert', false);
+    } else {
+        updateStatus('Sync fehlgeschlagen', true);
+        showToast('Server-Sync fehlgeschlagen: ' + (res.error || 'Keine Verbindung'), true);
+    }
 }
 
 /* ── Populate forms from data ── */
@@ -1474,7 +1704,7 @@ function buildProjectList() {
                 <div class="field">
                     <label class="field-label">Vorschaubild URL</label>
                     <div class="img-field">
-                        <input type="url" data-f="image" value="${e(p.image)}"
+                        <input type="text" data-f="image" value="${e(p.image)}"
                             oninput="updateImgPreviewInline(this)">
                         <div class="img-preview">
                             ${p.image ? `<img src="${e(p.image)}" alt="">` : '<span class="img-preview-placeholder">Kein Bild</span>'}
@@ -1558,6 +1788,8 @@ function buildProjectList() {
 
     // "+ Neues Projekt" button listener (re-attach after rebuild)
     document.getElementById('projAddBtn')?.addEventListener('click', addNewProject);
+    // Enable drag & drop upload on newly built project image fields
+    enhanceImgFields();
 }
 
 function addNewProject() {
@@ -1736,7 +1968,6 @@ function showLoginScreen() {
     document.getElementById('loginError').textContent = '';
     document.getElementById('loginPw').value = '';
     document.getElementById('loginPw').focus();
-    document.getElementById('resetSection').classList.remove('show');
     document.getElementById('newPwSection').classList.remove('show');
     document.getElementById('loginForm').style.display = '';
 }
@@ -1765,18 +1996,13 @@ document.getElementById('btnForgot').addEventListener('click', async () => {
     btn.textContent = '…'; btn.disabled = true;
     const res = await cmsPost('reset-req');
     btn.textContent = 'Passwort vergessen?'; btn.disabled = false;
-    document.getElementById('loginForm').style.display = 'none';
-    document.getElementById('loginError').textContent  = '';
-    document.getElementById('resetSection').classList.add('show');
-    document.getElementById('resetCodeSuccess').textContent = res.ok
-        ? 'Reset-Link wurde an info@freund-hase.com gesendet.'
-        : 'Fehler: ' + (res.error || 'Server nicht erreichbar');
-});
-
-document.getElementById('btnCancelReset').addEventListener('click', () => {
-    document.getElementById('resetSection').classList.remove('show');
-    document.getElementById('newPwSection').classList.remove('show');
-    document.getElementById('loginForm').style.display = '';
+    if (res.ok) {
+        document.getElementById('loginError').textContent = '';
+        document.getElementById('loginError').style.color = 'var(--success)';
+        document.getElementById('loginError').textContent = 'Reset-Link wurde an info@freund-hase.com gesendet.';
+    } else {
+        document.getElementById('loginError').textContent = 'Fehler: ' + (res.error || 'Server nicht erreichbar');
+    }
 });
 
 /* Reset via Token in URL (?reset=TOKEN) */
@@ -1864,7 +2090,9 @@ const DEFAULTS_TDA = {
         { num:'5',    label:'Fachbereiche\nvernetzt' },
         { num:'1',    label:'Einheitliche\nvisuelle Identität' },
         { num:'∞',    label:'Modulare\nErweiterbarkeit' }
-    ]
+    ],
+    heroTags: 'Branding, UI/UX Design, Art Direction, Corporate Identity',
+    deliverables: 'Logo, Typographie, Farbsystem, Design System, UI-Konzept, Print, Digital'
 };
 
 let dataTDA = {};
@@ -1900,6 +2128,7 @@ function populateTDAForms() {
     setVal('tda-gal2',    g.img2    || ''); updateImgPreview('tda-gal2',    'tda-gal2-preview');
     setVal('tda-gal3',    g.img3    || ''); updateImgPreview('tda-gal3',    'tda-gal3-preview');
     setVal('tda-galFull', g.imgFull || ''); updateImgPreview('tda-galFull', 'tda-galFull-preview');
+    setVal('tda-heroTags', dataTDA.heroTags||''); setVal('tda-deliverables', dataTDA.deliverables||'');
 
     buildChallengeList();
     buildStatList();
@@ -1979,6 +2208,8 @@ function collectTDAForms() {
         s.num   = document.getElementById(`tda-st${i}-num`)?.value || s.num;
         s.label = document.getElementById(`tda-st${i}-lbl`)?.value || s.label;
     });
+    dataTDA.heroTags = document.getElementById('tda-heroTags')?.value||'';
+    dataTDA.deliverables = document.getElementById('tda-deliverables')?.value||'';
 }
 
 // Hook TDA image previews
@@ -2021,7 +2252,9 @@ const DEFAULTS_UIQ = {
         { num:'3',    label:'Medienkanäle\nPrint · Web · Motion' },
         { num:'1',    label:'Einheitliche\nDesignsprache' },
         { num:'BMU',  label:'Bundesministerium\nals Auftraggeber' }
-    ]
+    ],
+    heroTags: 'Art Direction, Print Design, UI/UX Design, Motion Design, Kampagne',
+    deliverables: 'Adobe XD, InDesign, Illustrator, After Effects, Photoshop'
 };
 
 let dataUIQ = {};
@@ -2057,6 +2290,7 @@ function populateUIQForms() {
     setVal('uiq-gal2',    g.img2    || ''); updateImgPreview('uiq-gal2',    'uiq-gal2-preview');
     setVal('uiq-gal3',    g.img3    || ''); updateImgPreview('uiq-gal3',    'uiq-gal3-preview');
     setVal('uiq-galFull', g.imgFull || ''); updateImgPreview('uiq-galFull', 'uiq-galFull-preview');
+    setVal('uiq-heroTags', dataUIQ.heroTags||''); setVal('uiq-deliverables', dataUIQ.deliverables||'');
 
     buildUIQChallengeList();
     buildUIQStatList();
@@ -2127,6 +2361,8 @@ function collectUIQForms() {
         s.num   = document.getElementById(`uiq-st${i}-num`)?.value || s.num;
         s.label = document.getElementById(`uiq-st${i}-lbl`)?.value || s.label;
     });
+    dataUIQ.heroTags = document.getElementById('uiq-heroTags')?.value||'';
+    dataUIQ.deliverables = document.getElementById('uiq-deliverables')?.value||'';
 }
 
 // Hook UIQ image previews
@@ -2173,7 +2409,9 @@ const DEFAULTS_AIB = {
         { num:'4+',  label:'Medienkanäle\nPrint · Web · Social · OOH' },
         { num:'3',   label:'Kampagnenjahre\nLaufzeit' },
         { num:'1',   label:'Starkes Keyvisual\nfür ganz Berlin' }
-    ]
+    ],
+    heroTags: 'Art Direction, Branding, Kampagnendesign, Social Media, Print',
+    deliverables: 'Logo, Keyvisual, Plakate, Flyer, Instagram, Website, Kampagne'
 };
 
 let dataAIB = {};
@@ -2209,6 +2447,7 @@ function populateAIBForms() {
     setVal('aib-gal2',    g.img2    || ''); updateImgPreview('aib-gal2',    'aib-gal2-preview');
     setVal('aib-gal3',    g.img3    || ''); updateImgPreview('aib-gal3',    'aib-gal3-preview');
     setVal('aib-galFull', g.imgFull || ''); updateImgPreview('aib-galFull', 'aib-galFull-preview');
+    setVal('aib-heroTags', dataAIB.heroTags||''); setVal('aib-deliverables', dataAIB.deliverables||'');
 
     buildAIBChallengeList();
     buildAIBStatList();
@@ -2267,6 +2506,8 @@ function collectAIBForms() {
         s.num   = document.getElementById(`aib-st${i}-num`)?.value || s.num;
         s.label = document.getElementById(`aib-st${i}-lbl`)?.value || s.label;
     });
+    dataAIB.heroTags = document.getElementById('aib-heroTags')?.value||'';
+    dataAIB.deliverables = document.getElementById('aib-deliverables')?.value||'';
 }
 
 ['aib-heroImg','aib-gal1','aib-gal2','aib-gal3','aib-galFull'].forEach(id => {
@@ -2304,7 +2545,10 @@ const DEFAULTS_LAG = {
         { num:'1',   label:'Einheitliches\nDesignsystem' },
         { num:'EU',  label:'LEADER-Programm\ngefördert' },
         { num:'BB',  label:'Brandenburg\nSeenlandschaft' }
-    ]
+    ],
+    heroTags: 'Art Direction, Corporate Design, Print, LEADER-Programm, Regionalentwicklung',
+    deliverables: 'Roll-Ups, Flyer, Banner, Beschilderung, Präsentationen, Web-Grafiken',
+    tools: 'InDesign, Illustrator, Photoshop'
 };
 
 let dataLAG = {};
@@ -2334,6 +2578,7 @@ function populateLAGForms() {
     setVal('lag-gal2', g.img2 || ''); updateImgPreview('lag-gal2', 'lag-gal2-preview');
     setVal('lag-gal3', g.img3 || ''); updateImgPreview('lag-gal3', 'lag-gal3-preview');
     setVal('lag-galFull', g.imgFull || ''); updateImgPreview('lag-galFull', 'lag-galFull-preview');
+    setVal('lag-heroTags', dataLAG.heroTags||''); setVal('lag-deliverables', dataLAG.deliverables||''); setVal('lag-tools', dataLAG.tools||'');
     buildLAGChallengeList(); buildLAGStatList();
 }
 
@@ -2353,6 +2598,7 @@ function collectLAGForms() {
     dataLAG.gallery = { img1: document.getElementById('lag-gal1')?.value || '', img2: document.getElementById('lag-gal2')?.value || '', img3: document.getElementById('lag-gal3')?.value || '', imgFull: document.getElementById('lag-galFull')?.value || '' };
     (dataLAG.challenges || []).forEach((ch, i) => { ch.title = document.getElementById(`lag-ch${i}-title`)?.value || ch.title; ch.text = document.getElementById(`lag-ch${i}-text`)?.value || ch.text; });
     (dataLAG.stats || []).forEach((s, i) => { s.num = document.getElementById(`lag-st${i}-num`)?.value || s.num; s.label = document.getElementById(`lag-st${i}-lbl`)?.value || s.label; });
+    dataLAG.heroTags=document.getElementById('lag-heroTags')?.value||''; dataLAG.deliverables=document.getElementById('lag-deliverables')?.value||''; dataLAG.tools=document.getElementById('lag-tools')?.value||'';
 }
 
 ['lag-heroImg','lag-gal1','lag-gal2','lag-gal3','lag-galFull'].forEach(id => {
@@ -2386,7 +2632,10 @@ const DEFAULTS_GM = {
         { num:'6+',  label:'Print-Formate\nentwickelt' },
         { num:'CHW', label:'Bezirk\nCharlottenburg-Wilmersdorf' },
         { num:'∞',   label:'Erweiterbar durch\ndas Brandbook' }
-    ]
+    ],
+    heroTags: 'Corporate Identity, Art Direction, Print Design, Brandbook, Klimaschutz',
+    deliverables: 'Logo, Brandbook, Flyer, Plakat, Visitenkarten, Designsystem',
+    tools: 'InDesign, Illustrator, Photoshop'
 };
 let dataGM = {};
 function loadGM() { try { const r = localStorage.getItem(LS_GM); dataGM = r ? JSON.parse(r) : JSON.parse(JSON.stringify(DEFAULTS_GM)); } catch(e) { dataGM = JSON.parse(JSON.stringify(DEFAULTS_GM)); } populateGMForms(); }
@@ -2399,6 +2648,7 @@ function populateGMForms() {
     setVal('gm-gal2', g.img2||''); updateImgPreview('gm-gal2','gm-gal2-preview');
     setVal('gm-gal3', g.img3||''); updateImgPreview('gm-gal3','gm-gal3-preview');
     setVal('gm-galFull', g.imgFull||''); updateImgPreview('gm-galFull','gm-galFull-preview');
+    setVal('gm-heroTags', dataGM.heroTags||''); setVal('gm-deliverables', dataGM.deliverables||''); setVal('gm-tools', dataGM.tools||'');
     buildGMChallengeList(); buildGMStatList();
 }
 function buildGMChallengeList() { const c=document.getElementById('gmChallengeList'); if(!c) return; c.innerHTML=''; (dataGM.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="gm-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="gm-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
@@ -2409,6 +2659,7 @@ function collectGMForms() {
     dataGM.gallery = { img1: document.getElementById('gm-gal1')?.value||'', img2: document.getElementById('gm-gal2')?.value||'', img3: document.getElementById('gm-gal3')?.value||'', imgFull: document.getElementById('gm-galFull')?.value||'' };
     (dataGM.challenges||[]).forEach((ch,i)=>{ ch.title=document.getElementById(`gm-ch${i}-title`)?.value||ch.title; ch.text=document.getElementById(`gm-ch${i}-text`)?.value||ch.text; });
     (dataGM.stats||[]).forEach((s,i)=>{ s.num=document.getElementById(`gm-st${i}-num`)?.value||s.num; s.label=document.getElementById(`gm-st${i}-lbl`)?.value||s.label; });
+    dataGM.heroTags=document.getElementById('gm-heroTags')?.value||''; dataGM.deliverables=document.getElementById('gm-deliverables')?.value||''; dataGM.tools=document.getElementById('gm-tools')?.value||'';
 }
 ['gm-heroImg','gm-gal1','gm-gal2','gm-gal3','gm-galFull'].forEach(id => { document.getElementById(id)?.addEventListener('input', function() { updateImgPreview(id, id+'-preview'); markDirty(); }); });
 
@@ -2439,7 +2690,10 @@ const DEFAULTS_SVZ = {
         { num:'8+',  label:'Publikationsformate\ngestaltet' },
         { num:'3',   label:'Medienkanäle\nPrint · Digital · Motion' },
         { num:'1',   label:'Modulares\nDesignsystem' }
-    ]
+    ],
+    heroTags: 'Brand Design, Art Direction, Corporate Identity, Motion Design, Print',
+    deliverables: 'Logo, Designsystem, Poster, Magazin, Newsletter, Faltkarte, Motion, Website UI',
+    tools: 'BMBF-gefördert, Gröschel Branding'
 };
 let dataSVZ = {};
 function loadSVZ() { try { const r=localStorage.getItem(LS_SVZ); dataSVZ=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_SVZ)); } catch(e) { dataSVZ=JSON.parse(JSON.stringify(DEFAULTS_SVZ)); } populateSVZForms(); }
@@ -2448,6 +2702,7 @@ function populateSVZForms() {
     const h=dataSVZ.hero||{}; setVal('svz-heroImg',h.image||''); setVal('svz-heroCat',h.cat||''); setVal('svz-heroTitle',h.title||''); updateImgPreview('svz-heroImg','svz-heroImg-preview');
     const i=dataSVZ.intro||{}; setVal('svz-introHeadline',i.headline||''); setVal('svz-introText1',i.text1||''); setVal('svz-introText2',i.text2||''); setVal('svz-services',i.services||'');
     const g=dataSVZ.gallery||{}; setVal('svz-gal1',g.img1||''); updateImgPreview('svz-gal1','svz-gal1-preview'); setVal('svz-gal2',g.img2||''); updateImgPreview('svz-gal2','svz-gal2-preview'); setVal('svz-gal3',g.img3||''); updateImgPreview('svz-gal3','svz-gal3-preview'); setVal('svz-galFull',g.imgFull||''); updateImgPreview('svz-galFull','svz-galFull-preview');
+    setVal('svz-heroTags', dataSVZ.heroTags||''); setVal('svz-deliverables', dataSVZ.deliverables||''); setVal('svz-tools', dataSVZ.tools||'');
     buildSVZChallengeList(); buildSVZStatList();
 }
 function buildSVZChallengeList() { const c=document.getElementById('svzChallengeList'); if(!c) return; c.innerHTML=''; (dataSVZ.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="svz-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="svz-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
@@ -2458,6 +2713,7 @@ function collectSVZForms() {
     dataSVZ.gallery={img1:document.getElementById('svz-gal1')?.value||'',img2:document.getElementById('svz-gal2')?.value||'',img3:document.getElementById('svz-gal3')?.value||'',imgFull:document.getElementById('svz-galFull')?.value||''};
     (dataSVZ.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`svz-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`svz-ch${i}-text`)?.value||ch.text;});
     (dataSVZ.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`svz-st${i}-num`)?.value||s.num;s.label=document.getElementById(`svz-st${i}-lbl`)?.value||s.label;});
+    dataSVZ.heroTags=document.getElementById('svz-heroTags')?.value||''; dataSVZ.deliverables=document.getElementById('svz-deliverables')?.value||''; dataSVZ.tools=document.getElementById('svz-tools')?.value||'';
 }
 ['svz-heroImg','svz-gal1','svz-gal2','svz-gal3','svz-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
 
@@ -2488,7 +2744,10 @@ const DEFAULTS_SPA = {
         { num:'8+', label:'Kommunikationsmittel\nentwickelt' },
         { num:'1',  label:'Modulares\nDesignsystem' },
         { num:'3',  label:'Medienkanäle\nPrint · Digital · Outdoor' }
-    ]
+    ],
+    heroTags: 'Corporate Identity, Art Direction, Visual Communication, Logoentwicklung, Stadtmarketing',
+    deliverables: 'Logo, Corporate Identity, Magazin, Flyer, Plakat, Faltkarte, Eintrittskarte, Fragebogen, Designsystem',
+    tools: 'InDesign, Illustrator, Photoshop'
 };
 let dataSPA = {};
 function loadSPA() { try { const r=localStorage.getItem(LS_SPA); dataSPA=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_SPA)); } catch(e) { dataSPA=JSON.parse(JSON.stringify(DEFAULTS_SPA)); } populateSPAForms(); }
@@ -2497,6 +2756,7 @@ function populateSPAForms() {
     const h=dataSPA.hero||{}; setVal('spa-heroImg',h.image||''); setVal('spa-heroCat',h.cat||''); setVal('spa-heroTitle',h.title||''); updateImgPreview('spa-heroImg','spa-heroImg-preview');
     const i=dataSPA.intro||{}; setVal('spa-introHeadline',i.headline||''); setVal('spa-introText1',i.text1||''); setVal('spa-introText2',i.text2||''); setVal('spa-services',i.services||'');
     const g=dataSPA.gallery||{}; setVal('spa-gal1',g.img1||''); updateImgPreview('spa-gal1','spa-gal1-preview'); setVal('spa-gal2',g.img2||''); updateImgPreview('spa-gal2','spa-gal2-preview'); setVal('spa-gal3',g.img3||''); updateImgPreview('spa-gal3','spa-gal3-preview'); setVal('spa-galFull',g.imgFull||''); updateImgPreview('spa-galFull','spa-galFull-preview');
+    setVal('spa-heroTags', dataSPA.heroTags||''); setVal('spa-deliverables', dataSPA.deliverables||''); setVal('spa-tools', dataSPA.tools||'');
     buildSPAChallengeList(); buildSPAStatList();
 }
 function buildSPAChallengeList() { const c=document.getElementById('spaChallengeList'); if(!c) return; c.innerHTML=''; (dataSPA.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="spa-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="spa-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
@@ -2507,6 +2767,7 @@ function collectSPAForms() {
     dataSPA.gallery={img1:document.getElementById('spa-gal1')?.value||'',img2:document.getElementById('spa-gal2')?.value||'',img3:document.getElementById('spa-gal3')?.value||'',imgFull:document.getElementById('spa-galFull')?.value||''};
     (dataSPA.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`spa-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`spa-ch${i}-text`)?.value||ch.text;});
     (dataSPA.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`spa-st${i}-num`)?.value||s.num;s.label=document.getElementById(`spa-st${i}-lbl`)?.value||s.label;});
+    dataSPA.heroTags=document.getElementById('spa-heroTags')?.value||''; dataSPA.deliverables=document.getElementById('spa-deliverables')?.value||''; dataSPA.tools=document.getElementById('spa-tools')?.value||'';
 }
 ['spa-heroImg','spa-gal1','spa-gal2','spa-gal3','spa-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
 
@@ -2585,7 +2846,11 @@ const DEFAULTS_DB = {
         { num:'∞',  label:'Iterationen auf Basis\nvon Nutzerfeedback' },
         { num:'1',  label:'Skalierbares\nDesign System' },
         { num:'App',label:'Web & Mobile\nkonsistent gestaltet' }
-    ]
+    ],
+    heroTags: 'UI/UX Design, Figma, Healthcare, App Design, Design System',
+    deliverables: 'Figma Prototypen, Design System, UI Komponenten, App Design, Web Design',
+    tools: 'Figma, Jira',
+    cta: { label: 'Live ansehen', btnText: 'App ansehen', btnUrl: 'https://www.doctorbox.de/funktionen' }
 };
 let dataDB = {};
 function loadDB() { try { const r=localStorage.getItem(LS_DB); dataDB=r?JSON.parse(r):JSON.parse(JSON.stringify(DEFAULTS_DB)); } catch(e) { dataDB=JSON.parse(JSON.stringify(DEFAULTS_DB)); } populateDBForms(); }
@@ -2594,6 +2859,8 @@ function populateDBForms() {
     const h=dataDB.hero||{}; setVal('db-heroImg',h.image||''); setVal('db-heroCat',h.cat||''); setVal('db-heroTitle',h.title||''); updateImgPreview('db-heroImg','db-heroImg-preview');
     const i=dataDB.intro||{}; setVal('db-introHeadline',i.headline||''); setVal('db-introText1',i.text1||''); setVal('db-introText2',i.text2||''); setVal('db-services',i.services||'');
     const g=dataDB.gallery||{}; setVal('db-gal1',g.img1||''); updateImgPreview('db-gal1','db-gal1-preview'); setVal('db-gal2',g.img2||''); updateImgPreview('db-gal2','db-gal2-preview'); setVal('db-gal3',g.img3||''); updateImgPreview('db-gal3','db-gal3-preview'); setVal('db-galFull',g.imgFull||''); updateImgPreview('db-galFull','db-galFull-preview');
+    setVal('db-heroTags', dataDB.heroTags||''); setVal('db-deliverables', dataDB.deliverables||''); setVal('db-tools', dataDB.tools||'');
+    const dbCta = dataDB.cta||{}; setVal('db-ctaLabel', dbCta.label||''); setVal('db-ctaBtnText', dbCta.btnText||''); setVal('db-ctaBtnUrl', dbCta.btnUrl||'');
     buildDBChallengeList(); buildDBStatList();
 }
 function buildDBChallengeList() { const c=document.getElementById('dbChallengeList'); if(!c) return; c.innerHTML=''; (dataDB.challenges||[]).forEach((ch,i)=>{ c.insertAdjacentHTML('beforeend',`<div style="border-bottom:1px solid var(--border);padding-bottom:20px;margin-bottom:20px;"><div style="font-size:0.68rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;">${ch.num} — ${ch.label}</div><div class="field"><label class="field-label">Titel</label><input type="text" id="db-ch${i}-title" value="${escHtml(ch.title)}"></div><div class="field" style="margin-bottom:0"><label class="field-label">Text</label><textarea id="db-ch${i}-text" rows="4">${escHtml(ch.text)}</textarea></div></div>`); }); }
@@ -2604,6 +2871,8 @@ function collectDBForms() {
     dataDB.gallery={img1:document.getElementById('db-gal1')?.value||'',img2:document.getElementById('db-gal2')?.value||'',img3:document.getElementById('db-gal3')?.value||'',imgFull:document.getElementById('db-galFull')?.value||''};
     (dataDB.challenges||[]).forEach((ch,i)=>{ch.title=document.getElementById(`db-ch${i}-title`)?.value||ch.title;ch.text=document.getElementById(`db-ch${i}-text`)?.value||ch.text;});
     (dataDB.stats||[]).forEach((s,i)=>{s.num=document.getElementById(`db-st${i}-num`)?.value||s.num;s.label=document.getElementById(`db-st${i}-lbl`)?.value||s.label;});
+    dataDB.heroTags=document.getElementById('db-heroTags')?.value||''; dataDB.deliverables=document.getElementById('db-deliverables')?.value||''; dataDB.tools=document.getElementById('db-tools')?.value||'';
+    dataDB.cta={label:document.getElementById('db-ctaLabel')?.value||'',btnText:document.getElementById('db-ctaBtnText')?.value||'',btnUrl:document.getElementById('db-ctaBtnUrl')?.value||''};
 }
 ['db-heroImg','db-gal1','db-gal2','db-gal3','db-galFull'].forEach(id=>{ document.getElementById(id)?.addEventListener('input',function(){updateImgPreview(id,id+'-preview');markDirty();}); });
 
@@ -2659,9 +2928,502 @@ function collectDBForms() {
     });
 })();
 
+/* ════════════════════════════════════════════════════════
+   REFERENZEN & MARKEN (Clients / Logos)
+   ════════════════════════════════════════════════════════ */
+const LS_CLIENTS = 'freundhase_cms_clients';
+
+const DEFAULTS_CLIENTS = {
+    label:   'Referenzen & Marken',
+    title:   'Projekte für starke',
+    titleEm: 'Marken & Institutionen',
+    logos: [
+        { img: 'images/index/td_167x150h.png',           alt: 'TD Academy' },
+        { img: 'images/index/aqua_consult1_167x150h.png', alt: 'Aqua Consult' },
+        { img: 'images/index/Aqua_Ventus_167x150h.png',  alt: 'Aqua Ventus' },
+        { img: 'images/index/CK_167x150h.png',           alt: 'Camping Kirchzarten' },
+        { img: 'images/index/db1_167x150h.png',          alt: 'Doctorbox' },
+        { img: 'images/index/hsw_167x150h.png',          alt: 'HSW' },
+        { img: 'images/index/Pronol_167x150h.png',       alt: 'Pronol' },
+        { img: 'images/index/spandau_167x150h.png',      alt: 'Bezirk Spandau' },
+        { img: 'images/index/Synverz_167x150h.png',      alt: 'Synverz' },
+        { img: 'images/index/tub_167x150h.png',          alt: 'TU Berlin' },
+        { img: 'images/index/vb1_167x150h.png',          alt: 'VB' }
+    ]
+};
+
+let dataClients = {};
+
+function loadClients() {
+    try {
+        const raw = localStorage.getItem(LS_CLIENTS);
+        dataClients = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULTS_CLIENTS));
+    } catch(e) { dataClients = JSON.parse(JSON.stringify(DEFAULTS_CLIENTS)); }
+    if (!Array.isArray(dataClients.logos)) dataClients.logos = JSON.parse(JSON.stringify(DEFAULTS_CLIENTS.logos));
+    populateClientsForms();
+}
+
+function saveClients() {
+    collectClientsForms();
+    localStorage.setItem(LS_CLIENTS, JSON.stringify(dataClients));
+}
+
+function populateClientsForms() {
+    setVal('cli-label',   dataClients.label   || '');
+    setVal('cli-title',   dataClients.title   || '');
+    setVal('cli-titleEm', dataClients.titleEm || '');
+    buildLogoList();
+}
+
+function collectClientsForms() {
+    dataClients.label   = document.getElementById('cli-label')?.value   || '';
+    dataClients.title   = document.getElementById('cli-title')?.value   || '';
+    dataClients.titleEm = document.getElementById('cli-titleEm')?.value || '';
+    const items = document.querySelectorAll('.logo-item');
+    dataClients.logos = Array.from(items).map(item => ({
+        img: item.querySelector('[data-f="img"]')?.value || '',
+        alt: item.querySelector('[data-f="alt"]')?.value || ''
+    }));
+}
+
+function buildLogoList() {
+    const list = document.getElementById('logoList');
+    if (!list) return;
+    list.innerHTML = '';
+    (dataClients.logos || []).forEach((logo, i) => {
+        const item = document.createElement('div');
+        item.className = 'logo-item';
+        item.draggable = true;
+        item.dataset.idx = i;
+        item.innerHTML = `
+            <span class="logo-drag-handle" title="Ziehen zum Sortieren">
+                <svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="6" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="9" cy="18" r="1.2" fill="currentColor" stroke="none"/><circle cx="15" cy="18" r="1.2" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <div class="logo-item-fields">
+                <div class="img-field">
+                    <input type="text" data-f="img" value="${e(logo.img)}" placeholder="images/index/logo.png" oninput="this.closest('.logo-item').querySelector('img.logo-preview-img').src=this.value;markDirty();">
+                    <div class="img-preview"><img class="logo-preview-img" src="${e(logo.img)}" alt="" style="width:100%;height:100%;object-fit:contain;"></div>
+                </div>
+                <input type="text" data-f="alt" value="${e(logo.alt)}" placeholder="Firmenname (Alt-Text)" style="width:100%;" oninput="markDirty();">
+            </div>
+            <button class="logo-item-del" type="button" title="Entfernen">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </button>`;
+
+        // Delete
+        item.querySelector('.logo-item-del').addEventListener('click', () => {
+            collectClientsForms();
+            dataClients.logos.splice(i, 1);
+            buildLogoList();
+            markDirty();
+        });
+
+        // Drag & drop reorder
+        item.addEventListener('dragstart', ev => { ev.dataTransfer.setData('text/plain', i); });
+        item.addEventListener('dragover',  ev => { ev.preventDefault(); item.classList.add('drag-over-item'); });
+        item.addEventListener('dragleave', ()  => item.classList.remove('drag-over-item'));
+        item.addEventListener('drop', ev => {
+            ev.preventDefault();
+            item.classList.remove('drag-over-item');
+            const fromIdx = parseInt(ev.dataTransfer.getData('text/plain'));
+            if (fromIdx === i) return;
+            collectClientsForms();
+            const moved = dataClients.logos.splice(fromIdx, 1)[0];
+            dataClients.logos.splice(i, 0, moved);
+            buildLogoList();
+            markDirty();
+        });
+
+        list.appendChild(item);
+    });
+    // Re-enhance upload on newly built items
+    enhanceImgFields();
+}
+
+document.getElementById('btnAddLogo')?.addEventListener('click', () => {
+    collectClientsForms();
+    dataClients.logos.push({ img: '', alt: '' });
+    buildLogoList();
+    markDirty();
+});
+
+['cli-label','cli-title','cli-titleEm'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', markDirty);
+});
+
+
+/* ════════════════════════════════════════════════════════
+   BILD-UPLOAD (Drag & Drop für alle img-field Elemente)
+   ════════════════════════════════════════════════════════ */
+
+async function uploadImage(file, folder) {
+    const form = new FormData();
+    form.append('file', file);
+    try {
+        const r = await fetch('cms.php?action=upload&folder=' + encodeURIComponent(folder), {
+            method: 'POST', body: form
+        });
+        return await r.json();
+    } catch(e) { return { ok: false, error: 'Upload fehlgeschlagen' }; }
+}
+
+async function handleImgUpload(file, folder, inputEl, fieldEl) {
+    const previewEl = fieldEl.querySelector('.img-preview');
+    if (previewEl) previewEl.innerHTML = '<span class="img-preview-placeholder">Lädt…</span>';
+    fieldEl.classList.add('img-uploading');
+    const res = await uploadImage(file, folder);
+    fieldEl.classList.remove('img-uploading');
+    if (res.ok && res.path) {
+        inputEl.value = res.path;
+        inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+        showToast('Hochgeladen: ' + res.path.split('/').pop(), false);
+    } else {
+        showToast('Upload fehlgeschlagen: ' + (res.error || ''), true);
+        if (previewEl) previewEl.innerHTML = '<span class="img-preview-placeholder">Fehler</span>';
+    }
+}
+
+function enhanceImgFields() {
+    document.querySelectorAll('.img-field').forEach(field => {
+        if (field.dataset.uploadEnhanced) return;
+        field.dataset.uploadEnhanced = '1';
+
+        const input = field.querySelector('input[type="text"]');
+        if (!input) return;
+
+        const folder = field.closest('[data-folder]')?.dataset.folder || 'index';
+
+        // Add upload button
+        const btn = document.createElement('label');
+        btn.className = 'img-upload-btn';
+        btn.title = 'Bild vom PC hochladen';
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        btn.appendChild(fileInput);
+        // Insert after text input, before preview
+        const preview = field.querySelector('.img-preview');
+        field.insertBefore(btn, preview || null);
+
+        // File picker
+        fileInput.addEventListener('change', async () => {
+            if (fileInput.files[0]) {
+                await handleImgUpload(fileInput.files[0], folder, input, field);
+                fileInput.value = '';
+            }
+        });
+
+        // Drag & drop onto field
+        field.addEventListener('dragover', ev => { ev.preventDefault(); field.classList.add('drag-over'); });
+        field.addEventListener('dragleave', ()  => field.classList.remove('drag-over'));
+        field.addEventListener('drop', async ev => {
+            ev.preventDefault();
+            field.classList.remove('drag-over');
+            // Only handle file drops (not internal logo reorder)
+            const file = ev.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                await handleImgUpload(file, folder, input, field);
+            }
+        });
+    });
+}
+
+// Run once on load, and after any dynamic list rebuild
+enhanceImgFields();
+
+/* ── Mediathek ── */
+let mediaMeta   = {};
+let mediaAll    = [];
+let mediaFolder = 'alle';
+
+function loadMediaMeta() {
+    try { mediaMeta = JSON.parse(localStorage.getItem('freundhase_cms_image_meta')) || {}; } catch(e) { mediaMeta = {}; }
+}
+function saveMediaMeta() {
+    localStorage.setItem('freundhase_cms_image_meta', JSON.stringify(mediaMeta));
+    markDirty();
+}
+function formatBytes(b) {
+    if (b < 1024*1024) return (b/1024).toFixed(0) + ' KB';
+    return (b/1024/1024).toFixed(1) + ' MB';
+}
+
+/* Bilder laden */
+document.getElementById('btnLoadMedia')?.addEventListener('click', () => loadMediaLibrary());
+
+async function loadMediaLibrary() {
+    const btn = document.getElementById('btnLoadMedia');
+    btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg> Lädt…';
+    loadMediaMeta();
+    const res = await cmsPost('list-images');
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.51"/></svg> Neu laden';
+    if (!res.ok) { showToast('Fehler beim Laden', true); return; }
+    mediaAll = res.images || [];
+    buildMediaFolderSidebar(res.folders || []);
+    renderMediaGrid();
+}
+
+document.getElementById('mediaSearch')?.addEventListener('input', () => renderMediaGrid());
+
+/* Ordner-Sidebar */
+function buildMediaFolderSidebar(allFolders) {
+    const list = document.getElementById('mediaFolderList');
+    if (!list) return;
+
+    // Ordner mit Bildanzahl berechnen
+    const counts = {};
+    mediaAll.forEach(i => { counts[i.folder] = (counts[i.folder] || 0) + 1; });
+
+    const entries = [{ name: 'alle', count: mediaAll.length }, ...allFolders.map(f => ({ name: f, count: counts[f] || 0 }))];
+
+    list.innerHTML = '';
+    entries.forEach(({ name, count }) => {
+        const item = document.createElement('div');
+        const active = name === mediaFolder;
+        item.style.cssText = `display:flex;align-items:center;justify-content:space-between;padding:8px 14px;cursor:pointer;font-size:.82rem;gap:8px;transition:background .15s;${active ? 'background:rgba(255,255,255,.07);color:var(--accent)' : 'color:var(--fg)'}`;
+        item.innerHTML = `
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(name)}</span>
+            <span style="font-size:.68rem;background:rgba(255,255,255,.08);padding:1px 6px;border-radius:10px;flex-shrink:0;color:var(--text-muted)">${count}</span>`;
+        item.addEventListener('mouseenter', () => { if (name !== mediaFolder) item.style.background = 'rgba(255,255,255,.04)'; });
+        item.addEventListener('mouseleave', () => { if (name !== mediaFolder) item.style.background = ''; });
+        item.addEventListener('click', () => {
+            mediaFolder = name;
+            buildMediaFolderSidebar(allFolders);
+            renderMediaGrid();
+        });
+        list.appendChild(item);
+    });
+}
+
+/* Neuer Ordner */
+document.getElementById('btnNewFolder')?.addEventListener('click', () => {
+    const form = document.getElementById('newFolderForm');
+    form.style.display = form.style.display === 'none' ? '' : 'none';
+    if (form.style.display !== 'none') document.getElementById('newFolderName').focus();
+});
+document.getElementById('btnNewFolderCancel')?.addEventListener('click', () => {
+    document.getElementById('newFolderForm').style.display = 'none';
+    document.getElementById('newFolderName').value = '';
+});
+document.getElementById('newFolderName')?.addEventListener('input', function() {
+    this.value = this.value.toLowerCase().replace(/[^a-z0-9\-]/g, '-');
+});
+document.getElementById('btnNewFolderCreate')?.addEventListener('click', async () => {
+    const name = document.getElementById('newFolderName').value.trim();
+    if (!name) { showToast('Ordnername eingeben', true); return; }
+    const btn = document.getElementById('btnNewFolderCreate');
+    btn.disabled = true; btn.textContent = '…';
+    const res = await cmsPost('create-folder', { name });
+    btn.disabled = false; btn.textContent = 'Anlegen';
+    if (res.ok) {
+        showToast('Ordner angelegt: images/' + res.folder + '/');
+        document.getElementById('newFolderForm').style.display = 'none';
+        document.getElementById('newFolderName').value = '';
+        await loadMediaLibrary(); // Neu laden mit neuem Ordner
+    } else {
+        showToast(res.error || 'Fehler', true);
+    }
+});
+
+/* Bild-Grid */
+function renderMediaGrid() {
+    const grid = document.getElementById('mediaGrid');
+    if (!grid) return;
+    const q = (document.getElementById('mediaSearch')?.value || '').toLowerCase();
+    let list = mediaFolder === 'alle' ? mediaAll : mediaAll.filter(i => i.folder === mediaFolder);
+    if (q) list = list.filter(i => i.name.toLowerCase().includes(q) || i.path.toLowerCase().includes(q));
+
+    if (!list.length) {
+        grid.innerHTML = '<div style="grid-column:1/-1;padding:64px;text-align:center;color:var(--text-muted);font-size:.85rem">Keine Bilder in diesem Ordner.</div>';
+        return;
+    }
+
+    grid.innerHTML = '';
+    list.forEach(img => {
+        const meta = mediaMeta[img.path] || {};
+        const card = document.createElement('div');
+        card.style.cssText = 'background:var(--surface);display:flex;flex-direction:column;overflow:hidden';
+
+        const usedBadges = (img.usedIn || []).map(p =>
+            `<span style="font-size:.6rem;background:rgba(var(--accent-rgb,232,87,147),.15);color:var(--accent);padding:2px 7px;border-radius:10px;white-space:nowrap">${escHtml(p)}</span>`
+        ).join('');
+
+        card.innerHTML = `
+            <div style="position:relative;aspect-ratio:4/3;overflow:hidden;background:#111">
+                <img src="${escHtml(img.path)}" alt="${escHtml(meta.alt||'')}" loading="lazy"
+                     style="width:100%;height:100%;object-fit:cover;transition:transform .3s"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:var(--text-muted);font-size:.68rem">
+                    <svg viewBox="0 0 24 24" style="width:22px;height:22px;opacity:.25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    Keine Vorschau
+                </div>
+                <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.75));padding:8px 10px 6px">
+                    <div style="font-size:.66rem;color:rgba(255,255,255,.75);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(img.name)}</div>
+                    <div style="font-size:.6rem;color:rgba(255,255,255,.4)">${formatBytes(img.size)}</div>
+                </div>
+            </div>
+            ${usedBadges ? `<div style="padding:6px 10px;display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid rgba(255,255,255,.06)">${usedBadges}</div>` : ''}
+            <div style="padding:10px 11px;display:flex;flex-direction:column;gap:5px;flex:1">
+                <div class="field" style="margin:0">
+                    <label class="field-label" style="font-size:.6rem;margin-bottom:2px;display:flex;justify-content:space-between">
+                        <span>Alt-Text</span>
+                        <span class="media-alt-count" style="color:var(--text-muted);font-weight:400">${(meta.alt||'').length}/250</span>
+                    </label>
+                    <textarea class="media-alt" data-path="${escHtml(img.path)}"
+                              maxlength="250" rows="3"
+                              placeholder="Bildbeschreibung für Screenreader…"
+                              style="font-size:.76rem;padding:5px 8px;resize:vertical;min-height:60px">${escHtml(meta.alt||'')}</textarea>
+                </div>
+                <div class="field" style="margin:0">
+                    <label class="field-label" style="font-size:.6rem;margin-bottom:2px">Titel (optional)</label>
+                    <input type="text" class="media-title" data-path="${escHtml(img.path)}"
+                           value="${escHtml(meta.title||'')}" placeholder="Bildtitel…"
+                           style="font-size:.76rem;padding:5px 8px">
+                </div>
+            </div>`;
+
+        card.querySelectorAll('.media-alt, .media-title').forEach(input => {
+            input.addEventListener('input', () => {
+                const path  = input.dataset.path;
+                const field = input.classList.contains('media-alt') ? 'alt' : 'title';
+                if (!mediaMeta[path]) mediaMeta[path] = {};
+                mediaMeta[path][field] = input.value;
+                saveMediaMeta();
+                if (field === 'alt') {
+                    card.querySelector('img')?.setAttribute('alt', input.value);
+                    const counter = card.querySelector('.media-alt-count');
+                    if (counter) {
+                        const len = input.value.length;
+                        counter.textContent = len + '/250';
+                        counter.style.color = len > 200 ? (len >= 250 ? 'var(--error,#e05252)' : 'var(--accent)') : 'var(--text-muted)';
+                    }
+                }
+            });
+        });
+        grid.appendChild(card);
+    });
+}
+
+/* ── Dynamische Unterseiten ── */
+
+// Slug-Preview live aktualisieren
+document.getElementById('np-title')?.addEventListener('input', function() {
+    if (!document.getElementById('np-slug').value) {
+        const slug = this.value.toLowerCase()
+            .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+            .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+        document.getElementById('np-slug').value = slug;
+        document.getElementById('np-slugPreview').textContent = slug ? slug + '.html' : '…';
+    }
+});
+document.getElementById('np-slug')?.addEventListener('input', function() {
+    const slug = this.value.replace(/[^a-z0-9\-]/g,'');
+    this.value = slug;
+    document.getElementById('np-slugPreview').textContent = slug ? slug + '.html' : '…';
+});
+
+document.getElementById('btnCreatePage')?.addEventListener('click', async () => {
+    const title = document.getElementById('np-title').value.trim();
+    const slug  = document.getElementById('np-slug').value.trim();
+    const cat   = document.getElementById('np-cat').value.trim();
+    const desc  = document.getElementById('np-desc').value.trim();
+    const tags  = document.getElementById('np-tags').value.trim();
+
+    if (!title) { showToast('Titel ist erforderlich.', true); return; }
+    if (!slug)  { showToast('Slug ist erforderlich.', true); return; }
+
+    const btn = document.getElementById('btnCreatePage');
+    btn.disabled = true; btn.textContent = '…';
+
+    const res = await cmsPost('create-page', { title, slug, cat, desc, tags });
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Seite anlegen';
+
+    if (res.ok) {
+        showToast('Seite angelegt: ' + res.file);
+        document.getElementById('np-title').value = '';
+        document.getElementById('np-slug').value  = '';
+        document.getElementById('np-cat').value   = '';
+        document.getElementById('np-desc').value  = '';
+        document.getElementById('np-tags').value  = '';
+        document.getElementById('np-slugPreview').textContent = '…';
+        await loadAllFromServer();
+        loadDynPages();
+    } else {
+        showToast('Fehler: ' + (res.error || 'Unbekannt'), true);
+    }
+});
+
+function loadDynPages() {
+    let reg;
+    try { reg = JSON.parse(localStorage.getItem('freundhase_cms_pages_registry')); } catch(e) {}
+    if (!Array.isArray(reg)) reg = [];
+
+    const listCard = document.getElementById('dynPagesList');
+    const listInner = document.getElementById('dynPagesListInner');
+    if (!listCard || !listInner) return;
+
+    listCard.style.display = reg.length ? '' : 'none';
+    listInner.innerHTML = '';
+
+    reg.forEach(p => {
+        const row = document.createElement('div');
+        row.style.cssText = 'display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)';
+        row.innerHTML = `
+            <div style="flex:1;min-width:0">
+                <div style="font-weight:600;color:var(--fg)">${escHtml(p.title)}</div>
+                <div style="font-size:.75rem;color:var(--text-muted);font-family:monospace">${escHtml(p.slug)}.html · ${escHtml(p.cat||'–')} · erstellt ${escHtml(p.created||'')}</div>
+            </div>
+            <a href="${escHtml(p.slug)}.html" target="_blank" class="btn" style="padding:6px 12px;font-size:.75rem;flex-shrink:0">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Ansehen
+            </a>
+            <button class="btn" style="padding:6px 12px;font-size:.75rem;flex-shrink:0;color:var(--error,#e05252)" data-slug="${escHtml(p.slug)}">
+                <svg viewBox="0 0 24 24" style="width:14px;height:14px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                Löschen
+            </button>`;
+        row.querySelector('[data-slug]').addEventListener('click', async function() {
+            const s = this.dataset.slug;
+            if (!confirm('Seite "' + s + '.html" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.')) return;
+            this.disabled = true; this.textContent = '…';
+            const res = await cmsPost('delete-page', { slug: s });
+            if (res.ok) {
+                showToast('Seite gelöscht: ' + s + '.html');
+                await loadAllFromServer();
+                loadDynPages();
+            } else {
+                showToast('Fehler: ' + (res.error || 'Unbekannt'), true);
+            }
+        });
+        listInner.appendChild(row);
+    });
+
+    // Sidebar-Items für dynamische Seiten (öffnen den Verwaltungs-Panel)
+    const sidebarContainer = document.getElementById('dynPageSidebarItems');
+    if (sidebarContainer) {
+        sidebarContainer.innerHTML = reg.map(p => `
+            <div class="sidebar-item" data-panel="neue-unterseite" style="padding-left:32px;font-size:.82rem">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                ${escHtml(p.title)}
+            </div>`).join('');
+        sidebarContainer.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById('panel-neue-unterseite')?.classList.add('active');
+            });
+        });
+    }
+}
+
 /* ── Init: Server-Session prüfen ── */
-load(); loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC();
+load(); loadTDA(); loadUIQ(); loadAIB(); loadLAG(); loadGM(); loadSVZ(); loadSPA(); loadDB(); loadIMP(); loadDSC(); loadClients();
 populateSettings();
+loadDynPages();
 updateStatus('Gespeichert', false);
 
 (async function initAuth() {

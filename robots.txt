@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin.html
+Disallow: /cms.php
+Disallow: /upload.php
+Disallow: /data/
+
+Sitemap: https://freund-hase.com/sitemap.xml

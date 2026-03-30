@@ -1,0 +1,10 @@
+# CMS-Daten (enthält Passwort-Hash und sensible Inhalte)
+data/
+cms-cache.js
+
+# Claude Code Skills
+.claude/skills/
+
+# System
+.DS_Store
+Thumbs.db

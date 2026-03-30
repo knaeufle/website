@@ -6,6 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Wieczorek — Senior Art Director & UI/UX Designer</title>
     <meta name="description" content="Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.">
+
+    <!-- Open Graph / Link Preview -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://freund-hase.com/">
+    <meta property="og:title"       content="Daniel Wieczorek — Senior Art Director & UI/UX Designer">
+    <meta property="og:description" content="Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.">
+    <meta property="og:image"       content="https://freund-hase.com/images/og-preview.jpg">
+    <meta property="og:image:width"  content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="Daniel Wieczorek — Senior Art Director & UI/UX Designer">
+    <meta name="twitter:description" content="Digitale und analoge Gestaltungslösungen mit Fokus auf Usability, Barrierefreiheit und funktionales Design.">
+    <meta name="twitter:image"       content="https://freund-hase.com/images/og-preview.jpg">
+
+    <link rel="canonical" href="https://freund-hase.com/">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    [
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Daniel Wieczorek",
+        "jobTitle": "Senior Art Director & UI/UX Designer",
+        "url": "https://freund-hase.com",
+        "email": "hallo@freund-hase.com",
+        "image": "https://freund-hase.com/images/index/freund-hase.png",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Berlin",
+          "addressCountry": "DE"
+        },
+        "knowsAbout": ["UI/UX Design", "Art Direction", "Branding", "Corporate Identity", "Editorial Design", "Barrierefreiheit", "Webdesign"],
+        "sameAs": [
+          "https://www.instagram.com/freund.hase/",
+          "https://www.linkedin.com/in/daniel-wieczorek-14030173",
+          "https://www.xing.com/profile/Daniel_Wieczorek2"
+        ]
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Daniel Wieczorek — freund-hase.com",
+        "url": "https://freund-hase.com"
+      }
+    ]
+    </script>
+
     <link rel="stylesheet" href="fonts/fonts.css">
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -38,7 +88,7 @@
                 transparent 68%);
             pointer-events: none; z-index: 0;
             transform: translate(-50%,-50%);
-            transition: left 0.9s var(--ease-out), top 0.9s var(--ease-out);
+            transition: none;
             left: 50%; top: 50%;
             mix-blend-mode: screen;
         }
@@ -520,6 +570,42 @@
             color: var(--text-muted); transition: color 0.2s;
         }
         .ct-social a:hover { color: var(--text-light); }
+
+        /* iOS Gyro Hint */
+        #gyroHint {
+            display: none;
+            position: absolute;
+            bottom: clamp(80px, 14vw, 120px);
+            right: clamp(20px, 5vw, 60px);
+            z-index: 10;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.14);
+            border-radius: 40px;
+            padding: 10px 16px 10px 12px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            animation: gyroHintPulse 2.4s ease-in-out infinite;
+            transition: opacity 0.4s;
+        }
+        #gyroHint svg {
+            width: 20px; height: 20px;
+            stroke: var(--accent);
+            fill: none; stroke-width: 1.6;
+            stroke-linecap: round; stroke-linejoin: round;
+        }
+        #gyroHint span {
+            font-family: var(--font-ui);
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6);
+        }
+        @keyframes gyroHintPulse {
+            0%, 100% { opacity: 0.7; transform: translateY(0); }
+            50%       { opacity: 1;   transform: translateY(-4px); }
+        }
     </style>
     <script src="cms-cache.js" onerror="void 0"></script>
 </head>
@@ -554,6 +640,10 @@
 <!-- ─── Hero ─── -->
 <section class="hero" id="hero" aria-label="Willkommen">
     <div class="hero-glow"  id="heroGlow"  aria-hidden="true"></div>
+    <button id="gyroHint" aria-label="Bewegungssteuerung aktivieren">
+        <svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18.5"/><path d="M5 9c-1.5 1.5-1.5 4.5 0 6M19 9c1.5 1.5 1.5 4.5 0 6"/></svg>
+        <span>Neigen</span>
+    </button>
     <div class="hero-lines" aria-hidden="true"></div>
     <canvas id="heroCanvas" aria-hidden="true"></canvas>
 
@@ -876,16 +966,24 @@
         mx = e.clientX; my = e.clientY;
         cur.style.left = mx + 'px';
         cur.style.top  = my + 'px';
-
-        // Hero ambient glow
-        const hero    = document.getElementById('hero');
-        const heroRect = hero.getBoundingClientRect();
-        if (my >= heroRect.top && my <= heroRect.bottom) {
-            const glow = document.getElementById('heroGlow');
-            glow.style.left = mx + 'px';
-            glow.style.top  = (my - heroRect.top) + 'px';
-        }
     });
+
+    // Hero ambient glow — rAF lerp (desktop)
+    let gx = window.innerWidth / 2, gy = window.innerHeight / 2;
+    let gcx = gx, gcy = gy;
+    const glowEl  = document.getElementById('heroGlow');
+    const heroEl  = document.getElementById('hero');
+    (function animGlow() {
+        const heroRect = heroEl.getBoundingClientRect();
+        if (my >= heroRect.top && my <= heroRect.bottom) {
+            gx = mx; gy = my - heroRect.top;
+        }
+        gcx += (gx - gcx) * 0.08;
+        gcy += (gy - gcy) * 0.08;
+        glowEl.style.left = gcx + 'px';
+        glowEl.style.top  = gcy + 'px';
+        requestAnimationFrame(animGlow);
+    })();
 
     (function animRing() {
         rx += (mx - rx) * 0.11;
@@ -1060,6 +1158,29 @@
 
     document.querySelectorAll('.rv').forEach(el => observer.observe(el));
 
+    /* ── CMS Clients / Logos Loader ── */
+    (function () {
+        let d;
+        try { d = JSON.parse(localStorage.getItem('freundhase_cms_clients')); } catch(e) {}
+        if (!d) return;
+
+        if (d.label) { const el = document.querySelector('.clients-label'); if (el) el.textContent = d.label; }
+        if (d.title || d.titleEm) {
+            const el = document.querySelector('.clients-title');
+            if (el) el.innerHTML = (d.title || '') + '<br><em style="font-style:italic;color:var(--accent)">' + (d.titleEm || '') + '</em>';
+        }
+        if (Array.isArray(d.logos) && d.logos.length) {
+            const track = document.getElementById('sliderTrack');
+            if (track) {
+                track.innerHTML = d.logos.map(logo =>
+                    `<div class="slider-slide" role="listitem"><div class="slider-logo-box"><img class="slider-logo-img" src="${logo.img}" alt="${logo.alt}" loading="lazy"></div></div>`
+                ).join('');
+            }
+            const count = document.querySelector('.clients-count');
+            if (count) count.textContent = d.logos.length + ' Referenzprojekte';
+        }
+    })();
+
     /* ── Logo Slider ── */
     (function() {
         const track    = document.getElementById('sliderTrack');
@@ -1189,6 +1310,118 @@
             // let lerp settle back to center, then stop
             setTimeout(() => { cancelAnimationFrame(rafId); portrait.style.transform = ''; }, 700);
         });
+
+        /* ── Gyroscope (mobile only) ── */
+        if ('ontouchstart' in window || window.matchMedia('(pointer: coarse)').matches) {
+            const gyroStrength = 14;
+            let baseGamma = null, baseBeta = null;
+
+            function onOrient(e) {
+                const gamma = e.gamma != null ? e.gamma : null;
+                const beta  = e.beta  != null ? e.beta  : null;
+                if (gamma === null || beta === null) return;
+                if (baseGamma === null) { baseGamma = gamma; baseBeta = beta; }
+                const dx = Math.max(-1, Math.min(1, (gamma - baseGamma) / 30));
+                const dy = Math.max(-1, Math.min(1, (beta  - baseBeta)  / 30));
+                targetX =  dx * gyroStrength;
+                targetY =  dy * gyroStrength;
+            }
+
+            function startGyro() {
+                // Android: beide Events abhören (Chrome bevorzugt deviceorientationabsolute)
+                window.addEventListener('deviceorientationabsolute', onOrient, { passive: true });
+                window.addEventListener('deviceorientation', onOrient, { passive: true });
+                rafId = requestAnimationFrame(tick);
+            }
+
+            // iOS 13+: Erlaubnis per erstem Touch ODER wenn Glow bereits Erlaubnis geholt hat
+            if (typeof DeviceOrientationEvent !== 'undefined' &&
+                typeof DeviceOrientationEvent.requestPermission === 'function') {
+                let gyroStarted = false;
+                function startGyroOnce() {
+                    if (gyroStarted) return;
+                    gyroStarted = true;
+                    portrait.style.cursor = '';
+                    startGyro();
+                }
+                // Startet wenn Glow-Block die Erlaubnis bereits geholt hat
+                window.addEventListener('gyrogranted', startGyroOnce, { once: true });
+                // Fallback: Klick auf Portrait
+                portrait.addEventListener('click', function() {
+                    DeviceOrientationEvent.requestPermission().then(state => {
+                        if (state === 'granted') startGyroOnce();
+                    }).catch(() => {});
+                }, { once: true });
+            } else {
+                startGyro();
+            }
+        }
+    })();
+
+    /* ── Hero Glow Gyro (mobile) ── */
+    (function () {
+        if (!('ontouchstart' in window) && !window.matchMedia('(pointer: coarse)').matches) return;
+        const glow = document.getElementById('heroGlow');
+        const hero = document.getElementById('hero');
+        if (!glow || !hero) return;
+
+        // CSS-Transition deaktivieren — rAF-Lerp übernimmt die Glättung
+        glow.style.transition = 'none';
+
+        let baseGamma = null, baseBeta = null;
+        let targetX = 0.5, targetY = 0.5; // normalisiert 0–1 relativ zur Hero-Größe
+        let curX = 0.5, curY = 0.5;
+        let absFired = false; // verhindert Doppel-Events auf Android
+
+        function tick() {
+            curX += (targetX - curX) * 0.05;
+            curY += (targetY - curY) * 0.05;
+            const r = hero.getBoundingClientRect();
+            glow.style.left = (curX * r.width)  + 'px';
+            glow.style.top  = (curY * r.height) + 'px';
+            requestAnimationFrame(tick);
+        }
+
+        function onGlowOrient(e) {
+            if (e.type === 'deviceorientation' && absFired) return;
+            if (e.type === 'deviceorientationabsolute') absFired = true;
+            const gamma = e.gamma, beta = e.beta;
+            if (gamma == null || beta == null) return;
+            if (baseGamma === null) { baseGamma = gamma; baseBeta = beta; }
+            const dx = Math.max(-1, Math.min(1, (gamma - baseGamma) / 45));
+            const dy = Math.max(-1, Math.min(1, (beta  - baseBeta)  / 45));
+            targetX = 0.5 + dx * 0.38;
+            targetY = 0.5 + dy * 0.38;
+        }
+
+        function startGlowGyro() {
+            window.addEventListener('deviceorientationabsolute', onGlowOrient, { passive: true });
+            window.addEventListener('deviceorientation',         onGlowOrient, { passive: true });
+            requestAnimationFrame(tick);
+        }
+
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS: Hint-Button anzeigen, Permission per Click holen
+            const hint = document.getElementById('gyroHint');
+            if (hint) {
+                hint.style.display = 'flex';
+                hint.addEventListener('click', function() {
+                    DeviceOrientationEvent.requestPermission()
+                        .then(s => {
+                            if (s === 'granted') {
+                                hint.style.opacity = '0';
+                                setTimeout(() => { hint.style.display = 'none'; }, 400);
+                                startGlowGyro();
+                                window.dispatchEvent(new Event('gyrogranted'));
+                            }
+                        })
+                        .catch(() => {});
+                }, { once: true });
+            }
+        } else {
+            startGlowGyro();
+        }
     })();
 
     /* ── CMS Content Loader ── */
@@ -1237,7 +1470,8 @@
                 if (catEl  && p.cat)   catEl.textContent  = p.cat;
                 if (descEl && p.desc)  descEl.textContent = p.desc;
                 if (numEl  && p.num)   numEl.textContent  = p.num;
-                if (bg     && p.image) bg.style.backgroundImage = 'url(' + p.image + ')';
+                if (bg && p.image) bg.style.backgroundImage = 'url(' + p.image + ')';
+                else if (bg && !p.image) bg.style.backgroundImage = '';
                 if (p.name) card.setAttribute('aria-label', p.name);
                 if (p.link) {
                     const cardLink = card.querySelector('.proj-card-link');
@@ -1250,6 +1484,38 @@
                 if (grid) grid.appendChild(card);
             });
             adjustProjGrid();
+        }
+
+        /* Dynamic Pages — inject cards from registry */
+        let dynReg;
+        try { dynReg = JSON.parse(localStorage.getItem('freundhase_cms_pages_registry')); } catch(e) {}
+        if (Array.isArray(dynReg) && dynReg.length) {
+            const grid = document.querySelector('.proj-grid');
+            if (grid) {
+                const svgArr = '<svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+                dynReg.forEach(p => {
+                    if (!p.slug) return;
+                    if (grid.querySelector('.proj-card.' + p.slug)) return; // already exists
+                    const card = document.createElement('article');
+                    card.className = 'proj-card ' + p.slug;
+                    card.setAttribute('role', 'listitem');
+                    card.setAttribute('tabindex', '0');
+                    card.setAttribute('aria-label', p.title || '');
+                    const link = p.slug + '.html';
+                    card.innerHTML =
+                        '<a href="' + link + '" class="proj-card-link" aria-label="' + (p.title||'') + ' — Projekt ansehen"></a>' +
+                        '<div class="proj-bg"' + (p.image ? ' style="background-image:url(' + p.image + ')"' : '') + '></div>' +
+                        '<div class="proj-overlay">' +
+                        '<span class="proj-num">' + (p.num||'') + '</span>' +
+                        '<h3 class="proj-name">' + (p.title||'') + '</h3>' +
+                        '<p class="proj-cat">' + (p.cat||'') + '</p>' +
+                        '<p class="proj-desc">' + (p.desc||'') + '</p>' +
+                        '<a href="' + link + '" class="proj-readmore">Mehr ansehen ' + svgArr + '</a>' +
+                        '</div>';
+                    grid.appendChild(card);
+                });
+                adjustProjGrid();
+            }
         }
 
         /* About */
@@ -1307,6 +1573,7 @@
         }
     }
     adjustProjGrid();
+
 
 </script>
 

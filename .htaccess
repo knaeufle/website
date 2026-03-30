@@ -1,0 +1,52 @@
+# ── HTTPS erzwingen ──────────────────────────────────────────
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# ── Security-Header ──────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none';"
+</IfModule>
+
+# ── Verzeichnislisting deaktivieren ──────────────────────────
+Options -Indexes
+
+# ── Sensitive Dateien sperren ────────────────────────────────
+<FilesMatch "\.(json|log|sh|env|bak|sql|md)$">
+    Require all denied
+</FilesMatch>
+
+# ── Brute-Force-Schutz für cms.php ──────────────────────────
+# Blockiert IPs die zu viele Requests an cms.php senden
+<IfModule mod_evasive20.c>
+    DOSHashTableSize    3097
+    DOSPageCount        10
+    DOSSiteCount        50
+    DOSPageInterval     1
+    DOSSiteInterval     1
+    DOSBlockingPeriod   600
+</IfModule>
+
+# Fallback: cms.php nur per POST erlauben (GET nur für ?action=check)
+<Files "cms.php">
+    <LimitExcept GET POST>
+        Require all denied
+    </LimitExcept>
+</Files>
+
+# ── upload.php absichern ─────────────────────────────────────
+<Files "upload.php">
+    Require all denied
+</Files>
+
+# ── CMS-Cache kein Browser-Caching ──────────────────────────
+<Files "cms-cache.js">
+    Header set Cache-Control "no-store, no-cache, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</Files>
